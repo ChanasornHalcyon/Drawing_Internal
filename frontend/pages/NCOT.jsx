@@ -10,7 +10,7 @@ const NCOT = () => {
 
   const fetchDataNCOT = async () => {
     try {
-      const res = await axios.get("https://halcyonone-internal.onrender.com/getNCOT");
+      const res = await axios.get("http://localhost:4000/getNCOT");
       if (res.data.success) {
         setDataNCOT(res.data.data);
       } else {
@@ -24,7 +24,7 @@ const NCOT = () => {
   const handleDelete = async (id) => {
     if (!confirm("ยืนยันการลบข้อมูลนี้ใช่หรือไม่?")) return;
     try {
-      const res = await axios.delete(`https://halcyonone-internal.onrender.com/delete/${id}`);
+      const res = await axios.delete(`http://localhost:4000/delete/${id}`);
       if (res.data.success) {
         setDataNCOT((prev) => prev.filter((item) => item.id !== id));
       } else {

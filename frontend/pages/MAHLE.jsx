@@ -10,7 +10,7 @@ const MAHLE = () => {
 
   const fetchDataMAHLE = async () => {
     try {
-      const res = await axios.get("https://halcyonone-internal.onrender.com/getMAHLE");
+      const res = await axios.get("http://localhost:4000/getMAHLE");
       if (res.data.success) {
         setDataMAHLE(res.data.data);
       } else {
@@ -24,7 +24,7 @@ const MAHLE = () => {
   const handleDelete = async (id) => {
     if (!confirm("ยืนยันการลบข้อมูลนี้ใช่หรือไม่?")) return;
     try {
-      const res = await axios.delete(`https://halcyonone-internal.onrender.com/delete/${id}`);
+      const res = await axios.delete(`http://localhost:4000/delete/${id}`);
       if (res.data.success) {
         setDataMAHLE((prev) => prev.filter((item) => item.id !== id));
       } else {
@@ -98,7 +98,7 @@ const MAHLE = () => {
                     {item.image_url ? (
                       <div className="flex justify-center items-center">
                         <img
-                          src={`https://halcyonone-internal.onrender.com${item.image_url}`}
+                          src={`http://localhost:4000${item.image_url}`}
                           alt="Preview"
                           className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
                           onClick={() => setPreviewImage(item.image_url)}

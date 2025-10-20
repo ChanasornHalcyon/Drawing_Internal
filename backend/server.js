@@ -1,53 +1,50 @@
 const express = require("express");
 const cors = require("cors");
-const { Pool } = require("pg");
+const mysql = require("mysql2/promise");
 const multer = require("multer");
 const path = require("path");
-require("dotenv").config();
-
 const app = express();
 
-app.use(
-  cors({
-    origin: ["https://halcyon-one-internal.vercel.app"],
-    credentials: true,
-  })
-);
+app.use(cors({ origin: "*" })); 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+  destination: (req, file, res) => res(null, "uploads/"),
+  filename: (req, file, res) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    res(null, uniqueName);
+  },
 });
 const upload = multer({ storage });
 
-const db = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  ssl: { rejectUnauthorized: false },
-});
+let db;
+const initMySQL = async () => {
+  db = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "khemnak1530",
+    database: "halcyon_internal",
+  });
+};
+initMySQL();
 
 app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   try {
-    const result = await db.query(
-      "SELECT * FROM users WHERE username = $1 AND password = $2",
+    const [rows] = await db.query(
+      "SELECT * FROM user WHERE username = ? AND password = ?",
       [username, password]
     );
-    if (result.rows.length > 0) {
-      res.json({ success: true, user: result.rows[0] });
+    if (rows.length > 0) {
+      res.json({ success: true, user: rows[0] });
     } else {
       res
         .status(400)
-        .json({ success: false, message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" });
+        .json({ success: false, message: "Username หรือ Password ไม่ถูกต้อง" });
     }
   } catch (err) {
-    console.error("❌ verifyUser Error:", err);
-    res.status(500).json({ success: false });
+    console.error("❌ Database error:", err);
   }
 });
 
@@ -59,7 +56,7 @@ app.post("/pushData", upload.single("image"), async (req, res) => {
     const sql = `
       INSERT INTO file_records 
       (reason, description, customer_part, dwg_no, customer_name, image_url)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
     await db.query(sql, [
       reason,
@@ -69,27 +66,27 @@ app.post("/pushData", upload.single("image"), async (req, res) => {
       customer_name,
       image_url,
     ]);
+
     res.json({ success: true, message: "Data inserted successfully" });
   } catch (err) {
-    console.error("❌ pushData Error:", err);
-    res.status(500).json({ success: false });
+    console.error("❌ Error:", err);
   }
 });
 
 const getByCustomer = (customer) => async (req, res) => {
   try {
-    const result = await db.query(
-      "SELECT * FROM file_records WHERE customer_name = $1",
+    const [rows] = await db.query(
+      "SELECT * FROM file_records WHERE customer_name = ?",
       [customer]
     );
-    if (result.rows.length > 0) {
-      res.json({ success: true, data: result.rows });
+
+    if (rows.length > 0) {
+      res.json({ success: true, data: rows });
     } else {
       res.json({ success: false, message: `ไม่พบข้อมูลของลูกค้า ${customer}` });
     }
   } catch (err) {
-    console.error(" getByCustomer Error:", err);
-    res.status(500).json({ success: false });
+    console.error("❌ Database error:", err);
   }
 };
 
@@ -98,16 +95,17 @@ app.get("/getNPTA", getByCustomer("NPTA"));
 app.get("/getNCOT", getByCustomer("NCOT"));
 
 app.delete("/delete/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    await db.query("DELETE FROM file_records WHERE id = $1", [req.params.id]);
+    await db.query("DELETE FROM file_records WHERE id = ?", [id]);
     res.json({ success: true });
   } catch (err) {
     console.error("❌ Delete error:", err);
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+const PORT = 4000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running at http://localhost:${PORT}`)
+);

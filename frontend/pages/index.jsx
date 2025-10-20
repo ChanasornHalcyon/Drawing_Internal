@@ -1,29 +1,27 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 import Navbar from "./components/Navbar";
+import axios from "axios";
 
 const Index = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
   const login = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "https://halcyonone-internal.onrender.com/verifyUser",
-        { username, password },
-        { withCredentials: true }
-      );
+      const res = await axios.post("http://localhost:4000/verifyUser", {
+        username,
+        password,
+      });
+
       if (res.data.success) {
         localStorage.setItem("username", res.data.user.username);
         router.push("/homepage");
       }
     } catch (err) {
-      console.error("❌ Login Error:", err);
-      setError("Username หรือ Password ไม่ถูกต้อง");
+      setError("❌ Username หรือ Password ไม่ถูกต้อง");
     }
   };
 
@@ -46,9 +44,10 @@ const Index = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-black"
-                placeholder="username"
+                placeholder=" username"
               />
             </div>
+
             <div>
               <label
                 htmlFor="password"
@@ -62,17 +61,19 @@ const Index = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-black"
-                placeholder="password"
+                placeholder=" password"
               />
+
               {error && (
                 <div className="text-red-500 text-sm text-center mt-5">
                   {error}
                 </div>
               )}
             </div>
+
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition cursor-pointer"
+              className="w-full  bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition cursor-pointer"
             >
               Login
             </button>

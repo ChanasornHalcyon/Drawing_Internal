@@ -12,7 +12,7 @@ const Navbar = () => {
     router.push("/");
   };
   const goHomePage = () => {
-    router.push("../homepage");
+    router.push("../Homepage");
   };
   useEffect(() => {
     const showUserName = localStorage.getItem("username");
@@ -24,7 +24,7 @@ const Navbar = () => {
       <img
         onClick={goHomePage}
         className="w-14 cursor-pointer ml-4 filter brightness-0 invert"
-        src="/ht-logo.png"
+        src="HT Logo.PNG"
         alt="HT"
       />
 
