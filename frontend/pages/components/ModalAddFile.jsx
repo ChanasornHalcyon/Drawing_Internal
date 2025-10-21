@@ -71,9 +71,21 @@ const ModalAddFile = ({ onClose, onSubmit, submitting }) => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Description
               </label>
-              <textarea
+              <input
                 name="description"
                 value={form.description}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#3698FC] text-black"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Material
+              </label>
+              <input
+                type="text"
+                name="material"
+                value={form.material || ""}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#3698FC] text-black"
               />
@@ -151,9 +163,9 @@ const ModalAddFile = ({ onClose, onSubmit, submitting }) => {
                     href={URL.createObjectURL(form.file)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 underline"
+                    className="text-blue-600 "
                   >
-                    Preview PDF
+                    View PDF
                   </a>
                 </div>
               )}

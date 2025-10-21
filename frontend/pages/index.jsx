@@ -21,7 +21,7 @@ const Index = () => {
         router.push("/homepage");
       }
     } catch (err) {
-      setError("❌ Username หรือ Password ไม่ถูกต้อง");
+      setError(" Username หรือ Password ไม่ถูกต้อง");
     }
   };
 

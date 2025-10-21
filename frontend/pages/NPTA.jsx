@@ -58,6 +58,7 @@ const NPTA = () => {
                 <th className="px-4 py-3 border-r border-gray-900">
                   Description
                 </th>
+                <th className="px-4 py-3 border-r border-gray-900">Material</th>
                 <th className="px-4 py-3 border-r border-gray-900">
                   Customer Part
                 </th>
@@ -85,6 +86,9 @@ const NPTA = () => {
                     {item.description}
                   </td>
                   <td className="px-4 py-3 border-r border-gray-700">
+                    {item.material}
+                  </td>
+                  <td className="px-4 py-3 border-r border-gray-700">
                     {item.customer_part}
                   </td>
                   <td className="px-4 py-3 border-r border-gray-700">
@@ -101,7 +105,7 @@ const NPTA = () => {
                           href={`http://localhost:4000${item.image_url}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 underline hover:text-blue-800"
+                          className="text-blue-600  hover:text-blue-800"
                         >
                           View PDF
                         </a>

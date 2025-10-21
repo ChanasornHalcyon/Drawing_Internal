@@ -16,6 +16,7 @@ const Searchbar = ({ fetchDataNPTR, fetchDataNPTA }) => {
       const data = new FormData();
       data.append("reason", formData.reason);
       data.append("description", formData.description);
+      data.append("material", formData.material);
       data.append("customer_part", formData.customerPart);
       data.append("dwg_no", formData.dwgNo);
       data.append("customer_name", formData.customerName);
@@ -43,9 +44,9 @@ const Searchbar = ({ fetchDataNPTR, fetchDataNPTA }) => {
   return (
     <div className="flex items-center w-full px-5 mt-10 relative">
       <div className="flex justify-center w-full">
-        <div className="relative w-[210px] px-2 md:w-[400px]">
+        <div className="relative w-[210px] px-2 md:w-[400px] lg:w-[500px]">
           <input
-            className="w-full px-4 py-3 pr-10 border border-gray-800 rounded-md text-gray-600 
+            className="w-full px-4 py-3 pr-10 border border-gray-500 rounded-md text-gray-600 
                        focus:outline-none focus:border-[#FF3399]"
             placeholder="code or description...."
           />

@@ -57,19 +57,26 @@ app.post("/verifyUser", async (req, res) => {
 
 app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
-    const { reason, description, customer_part, dwg_no, customer_name } =
-      req.body;
+    const {
+      reason,
+      description,
+      material,
+      customer_part,
+      dwg_no,
+      customer_name,
+    } = req.body;
     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     const sql = `
       INSERT INTO file_records 
-      (reason, description, customer_part, dwg_no, customer_name, image_url)
-      VALUES (?, ?, ?, ?, ?, ?)
+      (reason, description, material, customer_part, dwg_no, customer_name, image_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
       reason,
       description,
+      material,
       customer_part,
       dwg_no,
       customer_name,
@@ -78,7 +85,7 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
 
     res.json({ success: true, message: "✅ File added successfully!" });
   } catch (err) {
-    console.error(" Error:", err);
+    console.error("❌ Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
