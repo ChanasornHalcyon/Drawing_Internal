@@ -14,10 +14,10 @@ const NCOT = () => {
       if (res.data.success) {
         setDataNCOT(res.data.data);
       } else {
-        console.warn("⚠️ ไม่พบข้อมูล NCOT");
+        console.warn(" ไม่พบข้อมูล NCOT");
       }
     } catch (err) {
-      console.error("❌ Error fetching data:", err);
+      console.error(" Error fetching data:", err);
     }
   };
 
@@ -31,7 +31,7 @@ const NCOT = () => {
         alert("เกิดข้อผิดพลาดในการลบข้อมูล");
       }
     } catch (err) {
-      console.error("❌ Delete error:", err);
+      console.error(" Delete error:", err);
     }
   };
 
@@ -96,14 +96,25 @@ const NCOT = () => {
 
                   <td className="px-4 py-3 border-r border-gray-700 text-center">
                     {item.image_url ? (
-                      <div className="flex justify-center items-center">
-                        <img
-                          src={`http://localhost:4000${item.image_url}`}
-                          alt="Preview"
-                          className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
-                          onClick={() => setPreviewImage(item.image_url)}
-                        />
-                      </div>
+                      item.image_url.toLowerCase().endsWith(".pdf") ? (
+                        <a
+                          href={`http://localhost:4000${item.image_url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 underline hover:text-blue-800"
+                        >
+                          View PDF
+                        </a>
+                      ) : (
+                        <div className="flex justify-center items-center">
+                          <img
+                            src={`http://localhost:4000${item.image_url}`}
+                            alt="Preview"
+                            className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
+                            onClick={() => setPreviewImage(item.image_url)}
+                          />
+                        </div>
+                      )
                     ) : (
                       "-"
                     )}
@@ -112,7 +123,7 @@ const NCOT = () => {
                   <td className="px-4 py-3 text-center">
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded cursor-pointer"
+                      className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-md font-medium rounded cursor-pointer"
                     >
                       Delete
                     </button>
@@ -132,13 +143,16 @@ const NCOT = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="bg-white rounded-2xl shadow-2xl p-4 relative max-w-[90%] max-h-[90%]">
-              <button
-                onClick={() => setPreviewImage(null)}
-                className="absolute top-2 right-3 text-gray-600 hover:text-red-500 text-2xl font-bold cursor-pointer"
-              >
-                ✕
-              </button>
+            <div className="bg-[#F8F8FF] rounded-2xl shadow-2xl p-3 relative max-w-[90%] max-h-[90%] flex flex-col items-center">
+              <div className="w-full flex justify-end mb-2">
+                <button
+                  onClick={() => setPreviewImage(null)}
+                  className="text-gray-600 hover:text-red-500 text-2xl font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
               <img
                 src={`http://localhost:4000${previewImage}`}
                 alt="Full Preview"

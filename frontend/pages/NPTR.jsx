@@ -14,10 +14,10 @@ const NPTR = () => {
       if (res.data.success) {
         setDataNPTR(res.data.data);
       } else {
-        console.warn("⚠️ ไม่พบข้อมูล NPTR");
+        console.warn(" ไม่พบข้อมูล NPTR");
       }
     } catch (err) {
-      console.error("❌ Error fetching data:", err);
+      console.error(" Error fetching data:", err);
     }
   };
 
@@ -31,7 +31,7 @@ const NPTR = () => {
         alert("เกิดข้อผิดพลาดในการลบข้อมูล");
       }
     } catch (err) {
-      console.error("❌ Delete error:", err);
+      console.error(" Delete error:", err);
     }
   };
 
@@ -96,14 +96,25 @@ const NPTR = () => {
 
                   <td className="px-4 py-3 border-r border-gray-700 text-center">
                     {item.image_url ? (
-                      <div className="flex justify-center items-center">
-                        <img
-                          src={`http://localhost:4000${item.image_url}`}
-                          alt="Preview"
-                          className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
-                          onClick={() => setPreviewImage(item.image_url)}
-                        />
-                      </div>
+                      item.image_url.toLowerCase().endsWith(".pdf") ? (
+                        <a
+                          href={`http://localhost:4000${item.image_url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 underline hover:text-blue-800"
+                        >
+                          View PDF
+                        </a>
+                      ) : (
+                        <div className="flex justify-center items-center">
+                          <img
+                            src={`http://localhost:4000${item.image_url}`}
+                            alt="Preview"
+                            className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
+                            onClick={() => setPreviewImage(item.image_url)}
+                          />
+                        </div>
+                      )
                     ) : (
                       "-"
                     )}

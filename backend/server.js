@@ -5,7 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const app = express();
 
-app.use(cors({ origin: "*" })); 
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -16,7 +16,14 @@ const storage = multer.diskStorage({
     res(null, uniqueName);
   },
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "application/pdf"];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("Only images or PDFs are allowed!"));
+  },
+});
 
 let db;
 const initMySQL = async () => {
@@ -44,20 +51,22 @@ app.post("/verifyUser", async (req, res) => {
         .json({ success: false, message: "Username หรือ Password ไม่ถูกต้อง" });
     }
   } catch (err) {
-    console.error("❌ Database error:", err);
+    console.error(" Database error:", err);
   }
 });
 
-app.post("/pushData", upload.single("image"), async (req, res) => {
+app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
     const { reason, description, customer_part, dwg_no, customer_name } =
       req.body;
     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
     const sql = `
       INSERT INTO file_records 
       (reason, description, customer_part, dwg_no, customer_name, image_url)
       VALUES (?, ?, ?, ?, ?, ?)
     `;
+
     await db.query(sql, [
       reason,
       description,
@@ -67,9 +76,10 @@ app.post("/pushData", upload.single("image"), async (req, res) => {
       image_url,
     ]);
 
-    res.json({ success: true, message: "Data inserted successfully" });
+    res.json({ success: true, message: "✅ File added successfully!" });
   } catch (err) {
-    console.error("❌ Error:", err);
+    console.error(" Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -86,7 +96,7 @@ const getByCustomer = (customer) => async (req, res) => {
       res.json({ success: false, message: `ไม่พบข้อมูลของลูกค้า ${customer}` });
     }
   } catch (err) {
-    console.error("❌ Database error:", err);
+    console.error(" Database error:", err);
   }
 };
 
@@ -100,7 +110,7 @@ app.delete("/delete/:id", async (req, res) => {
     await db.query("DELETE FROM file_records WHERE id = ?", [id]);
     res.json({ success: true });
   } catch (err) {
-    console.error("❌ Delete error:", err);
+    console.error(" Delete error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });

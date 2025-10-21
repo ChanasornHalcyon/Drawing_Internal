@@ -10,16 +10,14 @@ const NPTA = () => {
 
   const fetchDataNPTA = async () => {
     try {
-      const res = await axios.get(
-        "https://halcyonone-internalz.onrender.com/getNPTA"
-      );
+      const res = await axios.get("http://localhost:4000/getNPTA");
       if (res.data.success) {
         setDataNPTA(res.data.data);
       } else {
-        console.warn("⚠️ ไม่พบข้อมูล NPTA");
+        console.warn(" ไม่พบข้อมูล NPTA");
       }
     } catch (err) {
-      console.error("❌ Error fetching data:", err);
+      console.error(" Error fetching data:", err);
     }
   };
 
@@ -33,7 +31,7 @@ const NPTA = () => {
         alert("เกิดข้อผิดพลาดในการลบข้อมูล");
       }
     } catch (err) {
-      console.error("Delete error:", err);
+      console.error(" Delete error:", err);
     }
   };
 
@@ -98,14 +96,25 @@ const NPTA = () => {
 
                   <td className="px-4 py-3 border-r border-gray-700 text-center">
                     {item.image_url ? (
-                      <div className="flex justify-center items-center">
-                        <img
-                          src={`http://localhost:4000${item.image_url}`}
-                          alt="Preview"
-                          className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
-                          onClick={() => setPreviewImage(item.image_url)}
-                        />
-                      </div>
+                      item.image_url.toLowerCase().endsWith(".pdf") ? (
+                        <a
+                          href={`http://localhost:4000${item.image_url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 underline hover:text-blue-800"
+                        >
+                          View PDF
+                        </a>
+                      ) : (
+                        <div className="flex justify-center items-center">
+                          <img
+                            src={`http://localhost:4000${item.image_url}`}
+                            alt="Preview"
+                            className="w-16 h-16 object-cover rounded-md border cursor-pointer hover:scale-105 transition-transform"
+                            onClick={() => setPreviewImage(item.image_url)}
+                          />
+                        </div>
+                      )
                     ) : (
                       "-"
                     )}
@@ -138,7 +147,7 @@ const NPTA = () => {
               <div className="w-full flex justify-end mb-2">
                 <button
                   onClick={() => setPreviewImage(null)}
-                  className="text-gray-600 hover:text-red-500 text-3xl font-bold cursor-pointer mr-3"
+                  className="text-gray-600 hover:text-red-500 text-2xl font-bold cursor-pointer"
                 >
                   ✕
                 </button>
