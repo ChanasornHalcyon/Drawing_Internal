@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { FaFilePdf } from "react-icons/fa6";
-
+import { FaFileImage } from "react-icons/fa";
 const Data = () => {
   const [data, setData] = useState([]);
   const fetchData = async () => {
@@ -33,6 +33,7 @@ const Data = () => {
                 <th className="px-4 py-2 border">Customer Part No.</th>
                 <th className="px-4 py-2 border">Material</th>
                 <th className="px-4 py-2 border">PCD Grade</th>
+                   <th className="px-4 py-2 border">Rev</th>
                 <th className="px-4 py-2 border text-center">Drawing</th>
               </tr>
             </thead>
@@ -65,6 +66,9 @@ const Data = () => {
                     <td className="px-4 py-2 border text-black">
                       {item.pcd_grade}
                     </td>
+                    <td className="px-4 py-2 border text-black">
+                      {item.rev}
+                    </td>
 
                     <td className="px-4 py-2 border text-center">
                       {item.file_url ? (
@@ -75,7 +79,7 @@ const Data = () => {
                           className="inline-flex items-center justify-center hover:scale-110 transition-transform"
                           title="View PDF"
                         >
-                          <FaFilePdf className="text-red-600 text-2xl" />
+                          <FaFilePdf className="text-red-600 text-2xl" /><FaFileImage />
                         </a>
                       ) : (
                         <span className="text-gray-400">-</span>

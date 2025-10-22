@@ -32,7 +32,7 @@ const Search_Drawing = () => {
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center mt-8"
       >
-        <div className="w-full max-w-[700px] bg-white px-8 xl:px-28  rounded-xl">
+        <div className="w-full max-w-[700px] bg-white px-8 md:px-32 xl:px-28   rounded-xl">
           <div className="space-y-5 w-full">
             <div>
               <label className="block text-lg font-medium text-gray-700 mb-1">

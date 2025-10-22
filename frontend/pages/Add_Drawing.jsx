@@ -81,7 +81,7 @@ const Add_Drawing = () => {
       <Navbar />
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-7xl mx-auto mt-5 px-4 md:px-20 rounded-xl"
+        className="w-full max-w-7xl mx-auto mt-5 px-4 md:px-52 xl:px-40 rounded-xl"
       >
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
           <div className="space-y-4 w-full">
@@ -216,7 +216,6 @@ const Add_Drawing = () => {
             </div>
           </div>
 
-      
           <div className="flex items-center justify-center w-full xl:ml-20">
             <div className="flex flex-col items-center justify-center w-full max-w-[500px] h-80 border-2 border-dashed border-gray-400 bg-[#FAFAFA] rounded-md p-6 relative">
               {preview && (

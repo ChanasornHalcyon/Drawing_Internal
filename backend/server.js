@@ -100,7 +100,7 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
 app.get("/getAllData", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM drawing_records ORDER BY id DESC"
+      "SELECT * FROM drawing_records ORDER BY id ASC"
     );
     res.json({ success: true, data: rows });
   } catch (err) {
