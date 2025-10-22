@@ -58,58 +58,56 @@ app.post("/verifyUser", async (req, res) => {
 app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
     const {
-      reason,
+      customerName,
+      date,
+      drawingNo,
+      rev,
+      customerPart,
       description,
-      material,
-      customer_part,
-      dwg_no,
-      customer_name,
+      materialMain,
+      materialSub,
+      pcdGrade,
     } = req.body;
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const file_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     const sql = `
-      INSERT INTO file_records 
-      (reason, description, material, customer_part, dwg_no, customer_name, image_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO drawing_records 
+      (customer_name, date, drawing_no, rev, customer_part_no, description, material_main, material_sub, pcd_grade, file_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
-      reason,
+      customerName,
+      date,
+      drawingNo,
+      rev,
+      customerPart,
       description,
-      material,
-      customer_part,
-      dwg_no,
-      customer_name,
-      image_url,
+      materialMain,
+      materialSub,
+      pcdGrade,
+      file_url,
     ]);
 
-    res.json({ success: true, message: "✅ File added successfully!" });
+    res.json({ success: true, message: " Drawing added successfully!" });
   } catch (err) {
-    console.error("❌ Error:", err);
+    console.error(" pushData Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
-const getByCustomer = (customer) => async (req, res) => {
+app.get("/getAllData", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM file_records WHERE customer_name = ?",
-      [customer]
+      "SELECT * FROM drawing_records ORDER BY id DESC"
     );
-
-    if (rows.length > 0) {
-      res.json({ success: true, data: rows });
-    } else {
-      res.json({ success: false, message: `ไม่พบข้อมูลของลูกค้า ${customer}` });
-    }
+    res.json({ success: true, data: rows });
   } catch (err) {
-    console.error(" Database error:", err);
+    console.error("getAllData error:", err);
+    res.status(500).json({ success: false });
   }
-};
-
-app.get("/getNPTR", getByCustomer("NPTR"));
-app.get("/getNPTA", getByCustomer("NPTA"));
-app.get("/getNCOT", getByCustomer("NCOT"));
+});
 
 app.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
@@ -119,39 +117,6 @@ app.delete("/delete/:id", async (req, res) => {
   } catch (err) {
     console.error(" Delete error:", err);
     res.status(500).json({ success: false, message: "Server error" });
-  }
-});
-
-app.get("/searchFiles", async (req, res) => {
-  try {
-    const keyword = (req.query.q || "").trim();
-    if (!keyword) {
-      return res.json({ success: false, data: [] });
-    }
-
-    const sql = `
-      SELECT * FROM file_records 
-      WHERE 
-        reason LIKE ? OR 
-        description LIKE ? OR 
-        customer_part LIKE ? OR 
-        dwg_no LIKE ? OR 
-        customer_name LIKE ?
-      ORDER BY id DESC
-    `;
-
-    const [rows] = await db.query(sql, [
-      `%${keyword}%`,
-      `%${keyword}%`,
-      `%${keyword}%`,
-      `%${keyword}%`,
-      `%${keyword}%`,
-    ]);
-
-    res.json({ success: true, data: rows });
-  } catch (err) {
-    console.error(" searchFiles Error:", err);
-    res.status(500).json({ success: false, message: err.message });
   }
 });
 
