@@ -20,13 +20,18 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-[#0B4EA2] p-5 flex justify-between items-center relative">
-      <img
-        onClick={goHomePage}
-        className="w-14 cursor-pointer ml-4 filter brightness-0 invert"
-        src="ht-logo.PNG"
-        alt="HT"
-      />
+    <nav className="bg-[linear-gradient(90deg,#D9D9D9_0%,#737373_50%,#BDBDBD_100%)]  p-5 flex justify-between items-center relative">
+      <div className="flex items-center gap-3">
+        <img
+          onClick={goHomePage}
+          className="w-14 cursor-pointer ml-4 filter "
+          src="ht-logo.PNG"
+          alt="HT"
+        />
+        <span className="text-black hidden lg:flex text-xl font-bold">
+          Drawing Database System
+        </span>
+      </div>
 
       {isIndexPage ? (
         <button className="hidden md:flex px-3 py-1 bg-white text-[#FF1493] rounded-md hover:bg-[#FF1493] hover:text-white">
@@ -36,10 +41,10 @@ const Navbar = () => {
         <div className="relative inline-block text-left">
           <button
             onClick={() => setIsDropdownOpen((prev) => !prev)}
-            className="text-white font-medium flex items-center gap-2 mr-4 hover:text-gray-300 cursor-pointer"
+            className="text-white font-medium flex items-center gap-2 mr-2 hover:text-gray-300 cursor-pointer"
           >
-            <FaUserCircle className="text-2xl" />
-            <span>{username}</span>
+            <FaUserCircle className="text-2xl text-black" />
+            <span className="text-black text-xl">{username}</span>
           </button>
 
           {isDropdownOpen && (

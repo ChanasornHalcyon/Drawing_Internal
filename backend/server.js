@@ -122,6 +122,39 @@ app.delete("/delete/:id", async (req, res) => {
   }
 });
 
+app.get("/searchFiles", async (req, res) => {
+  try {
+    const keyword = (req.query.q || "").trim();
+    if (!keyword) {
+      return res.json({ success: false, data: [] });
+    }
+
+    const sql = `
+      SELECT * FROM file_records 
+      WHERE 
+        reason LIKE ? OR 
+        description LIKE ? OR 
+        customer_part LIKE ? OR 
+        dwg_no LIKE ? OR 
+        customer_name LIKE ?
+      ORDER BY id DESC
+    `;
+
+    const [rows] = await db.query(sql, [
+      `%${keyword}%`,
+      `%${keyword}%`,
+      `%${keyword}%`,
+      `%${keyword}%`,
+      `%${keyword}%`,
+    ]);
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(" searchFiles Error:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 const PORT = 4000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)

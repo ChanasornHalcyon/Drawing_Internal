@@ -1,12 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Navbar from "./components/Navbar";
-import Searchbar from "./components/Searchbar";
 import { motion } from "framer-motion";
 
 const Homepage = () => {
   const router = useRouter();
-  const card = ["NPTR", "NPTA", "NCOT", "MAHLE"];
+  const card = ["Add_Drawing", "Search_Drawing"];
   const clickCard = (path) => {
     router.push(`/${path}`);
   };
@@ -14,10 +13,9 @@ const Homepage = () => {
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
       <Navbar />
-      <Searchbar />
 
       <div className="md:mt-14 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 max-w-6xl mx-5 xl:mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-10 max-w-2xl mx-5 xl:mx-auto">
           {card.map((item, index) => (
             <motion.div
               key={index}
