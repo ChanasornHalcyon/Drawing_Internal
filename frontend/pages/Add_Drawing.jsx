@@ -44,9 +44,17 @@ const Add_Drawing = () => {
 
     try {
       const formData = new FormData();
+
       Object.entries(form).forEach(([key, value]) => {
         formData.append(key, value);
       });
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        formData.append("employee_drawing", userId);
+      } else {
+        alert(" ไม่พบข้อมูลผู้ใช้ในระบบ กรุณา login ใหม่");
+        return;
+      }
 
       const res = await axios.post("http://localhost:4000/pushData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -81,7 +89,7 @@ const Add_Drawing = () => {
       <Navbar />
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-7xl mx-auto mt-5 px-4 md:px-52 xl:px-40 rounded-xl"
+        className="w-full max-w-7xl mx-auto mt-5 px-8 md:px-52 xl:px-40 rounded-xl"
       >
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
           <div className="space-y-4 w-full">
@@ -227,7 +235,7 @@ const Add_Drawing = () => {
                       className="w-60 h-40 object-contain mx-auto rounded-md"
                     />
                   ) : fileType === "pdf" ? (
-                    <div className="flex flex-col items-center justify-center text-black">
+                    <div className="flex flex-col items-center justify-center text-red-500">
                       <FaFilePdf size={40} />
                       <p className="text-[#1C70D3] text-base font-semibold mt-3">
                         {preview}

@@ -40,24 +40,27 @@ app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   try {
     const [rows] = await db.query(
-      "SELECT * FROM user WHERE username = ? AND password = ?",
+      "SELECT id, username, password FROM user WHERE username = ? AND password = ?",
       [username, password]
     );
     if (rows.length > 0) {
-      res.json({ success: true, user: rows[0] });
+      res.json({
+        success: true,
+        user: rows[0],
+      });
     } else {
-      res
-        .status(400)
-        .json({ success: false, message: "Username หรือ Password ไม่ถูกต้อง" });
+      res.json({ success: false });
     }
   } catch (err) {
-    console.error(" Database error:", err);
+    console.error("verifyUser Error:", err);
+    res.status(500).json({ success: false });
   }
 });
 
 app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
     const {
+      employee_drawing,
       customerName,
       date,
       drawingNo,
@@ -73,11 +76,13 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
 
     const sql = `
       INSERT INTO drawing_records 
-      (customer_name, date, drawing_no, rev, customer_part_no, description, material_main, material_sub, pcd_grade, file_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (employee_drawing, customer_name, date, drawing_no, rev, customer_part_no, description,
+       material_main, material_sub, pcd_grade, file_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
+      employee_drawing,
       customerName,
       date,
       drawingNo,

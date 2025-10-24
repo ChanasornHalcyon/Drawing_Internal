@@ -15,10 +15,13 @@ const Index = () => {
         username,
         password,
       });
-
+      
       if (res.data.success) {
+        localStorage.setItem("userId", res.data.user.id);
         localStorage.setItem("username", res.data.user.username);
         router.push("/homepage");
+      } else {
+        setError(" Username หรือ Password ไม่ถูกต้อง");
       }
     } catch (err) {
       setError(" Username หรือ Password ไม่ถูกต้อง");
