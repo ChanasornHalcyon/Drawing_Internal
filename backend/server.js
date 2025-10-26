@@ -114,13 +114,62 @@ app.get("/getAllData", async (req, res) => {
   }
 });
 
-app.delete("/delete/:id", async (req, res) => {
-  const { id } = req.params;
+app.post("/searchDrawing", async (req, res) => {
   try {
-    await db.query("DELETE FROM file_records WHERE id = ?", [id]);
-    res.json({ success: true });
+    const {
+      customerName,
+      date,
+      drawingNo,
+      customerPart,
+      description,
+      materialMain,
+      pcdGrade,
+    } = req.body;
+
+    let sql = "SELECT * FROM drawing_records WHERE 1=1";
+    const params = [];
+
+    if (customerName) {
+      sql += " AND customer_name LIKE ?";
+      params.push(`%${customerName}%`);
+    }
+
+    if (date) {
+      sql += " AND DATE(date) = ?";
+      params.push(date);
+    }
+
+    if (drawingNo) {
+      sql += " AND drawing_no LIKE ?";
+      params.push(`%${drawingNo}%`);
+    }
+
+    if (customerPart) {
+      sql += " AND customer_part_no LIKE ?";
+      params.push(`%${customerPart}%`);
+    }
+
+    if (description) {
+      sql += " AND description LIKE ?";
+      params.push(`%${description}%`);
+    }
+
+    if (materialMain) {
+      sql += " AND material_main LIKE ?";
+      params.push(`%${materialMain}%`);
+    }
+
+    if (pcdGrade) {
+      sql += " AND pcd_grade LIKE ?";
+      params.push(`%${pcdGrade}%`);
+    }
+
+    sql += " ORDER BY id ASC";
+
+    const [rows] = await db.query(sql, params);
+    res.json({ success: true, data: rows });
   } catch (err) {
-    console.error(" Delete error:", err);
+    console.error("searchDrawing Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });

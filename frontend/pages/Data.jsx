@@ -15,7 +15,12 @@ const Data = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const stored = localStorage.getItem("searchResults");
+    if (stored) {
+      setData(JSON.parse(stored));
+      localStorage.removeItem("searchResults");
+    } else {
+    }
   }, []);
 
   return (

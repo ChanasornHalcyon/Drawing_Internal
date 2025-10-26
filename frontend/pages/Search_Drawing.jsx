@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
+import { useRouter } from "next/router";
 
 const Search_Drawing = () => {
+  const router = useRouter();
   const [form, setForm] = useState({
     customerName: "",
     date: "",
     drawingNo: "",
-    rev: "",
     customerPart: "",
     description: "",
     materialMain: "",
-    materialSub: "",
     pcdGrade: "",
   });
 
@@ -20,9 +20,44 @@ const Search_Drawing = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Searching...");
+    if (
+      !form.customerName &&
+      !form.date &&
+      !form.drawingNo &&
+      !form.customerPart &&
+      !form.description &&
+      !form.materialMain &&
+      !form.pcdGrade
+    ) {
+      try {
+        const res = await axios.get("http://localhost:4000/getAllData");
+        if (res.data.success) {
+          localStorage.setItem("searchResults", JSON.stringify(res.data.data));
+          router.push("/Data");
+        } else {
+          alert("ไม่พบข้อมูลทั้งหมด");
+        }
+      } catch (err) {
+        console.error("getAllData Error:", err);
+        alert("เกิดข้อผิดพลาดในการดึงข้อมูลทั้งหมด");
+      }
+      return;
+    }
+    try {
+      console.log("Form before submit:", form);
+      const res = await axios.post("http://localhost:4000/searchDrawing", form);
+      if (res.data.success) {
+        localStorage.setItem("searchResults", JSON.stringify(res.data.data));
+        router.push("/Data");
+      } else {
+        alert("ไม่พบข้อมูลตามเงื่อนไข");
+      }
+    } catch (err) {
+      console.error("Search Error:", err);
+      alert("เกิดข้อผิดพลาดในการค้นหา");
+    }
   };
 
   return (
@@ -32,7 +67,7 @@ const Search_Drawing = () => {
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center mt-8"
       >
-        <div className="w-full max-w-[700px] bg-white px-8 md:px-32 xl:px-28   rounded-xl">
+        <div className="w-full max-w-[700px] bg-white px-8 md:px-32 xl:px-28 rounded-xl">
           <div className="space-y-5 w-full">
             <div>
               <label className="block text-lg font-medium text-gray-700 mb-1">
@@ -43,13 +78,12 @@ const Search_Drawing = () => {
                 name="customerName"
                 value={form.customerName}
                 onChange={handleChange}
-                required
                 className="block w-full border border-gray-400 rounded-md px-3 py-2 focus:border-[#0B4EA2] text-black"
               />
             </div>
 
             <div>
-              <label className="block texr-lgfont-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Date
               </label>
               <input
@@ -58,13 +92,12 @@ const Search_Drawing = () => {
                 value={form.date}
                 onChange={handleChange}
                 onClick={(e) => e.target.showPicker()}
-                required
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 focus:border-[#0B4EA2] text-gray-700 cursor-pointer"
+                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-gray-700 cursor-pointer"
               />
             </div>
 
             <div>
-              <label className="block texr-lgfont-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Drawing No.
               </label>
               <input
@@ -77,7 +110,7 @@ const Search_Drawing = () => {
             </div>
 
             <div>
-              <label className="block texr-lgfont-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Customer Part No.
               </label>
               <input
@@ -90,7 +123,7 @@ const Search_Drawing = () => {
             </div>
 
             <div>
-              <label className="block texr-lgfont-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Description
               </label>
               <input
@@ -103,7 +136,7 @@ const Search_Drawing = () => {
             </div>
 
             <div>
-              <label className="block texr-lgfont-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Material
               </label>
               <select
@@ -119,7 +152,7 @@ const Search_Drawing = () => {
             </div>
 
             <div>
-              <label className="block texr-lgfont-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 PCD Grade
               </label>
               <select
