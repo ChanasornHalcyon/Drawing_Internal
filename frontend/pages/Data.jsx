@@ -5,6 +5,7 @@ import { FaFilePdf } from "react-icons/fa6";
 
 const Data = () => {
   const [data, setData] = useState([]);
+
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:4000/getAllData");
@@ -18,8 +19,8 @@ const Data = () => {
     const stored = localStorage.getItem("searchResults");
     if (stored) {
       setData(JSON.parse(stored));
-      localStorage.removeItem("searchResults");
     } else {
+      fetchData();
     }
   }, []);
 
