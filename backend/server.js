@@ -10,12 +10,12 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const storage = multer.diskStorage({
-  destination: (req, file, res) => res(null, "uploads/"),
-  filename: (req, file, res) => {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    res(null, uniqueName);
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
   },
 });
+
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
