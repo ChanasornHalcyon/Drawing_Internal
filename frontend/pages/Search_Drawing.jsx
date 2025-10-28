@@ -34,7 +34,6 @@ const Search_Drawing = () => {
       localStorage.removeItem("searchResults");
       router.push("/Data");
       return;
-
     }
     try {
       console.log("Form before submit:", form);
@@ -47,7 +46,6 @@ const Search_Drawing = () => {
       }
     } catch (err) {
       console.error("Search Error:", err);
-      alert("เกิดข้อผิดพลาดในการค้นหา");
     }
   };
 

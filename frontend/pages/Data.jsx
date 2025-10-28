@@ -52,7 +52,11 @@ const Data = () => {
                     className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
                   >
                     <td className="px-4 py-2 border text-black">
-                      {item.date ? item.date.split("T")[0] : "-"}
+                      {item.date
+                        ? new Date(item.date).toLocaleDateString("sv-SE", {
+                            timeZone: "Asia/Bangkok",
+                          })
+                        : "-"}
                     </td>
                     <td className="px-4 py-2 border text-black">
                       {item.drawing_no}
@@ -107,3 +111,4 @@ const Data = () => {
 };
 
 export default Data;
+  
