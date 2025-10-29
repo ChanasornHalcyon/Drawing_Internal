@@ -2,26 +2,24 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
 const multer = require("multer");
-const path = require("path");
-const app = express();
+const { createClient } = require("@supabase/supabase-js");
+require("dotenv").config();
 
+const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
 
 const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, res) => {
     const allowed = ["image/jpeg", "image/png", "application/pdf"];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error("Only images or PDFs are allowed!"));
+    if (allowed.includes(file.mimetype)) res(null, true);
+    else res(new Error("Only images or PDFs are allowed!"));
   },
 });
 
@@ -72,7 +70,25 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       pcdGrade,
     } = req.body;
 
-    const file_url = req.file ? `/uploads/${req.file.filename}` : null;
+    let file_url = null;
+
+    if (req.file) {
+      const fileName = `${req.file.originalname}`;
+      const { data, error } = await supabase.storage
+        .from("drawings")
+        .upload(fileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: false,
+        });
+
+      if (error) throw error;
+
+      const { data: publicURL } = supabase.storage
+        .from("drawings")
+        .getPublicUrl(fileName);
+
+      file_url = publicURL.publicUrl;
+    }
 
     const sql = `
       INSERT INTO drawing_records 
@@ -95,9 +111,12 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       file_url,
     ]);
 
-    res.json({ success: true, message: " Drawing added successfully!" });
+    res.json({
+      success: true,
+      message: "Drawing added and uploaded to Supabase!",
+    });
   } catch (err) {
-    console.error(" pushData Error:", err);
+    console.error("pushData Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
