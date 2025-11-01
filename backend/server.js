@@ -66,7 +66,6 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       customerPart,
       description,
       materialMain,
-      materialSub,
       pcdGrade,
     } = req.body;
 
@@ -93,8 +92,8 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
     const sql = `
       INSERT INTO drawing_records 
       (employee_drawing, customer_name, date, drawing_no, rev, customer_part_no, description,
-       material_main, material_sub, pcd_grade, file_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       material_main, pcd_grade, file_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
@@ -106,7 +105,6 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       customerPart,
       description,
       materialMain,
-      materialSub,
       pcdGrade,
       file_url,
     ]);
