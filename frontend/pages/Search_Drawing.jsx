@@ -54,7 +54,7 @@ const Search_Drawing = () => {
       <Navbar />
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center mt-5"
+        className="flex flex-col items-center justify-center pt-24"
       >
         <div className="w-full max-w-[700px] bg-white px-8 md:px-32 xl:px-28 rounded-xl">
           <div className="space-y-5 w-full">

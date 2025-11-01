@@ -14,7 +14,7 @@ const Homepage = () => {
     <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
       <Navbar />
 
-      <div className="md:mt-14 py-10">
+      <div className=" py-40 md:py-32">
         <div className="grid grid-cols-2 md:grid-cols-2 gap-10 max-w-2xl mx-5 md:mx-auto ">
           {card.map((item, index) => (
             <motion.div

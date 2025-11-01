@@ -84,175 +84,106 @@ const EndMill = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF]">
+    <>
       <Navbar />
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-7xl mx-auto mt-5 px-8 md:px-52 xl:px-40 rounded-xl"
-      >
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full">
-          <div className="space-y-4 w-full">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Customer Name
-              </label>
-              <input
-                type="text"
-                name="customerName"
-                value={form.customerName}
-                onChange={handleChange}
-                required
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 focus:border-[#0B4EA2] text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={handleChange}
-                onClick={(e) => e.target.showPicker()}
-                required
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 focus:border-[#0B4EA2] text-gray-700 cursor-pointer"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Drawing No.
-              </label>
-              <input
-                type="text"
-                name="drawingNo"
-                value={form.drawingNo}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Rev.
-              </label>
-              <input
-                type="text"
-                name="rev"
-                value={form.rev}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Customer Part No.
-              </label>
-              <input
-                type="text"
-                name="customerPart"
-                value={form.customerPart}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <input
-                type="text"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Material
-              </label>
-              <input
-                type="text"
-                name="materialMain"
-                value={form.materialMain}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                PCD Grade
-              </label>
-              <input
-                type="text"
-                name="pcdGrade"
-                value={form.pcdGrade}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center w-full xl:ml-20">
-            <div className="flex flex-col items-center justify-center w-full max-w-[500px] h-80 border-2 border-dashed border-gray-400 bg-[#FAFAFA] rounded-md p-6 relative">
-              {preview && (
-                <div className="mb-4 text-center">
-                  {fileType === "image" ? (
-                    <img
-                      src={preview}
-                      alt="Preview"
-                      className="w-60 h-40 object-contain mx-auto rounded-md"
-                    />
-                  ) : fileType === "pdf" ? (
-                    <div className="flex flex-col items-center justify-center text-red-500">
-                      <FaFilePdf size={40} />
-                      <p className="text-[#1C70D3] text-base font-semibold mt-3">
-                        {preview}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 text-sm">
-                      Unsupported file type
-                    </p>
-                  )}
-                </div>
-              )}
-
-              <input
-                type="file"
-                name="file"
-                onChange={handleChange}
-                accept="image/*,application/pdf"
-                className="hidden"
-                id="fileInput"
-              />
-              <label
-                htmlFor="fileInput"
-                className="px-5 py-2 bg-[#1C70D3] text-white rounded-full cursor-pointer hover:bg-[#0A4EA3] transition"
-              >
-                Add file
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-center xl:mt-4 py-4">
-          <button
-            type="submit"
-            className="px-6 py-2 bg-[#1C70D3] text-white rounded-full hover:bg-[#0A4EA3] transition cursor-pointer"
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
+        <div className="flex justify-center py-10 px-6 ">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-14 mt-20"
           >
-            Submit
-          </button>
+            <h1 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
+              End Mill Drawing
+            </h1>
+
+            <div className="grid grid-cols-2 gap-5">
+              {[
+                ["Customer Name", "customerName"],
+                ["Date", "date", "date"],
+                ["Drawing No.", "drawingNo"],
+                ["Rev", "rev"],
+                ["Customer  No.", "customerPart"],
+                ["Description", "description"],
+                ["Material", "materialMain"],
+                ["PCD Grade", "pcdGrade"],
+                ["Coolant Hole", "CoolantHole"],
+                ["Flute", "Flute"],
+                ["Coating", "Cloating"],
+                ["Shank Material", "ShankMaterial"],
+                ["Shank Shape", "ShankShape"],
+              ].map(([label, name, type = "text"]) => (
+                <div key={name} className="flex flex-col">
+                  <label className="block text-gray-700 font-semibold mb-1">
+                    {label}
+                  </label>
+                  <input
+                    type={type}
+                    name={name}
+                    value={form[name]}
+                    onChange={handleChange}
+                    required={["customerName", "date"].includes(name)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm  focus:border-[#1C70D3] transition"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 flex flex-col items-center">
+              <div className="w-full max-w-md h-80 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
+                {preview ? (
+                  <div className="mb-4 text-center">
+                    {fileType === "image" ? (
+                      <img
+                        src={preview}
+                        alt="Preview"
+                        className="w-60 h-40 object-contain mx-auto rounded-md shadow-md"
+                      />
+                    ) : fileType === "pdf" ? (
+                      <div className="flex flex-col items-center text-red-600">
+                        <FaFilePdf size={50} />
+                        <p className="text-blue-600 mt-3 font-medium">
+                          {preview}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-sm">
+                        Unsupported file type
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 italic mb-3">No file selected</p>
+                )}
+
+                <input
+                  type="file"
+                  name="file"
+                  onChange={handleChange}
+                  accept="image/*,application/pdf"
+                  className="hidden"
+                  id="fileInput"
+                />
+                <label
+                  htmlFor="fileInput"
+                  className="px-6 py-2 bg-[#1C70D3] text-white rounded-full shadow hover:shadow-lg hover:bg-[#0A4EA3] transition cursor-pointer"
+                >
+                  Upload File
+                </label>
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-10">
+              <button
+                type="submit"
+                className="px-10 py-3 bg-[#1C70D3] text-white rounded-full text-lg font-medium shadow-md hover:bg-[#0A4EA3] hover:shadow-xl transition"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
+      </div>
+    </>
   );
 };
 

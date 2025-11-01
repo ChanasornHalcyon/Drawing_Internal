@@ -58,7 +58,6 @@ app.post("/verifyUser", async (req, res) => {
 app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
     const {
-      employee_drawing,
       customerName,
       date,
       drawingNo,
@@ -67,17 +66,23 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       description,
       materialMain,
       pcdGrade,
+      CoolantHole,
+      Flute,
+      Cloating,
+      ShankMaterial,
+      ShankShape,
     } = req.body;
 
     let file_url = null;
 
     if (req.file) {
       const fileName = `${req.file.originalname}`;
+
       const { data, error } = await supabase.storage
         .from("drawings")
         .upload(fileName, req.file.buffer, {
           contentType: req.file.mimetype,
-          upsert: false,
+          upsert: true,
         });
 
       if (error) throw error;
@@ -91,13 +96,12 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
 
     const sql = `
       INSERT INTO drawing_records 
-      (employee_drawing, customer_name, date, drawing_no, rev, customer_part_no, description,
-       material_main, pcd_grade, file_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (customer_name, date, drawing_no, rev, customer_part_no, description,
+       material_main, pcd_grade, coolant_hole, flute, coating, shank_material, shank_shape, file_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
-      employee_drawing,
       customerName,
       date,
       drawingNo,
@@ -106,12 +110,17 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       description,
       materialMain,
       pcdGrade,
+      CoolantHole,
+      Flute,
+      Cloating,
+      ShankMaterial,
+      ShankShape,
       file_url,
     ]);
 
     res.json({
       success: true,
-      message: "Drawing added and uploaded to Supabase!",
+      message: " Drawing added successfully!",
     });
   } catch (err) {
     console.error("pushData Error:", err);

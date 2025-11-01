@@ -27,7 +27,7 @@ const Data = () => {
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
-      <div className="container mx-auto max-w-6xl mt-10">
+      <div className="container mx-auto max-w-[1450px] pt-32">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm text-gray-700 border border-gray-900 rounded-xl shadow overflow-hidden">
             <thead className="bg-[#1C70D3] text-white text-left">
@@ -40,6 +40,11 @@ const Data = () => {
                 <th className="px-4 py-2 border">Material</th>
                 <th className="px-4 py-2 border">PCD Grade</th>
                 <th className="px-4 py-2 border">Rev</th>
+                <th className="px-4 py-2 border">Coolant Hole</th>
+                <th className="px-4 py-2 border">Flute</th>
+                <th className="px-4 py-2 border">Coating</th>
+                <th className="px-4 py-2 border">Shank Material</th>
+                <th className="px-4 py-2 border">Shank Shape</th>
                 <th className="px-4 py-2 border text-center">Drawing</th>
               </tr>
             </thead>
@@ -71,13 +76,27 @@ const Data = () => {
                       {item.customer_part_no}
                     </td>
                     <td className="px-4 py-2 border text-black">
-                      {item.material_main} , {item.material_sub}
+                      {item.material_main}
                     </td>
                     <td className="px-4 py-2 border text-black">
                       {item.pcd_grade}
                     </td>
                     <td className="px-4 py-2 border text-black">{item.rev}</td>
-
+                    <td className="px-4 py-2 border text-black">
+                      {item.coolant_hole}
+                    </td>
+                    <td className="px-4 py-2 border text-black">
+                      {item.flute}
+                    </td>
+                    <td className="px-4 py-2 border text-black">
+                      {item.coating}
+                    </td>
+                    <td className="px-4 py-2 border text-black">
+                      {item.shank_material}
+                    </td>
+                    <td className="px-4 py-2 border text-black">
+                      {item.shank_shape}
+                    </td>
                     <td className="px-4 py-2 border text-center">
                       {item.file_url ? (
                         <a
@@ -97,7 +116,7 @@ const Data = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center py-4 text-gray-500">
+                  <td colSpan="14" className="text-center py-4 text-gray-500">
                     ไม่มีข้อมูลในระบบ
                   </td>
                 </tr>
