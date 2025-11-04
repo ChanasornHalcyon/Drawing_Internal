@@ -26,7 +26,7 @@ const upload = multer({
 let db;
 const initMySQL = async () => {
   db = await mysql.createConnection({
-    host: "localhost",
+    host: "localhost",  
     user: "root",
     password: "khemnak1530",
     database: "halcyon_internal",

@@ -33,7 +33,7 @@ const Navbar = () => {
         <img
           onClick={goHomePage}
           className="w-14 cursor-pointer ml-4"
-          src="ht-logo.PNG"
+          src="ht-logo.png"
           alt="HT"
         />
         <span className="text-black hidden lg:flex text-xl font-bold">
@@ -42,14 +42,14 @@ const Navbar = () => {
       </div>
 
       {isIndexPage ? (
-        <button className="hidden md:flex px-3 py-1 bg-white text-[#FF1493] rounded-md hover:bg-[#FF1493] hover:text-white">
+        <button className=" hidden md:flex px-3 py-1 bg-white text-[#FF1493] rounded-md hover:bg-[#FF1493] hover:text-white">
           Sign Up
         </button>
       ) : username ? (
         <div className="relative inline-block text-left">
           <button
             onClick={() => setIsDropdownOpen((prev) => !prev)}
-            className="text-black font-medium flex items-center gap-2 mr-2 hover:text-gray-700 transition"
+            className="text-black font-medium flex items-center gap-2 mr-2 hover:text-gray-700 transition cursor-pointer"
           >
             <FaUserCircle className="text-2xl text-black" />
             <span className="text-black text-xl">{username}</span>

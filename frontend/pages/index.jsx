@@ -31,7 +31,7 @@ const Index = () => {
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
       <Navbar />
-      <div className="flex justify-center items-center mt-10">
+      <div className="flex justify-center items-center pt-28">
         <div className="bg-white border border-gray-300 shadow-lg rounded-xl p-8 w-[350px] md:w-[400px]">
           <form className="flex flex-col gap-4" onSubmit={login}>
             <div>
