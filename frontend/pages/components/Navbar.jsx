@@ -30,12 +30,12 @@ const Navbar = () => {
                  p-5 flex justify-between items-center shadow-md"
     >
       <div className="flex items-center gap-3">
-        <img
+        {/* <img
           onClick={goHomePage}
           className="w-14 cursor-pointer ml-4"
           src="ht-logo.png"
           alt="HT"
-        />
+        /> */}
         <span className="text-black hidden lg:flex text-xl font-bold">
           Drawing Database System
         </span>
