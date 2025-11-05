@@ -5,7 +5,6 @@ import { FiLogOut } from "react-icons/fi";
 
 const Navbar = () => {
   const router = useRouter();
-  const isIndexPage = router.pathname === "/";
   const [username, setUsername] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -41,11 +40,7 @@ const Navbar = () => {
         </span>
       </div>
 
-      {isIndexPage ? (
-        <button className=" hidden md:flex px-3 py-1 bg-white text-[#FF1493] rounded-md hover:bg-[#FF1493] hover:text-white">
-          Sign Up
-        </button>
-      ) : username ? (
+      {username && (
         <div className="relative inline-block text-left">
           <button
             onClick={() => setIsDropdownOpen((prev) => !prev)}
@@ -67,7 +62,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
-      ) : null}
+      )}
     </nav>
   );
 };
