@@ -2,31 +2,37 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
 const multer = require("multer");
-const { createClient } = require("@supabase/supabase-js");
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, file.originalname),
+});
 
 const upload = multer({
-  storage: multer.memoryStorage(),
-  fileFilter: (req, file, res) => {
+  storage,
+  fileFilter: (req, file, cb) => {
     const allowed = ["image/jpeg", "image/png", "application/pdf"];
-    if (allowed.includes(file.mimetype)) res(null, true);
-    else res(new Error("Only images or PDFs are allowed!"));
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("Only images or PDFs are allowed!"));
   },
 });
 
 let db;
 const initMySQL = async () => {
   db = await mysql.createConnection({
-    host: "localhost",  
+    host: "localhost",
     user: "root",
     password: "khemnak1530",
     database: "halcyon_internal",
@@ -42,15 +48,11 @@ app.post("/verifyUser", async (req, res) => {
       [username, password]
     );
     if (rows.length > 0) {
-      res.json({
-        success: true,
-        user: rows[0],
-      });
+      res.json({ success: true, user: rows[0] });
     } else {
       res.json({ success: false });
     }
   } catch (err) {
-    console.error("verifyUser Error:", err);
     res.status(500).json({ success: false });
   }
 });
@@ -74,24 +76,8 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
     } = req.body;
 
     let file_url = null;
-
     if (req.file) {
-      const fileName = `${req.file.originalname}`;
-
-      const { data, error } = await supabase.storage
-        .from("drawings")
-        .upload(fileName, req.file.buffer, {
-          contentType: req.file.mimetype,
-          upsert: true,
-        });
-
-      if (error) throw error;
-
-      const { data: publicURL } = supabase.storage
-        .from("drawings")
-        .getPublicUrl(fileName);
-
-      file_url = publicURL.publicUrl;
+      file_url = `/uploads/${req.file.originalname}`;
     }
 
     const sql = `
@@ -118,15 +104,13 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       file_url,
     ]);
 
-    res.json({
-      success: true,
-      message: " Drawing added successfully!",
-    });
+    res.json({ success: true, message: "Drawing added successfully!" });
   } catch (err) {
-    console.error("pushData Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/getAllData", async (req, res) => {
   try {
@@ -135,7 +119,6 @@ app.get("/getAllData", async (req, res) => {
     );
     res.json({ success: true, data: rows });
   } catch (err) {
-    console.error("getAllData error:", err);
     res.status(500).json({ success: false });
   }
 });
@@ -159,43 +142,35 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND customer_name LIKE ?";
       params.push(`%${customerName}%`);
     }
-
     if (date) {
       sql += " AND DATE(date) = ?";
       params.push(date);
     }
-
     if (drawingNo) {
       sql += " AND drawing_no LIKE ?";
       params.push(`%${drawingNo}%`);
     }
-
     if (customerPart) {
       sql += " AND customer_part_no LIKE ?";
       params.push(`%${customerPart}%`);
     }
-
     if (description) {
       sql += " AND description LIKE ?";
       params.push(`%${description}%`);
     }
-
     if (materialMain) {
       sql += " AND material_main LIKE ?";
       params.push(`%${materialMain}%`);
     }
-
     if (pcdGrade) {
       sql += " AND pcd_grade LIKE ?";
       params.push(`%${pcdGrade}%`);
     }
 
     sql += " ORDER BY id ASC";
-
     const [rows] = await db.query(sql, params);
     res.json({ success: true, data: rows });
   } catch (err) {
-    console.error("searchDrawing Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
