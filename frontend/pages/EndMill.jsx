@@ -113,7 +113,7 @@ const EndMill = () => {
                 ["Shank Shape", "ShankShape"],
               ].map(([label, name, type = "text"]) => (
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 font-semibold mb-1">
+                  <label className="block text-gray-700 text-[12px] font-semibold mb-1">
                     {label}
                   </label>
                   <input

@@ -48,14 +48,6 @@ const Drill = () => {
       Object.entries(form).forEach(([key, value]) =>
         formData.append(key, value)
       );
-
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        alert("ไม่พบข้อมูลผู้ใช้ในระบบ กรุณา login ใหม่");
-        return;
-      }
-      formData.append("employee_drawing", userId);
-
       const res = await axios.post("http://localhost:4000/pushData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -117,8 +109,9 @@ const Drill = () => {
                 ["Shank Material", "ShankMaterial"],
                 ["Shank Shape", "ShankShape"],
               ].map(([label, name, type = "text"]) => (
+
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 text-sm md:text-lg font-semibold mb-1">
+                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1 text-nowrap">
                     {label}
                   </label>
                   <input

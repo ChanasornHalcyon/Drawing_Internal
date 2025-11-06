@@ -50,7 +50,7 @@ const Search_Drawing = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-[1920px] min-h-screen bg-white">
+    <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
       <Navbar />
       <form
         onSubmit={handleSubmit}
@@ -59,7 +59,7 @@ const Search_Drawing = () => {
         <div className="w-full max-w-[700px] bg-white px-8 md:px-32 xl:px-28 rounded-xl">
           <div className="space-y-5 w-full">
             <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1 ">
                 Customer Name
               </label>
               <input
@@ -128,32 +128,26 @@ const Search_Drawing = () => {
               <label className="block text-lg font-medium text-gray-700 mb-1">
                 Material
               </label>
-              <select
+              <input
+                type="text"
                 name="materialMain"
                 value={form.materialMain}
                 onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-2 py-2 text-black"
-              >
-                <option value="">Drop down</option>
-                <option value="VCMT110302">VCMT110302</option>
-                <option value="DCMT070204">DCMT070204</option>
-              </select>
+                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
+              />
             </div>
 
             <div>
               <label className="block text-lg font-medium text-gray-700 mb-1">
                 PCD Grade
               </label>
-              <select
+              <input
+                type="text"
                 name="pcdGrade"
                 value={form.pcdGrade}
                 onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-2 py-2 text-black"
-              >
-                <option value="">Drop down</option>
-                <option value="Standard">Standard</option>
-                <option value="High Precision">High Precision</option>
-              </select>
+                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
+              />
             </div>
           </div>
 

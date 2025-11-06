@@ -56,7 +56,7 @@ const Data = () => {
                     key={item.id}
                     className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
                   >
-                    <td className="px-4 py-2 border text-black">
+                    <td className="px-4 py-2 border text-black text-nowrap">
                       {item.date
                         ? new Date(item.date).toLocaleDateString("sv-SE", {
                             timeZone: "Asia/Bangkok",
