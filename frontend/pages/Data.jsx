@@ -39,9 +39,13 @@ const Data = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const storedResults = localStorage.getItem("searchResults");
+    if (storedResults) {
+      setData(JSON.parse(storedResults));
+    } else {
+      fetchData();
+    }
   }, []);
-
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />

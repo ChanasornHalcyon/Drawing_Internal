@@ -139,41 +139,56 @@ app.post("/searchDrawing", async (req, res) => {
     const params = [];
 
     if (customerName) {
-      sql += " AND customer_name LIKE ?";
+      sql += " AND LOWER(customer_name) LIKE LOWER(?)";
       params.push(`%${customerName}%`);
     }
-    if (date) {
-      sql += " AND DATE(date) = ?";
-      params.push(date);
-    }
+
+   if (date) {
+  sql += " AND DATE(`date`) = ?";
+  params.push(date);
+}
+
     if (drawingNo) {
-      sql += " AND drawing_no LIKE ?";
+      sql += " AND LOWER(drawing_no) LIKE LOWER(?)";
       params.push(`%${drawingNo}%`);
     }
+
     if (customerPart) {
-      sql += " AND customer_part_no LIKE ?";
+      sql += " AND LOWER(customer_part_no) LIKE LOWER(?)";
       params.push(`%${customerPart}%`);
     }
+
     if (description) {
-      sql += " AND description LIKE ?";
+      sql += " AND LOWER(description) LIKE LOWER(?)";
       params.push(`%${description}%`);
     }
+
     if (materialMain) {
-      sql += " AND material_main LIKE ?";
+      sql += " AND LOWER(material_main) LIKE LOWER(?)";
       params.push(`%${materialMain}%`);
     }
+
     if (pcdGrade) {
-      sql += " AND pcd_grade LIKE ?";
+      sql += " AND LOWER(pcd_grade) LIKE LOWER(?)";
       params.push(`%${pcdGrade}%`);
     }
 
     sql += " ORDER BY id ASC";
+
+    console.log("🧩 SQL:", sql, params); // 👉 debug ก่อน query จริง
     const [rows] = await db.query(sql, params);
+
+    if (rows.length === 0) {
+      return res.json({ success: false, message: "ไม่พบข้อมูลตามเงื่อนไข" });
+    }
+
     res.json({ success: true, data: rows });
   } catch (err) {
+    console.error("Search error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 
 app.put("/updateDrawing/:id", async (req, res) => {
   const id = req.params.id;
