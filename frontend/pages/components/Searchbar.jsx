@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/router";
-import ModalAddFile from "./ModalAddFile";
+import ModalAddFile from "./ModalEditFile";
 import axios from "axios";
 
 const Searchbar = ({ fetchDataNPTR, fetchDataNPTA }) => {

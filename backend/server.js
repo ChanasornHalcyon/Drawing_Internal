@@ -175,6 +175,74 @@ app.post("/searchDrawing", async (req, res) => {
   }
 });
 
+app.put("/updateDrawing/:id", async (req, res) => {
+  const id = req.params.id;
+  const {
+    customerName,
+    date,
+    drawingNo,
+    rev,
+    customerPart,
+    description,
+    materialMain,
+    pcdGrade,
+    CoolantHole,
+    Flute,
+    Cloating,
+    ShankMaterial,
+    ShankShape,
+  } = req.body;
+
+  try {
+    const formattedDate = date
+      ? new Date(date).toISOString().split("T")[0]
+      : null;
+
+    const sql = `
+      UPDATE drawing_records
+      SET
+        customer_name   = COALESCE(?, customer_name),
+        date            = COALESCE(?, date),
+        drawing_no      = COALESCE(?, drawing_no),
+        rev             = COALESCE(?, rev),
+        customer_part_no= COALESCE(?, customer_part_no),
+        description     = COALESCE(?, description),
+        material_main   = COALESCE(?, material_main),
+        pcd_grade       = COALESCE(?, pcd_grade),
+        coolant_hole    = COALESCE(?, coolant_hole),
+        flute           = COALESCE(?, flute),
+        coating         = COALESCE(?, coating),
+        shank_material  = COALESCE(?, shank_material),
+        shank_shape     = COALESCE(?, shank_shape)
+      WHERE id = ?
+    `;
+
+    await db.query(sql, [
+      customerName || null,
+      formattedDate,
+      drawingNo || null,
+      rev || null,
+      customerPart || null,
+      description || null,
+      materialMain || null,
+      pcdGrade || null,
+      CoolantHole || null,
+      Flute || null,
+      Cloating || null,
+      ShankMaterial || null,
+      ShankShape || null,
+      id,
+    ]);
+
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.error("Update error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 const PORT = 4000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)
