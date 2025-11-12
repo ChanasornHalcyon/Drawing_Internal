@@ -2,14 +2,23 @@ import React from "react";
 import { useRouter } from "next/router";
 import Navbar from "./components/Navbar";
 import { motion } from "framer-motion";
-
+import { useEffect, useState } from "react";
 const Homepage = () => {
+  const [role, setRole] = useState("");
   const router = useRouter();
   const card = ["Add_Drawing", "Search_Drawing"];
   const clickCard = (path) => {
-    router.push(`/${path}`);
+    router.push({
+      pathname: `/${path}`,
+      query: { role },
+    });
   };
 
+  useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    console.log(" Role from localStorage:", userRole);
+    setRole(userRole || "");
+  }, []);
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
       <Navbar />

@@ -42,18 +42,15 @@ initMySQL();
 
 app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
-  try {
-    const [rows] = await db.query(
-      "SELECT id, username, password FROM user WHERE username = ? AND password = ?",
-      [username, password]
-    );
-    if (rows.length > 0) {
-      res.json({ success: true, user: rows[0] });
-    } else {
-      res.json({ success: false });
-    }
-  } catch (err) {
-    res.status(500).json({ success: false });
+  const [rows] = await db.query(
+    "SELECT id, username, role FROM user WHERE username=? AND password=?",
+    [username, password]
+  );
+
+  if (rows.length > 0) {
+    res.json({ success: true, user: rows[0] });
+  } else {
+    res.json({ success: false });
   }
 });
 

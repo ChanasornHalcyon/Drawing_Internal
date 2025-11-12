@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import ModalEditFile from "./components/ModalEditFile";
-
+import { FaFilePdf } from "react-icons/fa6";
 const Data = () => {
   const [data, setData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
+  const [role, setRole] = useState("");
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:4000/getAllData");
+      console.log(res);
       setData(res.data.data);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -40,12 +41,16 @@ const Data = () => {
 
   useEffect(() => {
     const storedResults = localStorage.getItem("searchResults");
+    const userRole = localStorage.getItem("role");
+    console.log("role from localStorage:", userRole);
+    setRole(userRole || "");
     if (storedResults) {
       setData(JSON.parse(storedResults));
     } else {
       fetchData();
     }
   }, []);
+
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
@@ -68,7 +73,9 @@ const Data = () => {
                 <th className="px-4 py-2 border">Shank Material</th>
                 <th className="px-4 py-2 border">Shank Shape</th>
                 <th className="px-4 py-2 border text-center">Drawing</th>
-                <th className="px-4 py-2 border text-center">Action</th>
+                {role === "Engineers" && (
+                  <th className="px-4 py-2 border text-center">Action</th>
+                )}
               </tr>
             </thead>
 
@@ -124,39 +131,43 @@ const Data = () => {
                     <td className="px-4 py-2 border text-center">
                       {item.file_url ? (
                         <a
-                          href={`http://localhost:5000${item.file_url}`}
+                          href={`http://localhost:4000${item.file_url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center hover:scale-110 transition-transform"
-                        ></a>
+                        >
+                          <FaFilePdf className="text-red-600 text-2xl" />
+                        </a>
                       ) : (
                         <span className="text-gray-400">-</span>
                       )}
                     </td>
 
-                    <td className="px-4 py-2 border text-center">
-                      <button
-                        onClick={() => handleEditClick(item)}
-                        className=" cursor-pointer flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm border border-blue-200"
-                        title="Edit"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                    {role === "Engineers" && (
+                      <td className="px-4 py-2 border text-center">
+                        <button
+                          onClick={() => handleEditClick(item)}
+                          className="cursor-pointer flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm border border-blue-200"
+                          title="Edit"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M11 5h2m3 0h3m-3 0a2 2 0 012 2v3m-2 8H7a2 2 0 01-2-2V7a2 2 0 012-2h3m6 12l5 5M13 19l5 5"
-                          />
-                        </svg>
-                        <span className="text-sm font-medium">Edit</span>
-                      </button>
-                    </td>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M11 5h2m3 0h3m-3 0a2 2 0 012 2v3m-2 8H7a2 2 0 01-2-2V7a2 2 0 012-2h3m6 12l5 5M13 19l5 5"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium">Edit</span>
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
