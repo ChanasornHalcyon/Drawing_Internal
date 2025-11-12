@@ -176,7 +176,7 @@ const Data = () => {
           onClose={() => setShowModal(false)}
           onSubmit={handleSubmitEdit}
           submitting={submitting}
-          initialData={selectedItem}
+          sendData={selectedItem}
         />
       )}
     </div>

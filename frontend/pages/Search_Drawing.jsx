@@ -9,10 +9,16 @@ const Search_Drawing = () => {
     customerName: "",
     date: "",
     drawingNo: "",
+    rev: "",
     customerPart: "",
     description: "",
     materialMain: "",
     pcdGrade: "",
+    coolantHole: "",
+    flute: "",
+    cloating: "",
+    shankMaterial: "",
+    shankShape: "",
   });
 
   const handleChange = (e) => {
@@ -26,15 +32,22 @@ const Search_Drawing = () => {
       !form.customerName &&
       !form.date &&
       !form.drawingNo &&
+      !form.rev &&
       !form.customerPart &&
       !form.description &&
       !form.materialMain &&
-      !form.pcdGrade
+      !form.pcdGrade &&
+      !form.coolantHole &&
+      !form.flute &&
+      !form.cloating &&
+      !form.shankMaterial &&
+      !form.shankShape
     ) {
       localStorage.removeItem("searchResults");
       router.push("/Data");
       return;
     }
+
     try {
       console.log("Form before submit:", form);
       const res = await axios.post("http://localhost:4000/searchDrawing", form);
@@ -50,118 +63,66 @@ const Search_Drawing = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
-      <Navbar />
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center pt-24"
-      >
-        <div className="w-full max-w-[700px] bg-white px-8 md:px-32 xl:px-28 rounded-xl">
-          <div className="space-y-5 w-full">
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1 ">
-                Customer Name
-              </label>
-              <input
-                type="text"
-                name="customerName"
-                value={form.customerName}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 focus:border-[#0B4EA2] text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
-                Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={handleChange}
-                onClick={(e) => e.target.showPicker()}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-gray-700 cursor-pointer"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
-                Drawing No.
-              </label>
-              <input
-                type="text"
-                name="drawingNo"
-                value={form.drawingNo}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
-                Customer Part No.
-              </label>
-              <input
-                type="text"
-                name="customerPart"
-                value={form.customerPart}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <input
-                type="text"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
-                Material
-              </label>
-              <input
-                type="text"
-                name="materialMain"
-                value={form.materialMain}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium text-gray-700 mb-1">
-                PCD Grade
-              </label>
-              <input
-                type="text"
-                name="pcdGrade"
-                value={form.pcdGrade}
-                onChange={handleChange}
-                className="block w-full border border-gray-400 rounded-md px-3 py-2 text-black"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-8">
-            <button
-              type="submit"
-              className="px-6 py-2 bg-[#1C70D3] text-white rounded-full hover:bg-[#0A4EA3] transition cursor-pointer"
+    <>
+      <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
+        <Navbar />
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
+          <div className="flex justify-center py-10 px-6">
+            <form
+              onSubmit={handleSubmit}
+              className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-14 mt-20"
             >
-              Search
-            </button>
+              <h1 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
+                Search Drawing
+              </h1>
+
+              <div className="grid grid-cols-2 gap-5">
+                {[
+                  ["Customer Name", "customerName"],
+                  ["Date", "date", "date"],
+                  ["Drawing No.", "drawingNo"],
+                  ["Rev", "rev"],
+                  ["Customer Part No.", "customerPart"],
+                  ["Description", "description"],
+                  ["Material", "materialMain"],
+                  ["PCD Grade", "pcdGrade"],
+                  ["Coolant Hole", "coolantHole"],
+                  ["Flute", "flute"],
+                  ["Coating", "cloating"],
+                  ["Shank Material", "shankMaterial"],
+                  ["Shank Shape", "shankShape"],
+                ].map(([label, name, type = "text"]) => (
+                  <div key={name} className="flex flex-col">
+                    <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1 text-nowrap">
+                      {label}
+                    </label>
+                    <input
+                      type={type}
+                      name={name}
+                      value={form[name]}
+                      onChange={handleChange}
+                      onClick={
+                        type === "date" ? (e) => e.target.showPicker() : null
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-center mt-10">
+                <button
+                  type="submit"
+                  className="px-10 py-3 bg-[#1C70D3] text-white rounded-full text-lg font-medium shadow-md hover:bg-[#0A4EA3] hover:shadow-xl transition cursor-pointer"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </>
   );
 };
 

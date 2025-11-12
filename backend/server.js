@@ -129,10 +129,16 @@ app.post("/searchDrawing", async (req, res) => {
       customerName,
       date,
       drawingNo,
+      rev,
       customerPart,
       description,
       materialMain,
       pcdGrade,
+      coolantHole,
+      flute,
+      cloating,
+      shankMaterial,
+      shankShape,
     } = req.body;
 
     let sql = "SELECT * FROM drawing_records WHERE 1=1";
@@ -143,10 +149,10 @@ app.post("/searchDrawing", async (req, res) => {
       params.push(`%${customerName}%`);
     }
 
-   if (date) {
-  sql += " AND DATE(`date`) = ?";
-  params.push(date);
-}
+    if (date) {
+      sql += " AND DATE(`date`) = ?";
+      params.push(date);
+    }
 
     if (drawingNo) {
       sql += " AND LOWER(drawing_no) LIKE LOWER(?)";
@@ -172,10 +178,33 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND LOWER(pcd_grade) LIKE LOWER(?)";
       params.push(`%${pcdGrade}%`);
     }
+    if (coolantHole) {
+      sql += " AND LOWER(coolant_hole) LIKE LOWER(?)";
+      params.push(`%${coolantHole}%`);
+    }
+
+    if (flute) {
+      sql += " AND LOWER(flute) LIKE LOWER(?)";
+      params.push(`%${flute}%`);
+    }
+
+    if (cloating) {
+      sql += " AND LOWER(coating) LIKE LOWER(?)";
+      params.push(`%${cloating}%`);
+    }
+
+    if (shankMaterial) {
+      sql += " AND LOWER(shank_material) LIKE LOWER(?)";
+      params.push(`%${shankMaterial}%`);
+    }
+
+    if (shankShape) {
+      sql += " AND LOWER(shank_shape) LIKE LOWER(?)";
+      params.push(`%${shankShape}%`);
+    }
 
     sql += " ORDER BY id ASC";
 
-    console.log("🧩 SQL:", sql, params); // 👉 debug ก่อน query จริง
     const [rows] = await db.query(sql, params);
 
     if (rows.length === 0) {
@@ -189,23 +218,22 @@ app.post("/searchDrawing", async (req, res) => {
   }
 });
 
-
 app.put("/updateDrawing/:id", async (req, res) => {
   const id = req.params.id;
   const {
     customerName,
-    date,
-    drawingNo,
-    rev,
-    customerPart,
-    description,
-    materialMain,
-    pcdGrade,
-    CoolantHole,
-    Flute,
-    Cloating,
-    ShankMaterial,
-    ShankShape,
+      date,
+      drawingNo,
+      rev,
+      customerPart,
+      description,
+      materialMain,
+      pcdGrade,
+      CoolantHole,
+      Flute,
+      Cloating,
+      ShankMaterial,
+      ShankShape,
   } = req.body;
 
   try {

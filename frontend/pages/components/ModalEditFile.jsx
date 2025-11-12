@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const ModalEditFile = ({ onClose, onSubmit, submitting, initialData = {} }) => {
+const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
   const [form, setForm] = useState({
     date: "",
     drawing_no: "",
@@ -19,24 +19,24 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, initialData = {} }) => {
   });
 
   useEffect(() => {
-    if (initialData) {
+    if (sendData) {
       setForm({
-        date: initialData.date || "",
-        drawing_no: initialData.drawing_no || "",
-        description: initialData.description || "",
-        customer_name: initialData.customer_name || "",
-        customer_part_no: initialData.customer_part_no || "",
-        material_main: initialData.material_main || "",
-        pcd_grade: initialData.pcd_grade || "",
-        rev: initialData.rev || "",
-        coolant_hole: initialData.coolant_hole || "",
-        flute: initialData.flute || "",
-        coating: initialData.coating || "",
-        shank_material: initialData.shank_material || "",
-        shank_shape: initialData.shank_shape || "",
+        date: sendData.date || "",
+        drawing_no: sendData.drawing_no || "",
+        description: sendData.description || "",
+        customer_name: sendData.customer_name || "",
+        customer_part_no: sendData.customer_part_no || "",
+        material_main: sendData.material_main || "",
+        pcd_grade: sendData.pcd_grade || "",
+        rev: sendData.rev || "",
+        coolant_hole: sendData.coolant_hole || "",
+        flute: sendData.flute || "",
+        coating: sendData.coating || "",
+        shank_material: sendData.shank_material || "",
+        shank_shape: sendData.shank_shape || "",
       });
     }
-  }, [initialData]);
+  }, [sendData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,7 +103,7 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, initialData = {} }) => {
               Cancel
             </button>
             <button
-              onClick={() => onSubmit(form, initialData.id)}
+              onClick={() => onSubmit(form, sendData.id)}
               disabled={submitting}
               className="px-4 py-2 rounded-lg bg-[#3698FC] text-white hover:bg-blue-600 cursor-pointer"
             >
