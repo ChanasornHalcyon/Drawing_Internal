@@ -16,7 +16,6 @@ const Homepage = () => {
 
   useEffect(() => {
     const userRole = localStorage.getItem("role");
-    console.log(" Role from localStorage:", userRole);
     setRole(userRole || "");
   }, []);
   return (

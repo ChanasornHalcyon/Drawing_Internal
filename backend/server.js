@@ -65,6 +65,8 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       description,
       materialMain,
       pcdGrade,
+      price,
+      cost,
       CoolantHole,
       Flute,
       Cloating,
@@ -80,8 +82,8 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
     const sql = `
       INSERT INTO drawing_records 
       (customer_name, date, drawing_no, rev, customer_part_no, description,
-       material_main, pcd_grade, coolant_hole, flute, coating, shank_material, shank_shape, file_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       material_main, pcd_grade, price, cost, coolant_hole, flute, coating, shank_material, shank_shape, file_url)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
@@ -93,6 +95,8 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       description,
       materialMain,
       pcdGrade,
+      price,
+      cost,
       CoolantHole,
       Flute,
       Cloating,
@@ -103,7 +107,10 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
 
     res.json({ success: true, message: "Drawing added successfully!" });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error(" pushData error:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
   }
 });
 
@@ -155,7 +162,10 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND LOWER(drawing_no) LIKE LOWER(?)";
       params.push(`%${drawingNo}%`);
     }
-
+    if (rev) {
+      sql += " AND LOWER(drawing_no) LIKE LOWER(?)";
+      params.push(`%${rev}%`);
+    }
     if (customerPart) {
       sql += " AND LOWER(customer_part_no) LIKE LOWER(?)";
       params.push(`%${customerPart}%`);
@@ -219,18 +229,18 @@ app.put("/updateDrawing/:id", async (req, res) => {
   const id = req.params.id;
   const {
     customerName,
-      date,
-      drawingNo,
-      rev,
-      customerPart,
-      description,
-      materialMain,
-      pcdGrade,
-      CoolantHole,
-      Flute,
-      Cloating,
-      ShankMaterial,
-      ShankShape,
+    date,
+    drawingNo,
+    rev,
+    customerPart,
+    description,
+    materialMain,
+    pcdGrade,
+    CoolantHole,
+    Flute,
+    Cloating,
+    ShankMaterial,
+    ShankShape,
   } = req.body;
 
   try {

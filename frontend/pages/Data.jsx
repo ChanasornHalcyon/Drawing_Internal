@@ -66,12 +66,18 @@ const Data = () => {
                 <th className="px-4 py-2 border">Customer Part No.</th>
                 <th className="px-4 py-2 border">Material</th>
                 <th className="px-4 py-2 border">PCD Grade</th>
+                {role !== "Engineers" && (
+                  <th className="px-4 py-2 border">Sales Price</th>
+                )}
+                {role !== "Sale" && (
+                  <th className="px-4 py-2 border">Cost</th>
+                )}
                 <th className="px-4 py-2 border">Rev</th>
-                <th className="px-4 py-2 border">Coolant Hole</th>
-                <th className="px-4 py-2 border">Flute</th>
+                {/* <th className="px-4 py-2 border">Coolant Hole</th> */}
+                {/* <th className="px-4 py-2 border">Flute</th>
                 <th className="px-4 py-2 border">Coating</th>
                 <th className="px-4 py-2 border">Shank Material</th>
-                <th className="px-4 py-2 border">Shank Shape</th>
+                <th className="px-4 py-2 border">Shank Shape</th> */}
                 <th className="px-4 py-2 border text-center">Drawing</th>
                 {role === "Engineers" && (
                   <th className="px-4 py-2 border text-center">Action</th>
@@ -111,8 +117,18 @@ const Data = () => {
                     <td className="px-4 py-2 border text-black">
                       {item.pcd_grade}
                     </td>
+                    {role !== "Engineers" && (
+                      <td className="px-4 py-2 border text-black">
+                        {item.price}
+                      </td>
+                    )}
+                    {role !== "Sale" && (
+                      <td className="px-4 py-2 border text-black">
+                        {item.cost}
+                      </td>
+                    )}
                     <td className="px-4 py-2 border text-black">{item.rev}</td>
-                    <td className="px-4 py-2 border text-black">
+                    {/* <td className="px-4 py-2 border text-black">
                       {item.coolant_hole}
                     </td>
                     <td className="px-4 py-2 border text-black">
@@ -126,7 +142,7 @@ const Data = () => {
                     </td>
                     <td className="px-4 py-2 border text-black">
                       {item.shank_shape}
-                    </td>
+                    </td> */}
 
                     <td className="px-4 py-2 border text-center">
                       {item.file_url ? (

@@ -14,6 +14,8 @@ const Drill = () => {
     materialMain: "",
     materialSub: "",
     pcdGrade: "",
+    price: "",
+    cost: "",
     CoolantHole: "",
     Flute: "",
     Cloating: "",
@@ -63,6 +65,8 @@ const Drill = () => {
           description: "",
           materialMain: "",
           pcdGrade: "",
+          price: "",
+          cost: "",
           CoolantHole: "",
           Flute: "",
           Cloating: "",
@@ -103,13 +107,14 @@ const Drill = () => {
                 ["Description", "description"],
                 ["Material", "materialMain"],
                 ["PCD Grade", "pcdGrade"],
+                ["Sales Price", "price"],
+                ["Cost", "cost"],
                 ["Coolant Hole", "CoolantHole"],
                 ["Flute", "Flute"],
                 ["Coating", "Cloating"],
                 ["Shank Material", "ShankMaterial"],
                 ["Shank Shape", "ShankShape"],
               ].map(([label, name, type = "text"]) => (
-
                 <div key={name} className="flex flex-col">
                   <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1 text-nowrap">
                     {label}

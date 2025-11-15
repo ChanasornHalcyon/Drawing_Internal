@@ -14,6 +14,13 @@ const EndMill = () => {
     materialMain: "",
     materialSub: "",
     pcdGrade: "",
+    price: "",
+    cost: "",
+    CoolantHole: "",
+    Flute: "",
+    Cloating: "",
+    ShankMaterial: "",
+    ShankShape: "",
     file: null,
   });
 
@@ -102,10 +109,12 @@ const EndMill = () => {
                 ["Date", "date", "date"],
                 ["Drawing No.", "drawingNo"],
                 ["Rev", "rev"],
-                ["Customer  No.", "customerPart"],
+                ["Customer Part  No.", "customerPart"],
                 ["Description", "description"],
                 ["Material", "materialMain"],
                 ["PCD Grade", "pcdGrade"],
+                ["Sales Price", "price"],
+                ["Cost", "cost"],
                 ["Coolant Hole", "CoolantHole"],
                 ["Flute", "Flute"],
                 ["Coating", "Cloating"],
@@ -188,4 +197,3 @@ const EndMill = () => {
 };
 
 export default EndMill;
-
