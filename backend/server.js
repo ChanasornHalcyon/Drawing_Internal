@@ -14,10 +14,20 @@ const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
-
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, file.originalname),
+  destination: (req, file, cb) => {
+    const customerName =
+      req.body.customerName?.trim().replace(/\s+/g, "_") || "Unknown";
+    const customerFolder = path.join(uploadDir, customerName);
+
+    if (!fs.existsSync(customerFolder)) {
+      fs.mkdirSync(customerFolder, { recursive: true });
+    }
+    cb(null, customerFolder);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
 });
 
 const upload = multer({
@@ -76,13 +86,15 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
 
     let file_url = null;
     if (req.file) {
-      file_url = `/uploads/${req.file.originalname}`;
+      const folder = customerName?.trim().replace(/\s+/g, "_") || "Unknown";
+      file_url = `/uploads/${folder}/${req.file.originalname}`;
     }
 
     const sql = `
       INSERT INTO drawing_records 
       (customer_name, date, drawing_no, rev, customer_part_no, description,
-       material_main, pcd_grade, price, cost, coolant_hole, flute, coating, shank_material, shank_shape, file_url)
+       material_main, pcd_grade, price, cost, coolant_hole, flute, coating,
+       shank_material, shank_shape, file_url)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
@@ -105,12 +117,10 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       file_url,
     ]);
 
-    res.json({ success: true, message: "Drawing added successfully!" });
+    res.json({ success: true, message: "Drawing uploaded successfully!" });
   } catch (err) {
-    console.error(" pushData error:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: err.message });
+    console.error("Upload error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
