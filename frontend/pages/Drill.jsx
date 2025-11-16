@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { FaFilePdf } from "react-icons/fa6";
@@ -26,6 +26,7 @@ const Drill = () => {
 
   const [preview, setPreview] = useState(null);
   const [fileType, setFileType] = useState(null);
+  const [role, setRole] = useState("");
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -84,6 +85,11 @@ const Drill = () => {
     }
   };
 
+  useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -107,8 +113,8 @@ const Drill = () => {
                 ["Description", "description"],
                 ["Material", "materialMain"],
                 ["PCD Grade", "pcdGrade"],
-                ["Sales Price", "price"],
-                ["Cost", "cost"],
+                ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
+                ...(role !== "Sale" ? [["Cost", "cost"]] : []),
                 ["Coolant Hole", "CoolantHole"],
                 ["Flute", "Flute"],
                 ["Coating", "Cloating"],

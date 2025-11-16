@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
 
 const Search_Drawing = () => {
   const router = useRouter();
+  const [role, setRole] = useState("");
   const [form, setForm] = useState({
     customerName: "",
     date: "",
@@ -66,6 +67,11 @@ const Search_Drawing = () => {
     }
   };
 
+  useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
+  }, []);
+
   return (
     <>
       <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
@@ -90,8 +96,8 @@ const Search_Drawing = () => {
                   ["Description", "description"],
                   ["Material", "materialMain"],
                   ["PCD Grade", "pcdGrade"],
-                  ["Sales Price", "price"],
-                  ["Cost", "cost"],
+                  ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
+                  ...(role !== "Sale" ? [["Cost", "cost"]] : []),
                   ["Coolant Hole", "coolantHole"],
                   ["Flute", "flute"],
                   ["Coating", "cloating"],

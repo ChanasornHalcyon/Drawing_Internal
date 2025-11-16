@@ -69,9 +69,7 @@ const Data = () => {
                 {role !== "Engineers" && (
                   <th className="px-4 py-2 border">Sales Price</th>
                 )}
-                {role !== "Sale" && (
-                  <th className="px-4 py-2 border">Cost</th>
-                )}
+                {role !== "Sale" && <th className="px-4 py-2 border">Cost</th>}
                 <th className="px-4 py-2 border">Rev</th>
                 {/* <th className="px-4 py-2 border">Coolant Hole</th> */}
                 {/* <th className="px-4 py-2 border">Flute</th>

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { FaFilePdf } from "react-icons/fa6";
 
-const EndMill = () => {
+const EndMIll = () => {
   const [form, setForm] = useState({
     customerName: "",
     date: "",
@@ -26,17 +26,15 @@ const EndMill = () => {
 
   const [preview, setPreview] = useState(null);
   const [fileType, setFileType] = useState(null);
+  const [role, setRole] = useState("");
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     if (files && files.length > 0) {
       const file = files[0];
       setForm({ ...form, file });
-
       const isImage = file?.type?.startsWith("image/");
       const isPDF = file?.type === "application/pdf";
-
       setFileType(isImage ? "image" : isPDF ? "pdf" : "other");
       setPreview(
         isImage ? URL.createObjectURL(file) : isPDF ? file.name : null
@@ -48,21 +46,11 @@ const EndMill = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const formData = new FormData();
-
-      Object.entries(form).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      const userId = localStorage.getItem("userId");
-      if (userId) {
-        formData.append("employee_drawing", userId);
-      } else {
-        alert(" ไม่พบข้อมูลผู้ใช้ในระบบ กรุณา login ใหม่");
-        return;
-      }
-
+      Object.entries(form).forEach(([key, value]) =>
+        formData.append(key, value)
+      );
       const res = await axios.post("http://localhost:4000/pushData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -78,6 +66,13 @@ const EndMill = () => {
           description: "",
           materialMain: "",
           pcdGrade: "",
+          price: "",
+          cost: "",
+          CoolantHole: "",
+          Flute: "",
+          Cloating: "",
+          ShankMaterial: "",
+          ShankShape: "",
           file: null,
         });
         setPreview(null);
@@ -86,10 +81,14 @@ const EndMill = () => {
       }
     } catch (err) {
       console.error("Submit error:", err);
-      alert(" Server Error!");
+      alert("Server Error!");
     }
   };
 
+  useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
+  }, []);
   return (
     <>
       <Navbar />
@@ -100,7 +99,7 @@ const EndMill = () => {
             className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-14 mt-20"
           >
             <h1 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
-              End Mill Drawing
+              EndMIll Drawing
             </h1>
 
             <div className="grid grid-cols-2 gap-5">
@@ -113,8 +112,8 @@ const EndMill = () => {
                 ["Description", "description"],
                 ["Material", "materialMain"],
                 ["PCD Grade", "pcdGrade"],
-                ["Sales Price", "price"],
-                ["Cost", "cost"],
+                ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
+                ...(role !== "Sale" ? [["Cost", "cost"]] : []),
                 ["Coolant Hole", "CoolantHole"],
                 ["Flute", "Flute"],
                 ["Coating", "Cloating"],
@@ -122,7 +121,7 @@ const EndMill = () => {
                 ["Shank Shape", "ShankShape"],
               ].map(([label, name, type = "text"]) => (
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] font-semibold mb-1">
+                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1 text-nowrap">
                     {label}
                   </label>
                   <input
@@ -196,4 +195,4 @@ const EndMill = () => {
   );
 };
 
-export default EndMill;
+export default EndMIll;
