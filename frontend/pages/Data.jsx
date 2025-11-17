@@ -28,7 +28,6 @@ const Data = () => {
     try {
       setSubmitting(true);
       await axios.put(`http://localhost:4000/updateDrawing/${id}`, form);
-      alert(" Updated successfully!");
       setShowModal(false);
       fetchData();
     } catch (err) {
