@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
 
 const Search_Drawing = () => {
   const router = useRouter();
-  const [role, setRole] = useState("");
   const [form, setForm] = useState({
     customerName: "",
     date: "",
@@ -15,8 +14,6 @@ const Search_Drawing = () => {
     description: "",
     materialMain: "",
     pcdGrade: "",
-    price: "",
-    cost: "",
     coolantHole: "",
     flute: "",
     cloating: "",
@@ -64,11 +61,6 @@ const Search_Drawing = () => {
       console.error("Search Error:", err);
     }
   };
-
-  useEffect(() => {
-    const userRole = localStorage.getItem("role");
-    setRole(userRole || "");
-  }, []);
 
   return (
     <>
