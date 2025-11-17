@@ -238,65 +238,70 @@ app.post("/searchDrawing", async (req, res) => {
 app.put("/updateDrawing/:id", async (req, res) => {
   const id = req.params.id;
   const {
-    customerName,
     date,
-    drawingNo,
-    rev,
-    customerPart,
+    drawing_no,
     description,
-    materialMain,
-    pcdGrade,
-    CoolantHole,
-    Flute,
-    Cloating,
-    ShankMaterial,
-    ShankShape,
+    customer_name,
+    customer_part_no,
+    material_main,
+    pcd_grade,
+    price,
+    cost,
+    rev,
+    coolant_hole,
+    flute,
+    coating,
+    shank_material,
+    shank_shape,
   } = req.body;
 
   try {
-    const formattedDate = date
-      ? new Date(date).toISOString().split("T")[0]
-      : null;
+    const formattedDate =
+      date && date.includes("T")
+        ? new Date(date).toISOString().split("T")[0]
+        : date || null;
 
     const sql = `
       UPDATE drawing_records
       SET
-        customer_name   = COALESCE(?, customer_name),
-        date            = COALESCE(?, date),
-        drawing_no      = COALESCE(?, drawing_no),
-        rev             = COALESCE(?, rev),
-        customer_part_no= COALESCE(?, customer_part_no),
-        description     = COALESCE(?, description),
-        material_main   = COALESCE(?, material_main),
-        pcd_grade       = COALESCE(?, pcd_grade),
-        coolant_hole    = COALESCE(?, coolant_hole),
-        flute           = COALESCE(?, flute),
-        coating         = COALESCE(?, coating),
-        shank_material  = COALESCE(?, shank_material),
-        shank_shape     = COALESCE(?, shank_shape)
+        date = COALESCE(?, date),
+        drawing_no = COALESCE(?, drawing_no),
+        description = COALESCE(?, description),
+        customer_name = COALESCE(?, customer_name),
+        customer_part_no = COALESCE(?, customer_part_no),
+        material_main = COALESCE(?, material_main),
+        pcd_grade = COALESCE(?, pcd_grade),
+        price = COALESCE(?, price),
+        cost = COALESCE(?, cost),
+        rev = COALESCE(?, rev),
+        coolant_hole = COALESCE(?, coolant_hole),
+        flute = COALESCE(?, flute),
+        coating = COALESCE(?, coating),
+        shank_material = COALESCE(?, shank_material),
+        shank_shape = COALESCE(?, shank_shape)
       WHERE id = ?
     `;
 
     await db.query(sql, [
-      customerName || null,
       formattedDate,
-      drawingNo || null,
-      rev || null,
-      customerPart || null,
+      drawing_no || null,
       description || null,
-      materialMain || null,
-      pcdGrade || null,
-      CoolantHole || null,
-      Flute || null,
-      Cloating || null,
-      ShankMaterial || null,
-      ShankShape || null,
+      customer_name || null,
+      customer_part_no || null,
+      material_main || null,
+      pcd_grade || null,
+      price || null,
+      cost || null,
+      rev || null,
+      coolant_hole || null,
+      flute || null,
+      coating || null,
+      shank_material || null,
+      shank_shape || null,
       id,
     ]);
 
-    res.json({
-      success: true,
-    });
+    res.json({ success: true });
   } catch (err) {
     console.error("Update error:", err);
     res.status(500).json({ success: false, message: "Server error" });

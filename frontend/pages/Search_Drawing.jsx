@@ -40,8 +40,6 @@ const Search_Drawing = () => {
       !form.description &&
       !form.materialMain &&
       !form.pcdGrade &&
-      !form.price &&
-      !form.cost &&
       !form.coolantHole &&
       !form.flute &&
       !form.cloating &&
@@ -96,8 +94,6 @@ const Search_Drawing = () => {
                   ["Description", "description"],
                   ["Material", "materialMain"],
                   ["PCD Grade", "pcdGrade"],
-                  ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
-                  ...(role !== "Sale" ? [["Cost", "cost"]] : []),
                   ["Coolant Hole", "coolantHole"],
                   ["Flute", "flute"],
                   ["Coating", "cloating"],
