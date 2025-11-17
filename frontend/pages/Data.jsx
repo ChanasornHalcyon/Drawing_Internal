@@ -158,27 +158,31 @@ const Data = () => {
 
                     {role === "Engineers" && (
                       <td className="px-4 py-2 border text-center">
-                        <button
-                          onClick={() => handleEditClick(item)}
-                          className="cursor-pointer flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm border border-blue-200"
-                          title="Edit"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
+                        <div className="flex justify-center items-center">
+                          <button
+                            onClick={() => handleEditClick(item)}
+                            className="flex justify-center items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 
+                 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 
+                 shadow-sm border border-blue-200 cursor-pointer"
+                            title="Edit"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M11 5h2m3 0h3m-3 0a2 2 0 012 2v3m-2 8H7a2 2 0 01-2-2V7a2 2 0 012-2h3m6 12l5 5M13 19l5 5"
-                            />
-                          </svg>
-                          <span className="text-sm font-medium">Edit</span>
-                        </button>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 h-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M11 5h2m3 0h3m-3 0a2 2 0 012 2v3m-2 8H7a2 2 0 01-2-2V7a2 2 0 012-2h3m6 12l5 5M13 19l5 5"
+                              />
+                            </svg>
+                            <span className="text-sm font-medium">Edit</span>
+                          </button>
+                        </div>
                       </td>
                     )}
                   </tr>
