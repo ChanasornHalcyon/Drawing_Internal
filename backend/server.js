@@ -141,7 +141,8 @@ app.post("/searchDrawing", async (req, res) => {
   try {
     const {
       customerName,
-      date,
+      startDate,
+      endDate,
       drawingNo,
       rev,
       customerPart,
@@ -163,9 +164,15 @@ app.post("/searchDrawing", async (req, res) => {
       params.push(`%${customerName}%`);
     }
 
-    if (date) {
-      sql += " AND DATE(`date`) = ?";
-      params.push(date);
+    if (startDate && endDate) {
+      sql += " AND DATE(`date`) BETWEEN ? AND ?";
+      params.push(startDate, endDate);
+    } else if (startDate) {
+      sql += " AND DATE(`date`) >= ?";
+      params.push(startDate);
+    } else if (endDate) {
+      sql += " AND DATE(`date`) <= ?";
+      params.push(endDate);
     }
 
     if (drawingNo) {
@@ -173,24 +180,21 @@ app.post("/searchDrawing", async (req, res) => {
       params.push(`%${drawingNo}%`);
     }
     if (rev) {
-      sql += " AND LOWER(drawing_no) LIKE LOWER(?)";
+      sql += " AND LOWER(rev) LIKE LOWER(?)"; // แก้ bug จากเดิมดึงผิด field
       params.push(`%${rev}%`);
     }
     if (customerPart) {
       sql += " AND LOWER(customer_part_no) LIKE LOWER(?)";
       params.push(`%${customerPart}%`);
     }
-
     if (description) {
       sql += " AND LOWER(description) LIKE LOWER(?)";
       params.push(`%${description}%`);
     }
-
     if (materialMain) {
       sql += " AND LOWER(material_main) LIKE LOWER(?)";
       params.push(`%${materialMain}%`);
     }
-
     if (pcdGrade) {
       sql += " AND LOWER(pcd_grade) LIKE LOWER(?)";
       params.push(`%${pcdGrade}%`);
@@ -199,22 +203,18 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND LOWER(coolant_hole) LIKE LOWER(?)";
       params.push(`%${coolantHole}%`);
     }
-
     if (flute) {
       sql += " AND LOWER(flute) LIKE LOWER(?)";
       params.push(`%${flute}%`);
     }
-
     if (cloating) {
       sql += " AND LOWER(coating) LIKE LOWER(?)";
       params.push(`%${cloating}%`);
     }
-
     if (shankMaterial) {
       sql += " AND LOWER(shank_material) LIKE LOWER(?)";
       params.push(`%${shankMaterial}%`);
     }
-
     if (shankShape) {
       sql += " AND LOWER(shank_shape) LIKE LOWER(?)";
       params.push(`%${shankShape}%`);
