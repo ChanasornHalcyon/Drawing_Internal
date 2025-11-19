@@ -67,8 +67,6 @@ const Search_Drawing = () => {
       if (res.data.success) {
         localStorage.setItem("searchResults", JSON.stringify(res.data.data));
         router.push("/Data");
-      } else {
-        alert("ไม่พบข้อมูลตามเงื่อนไข");
       }
     } catch (err) {
       console.error("Search Error:", err);
