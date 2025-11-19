@@ -3,8 +3,8 @@ import axios from "axios";
 import Navbar from "./components/Navbar";
 import ModalEditFile from "./components/ModalEditFile";
 import { FaFilePdf } from "react-icons/fa6";
-import { MdHistory } from "react-icons/md";
-const Data = () => {
+
+const History = () => {
   const [data, setData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -191,11 +191,8 @@ const Data = () => {
                         </div>
                       </td>
                     )}
-                    <td className="px-4 py-2 border text-black text-center align-middle">
-                      <MdHistory
-                        className="mx-auto text-blue-500 hover:text-blue-700 cursor-pointer"
-                        size={30}
-                      />
+                    <td className="px-4 py-2 border text-black">
+                      {item.History}
                     </td>
                   </tr>
                 ))
@@ -223,4 +220,4 @@ const Data = () => {
   );
 };
 
-export default Data;
+export default History;
