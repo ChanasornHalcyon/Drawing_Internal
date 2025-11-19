@@ -99,8 +99,12 @@ const Data = () => {
                           })
                         : "-"}
                     </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.dateadded}
+                    <td className="px-4 py-2 border text-black text-nowrap">
+                      {item.date_add
+                        ? new Date(item.date_add).toLocaleDateString("sv-SE", {
+                            timeZone: "Asia/Bangkok",
+                          })
+                        : "-"}
                     </td>
                     <td className="px-4 py-2 border text-black">
                       {item.drawing_no}
