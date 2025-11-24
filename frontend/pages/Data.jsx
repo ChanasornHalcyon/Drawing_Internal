@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import ModalEditFile from "./components/ModalEditFile";
+import ModalDeleteFile from "./components/ModalDelete";
 import { FaFilePdf } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
 import { useRouter } from "next/router";
@@ -11,6 +12,7 @@ const Data = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [role, setRole] = useState("");
   const fetchData = async () => {
     try {
@@ -41,6 +43,24 @@ const Data = () => {
     }
   };
 
+  const handleDeleteClick = (item) => {
+    setSelectedItem(item);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async (id) => {
+    try {
+      setSubmitting(true);
+      await axios.delete(`http://localhost:4000/deleteDrawing/${id}`);
+      setShowDeleteModal(false);
+      fetchData();
+    } catch (err) {
+      console.error("Error deleting:", err);
+      alert("Delete failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
   useEffect(() => {
     const storedResults = localStorage.getItem("searchResults");
     const userRole = localStorage.getItem("role");
@@ -170,7 +190,7 @@ const Data = () => {
 
                     {role === "Engineers" && (
                       <td className="px-4 py-2 border text-center">
-                        <div className="flex justify-center items-center">
+                        <div className="flex justify-center items-center gap-2">
                           <button
                             onClick={() => handleEditClick(item)}
                             className="flex justify-center items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 
@@ -193,6 +213,16 @@ const Data = () => {
                               />
                             </svg>
                             <span className="text-sm font-medium">Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(item)}
+                            className="flex justify-center items-center gap-1 px-3 py-1.5 rounded-lg bg-red-100 
+                           text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 
+                            shadow-sm border border-red-200 cursor-pointer"
+                            title="Delete"
+                          >
+                            {" "}
+                            <span className="text-sm font-medium">Delete</span>
                           </button>
                         </div>
                       </td>
@@ -225,6 +255,14 @@ const Data = () => {
         <ModalEditFile
           onClose={() => setShowModal(false)}
           onSubmit={handleSubmitEdit}
+          submitting={submitting}
+          sendData={selectedItem}
+        />
+      )}
+      {showDeleteModal && (
+        <ModalDeleteFile
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleConfirmDelete}
           submitting={submitting}
           sendData={selectedItem}
         />

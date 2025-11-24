@@ -293,6 +293,22 @@ app.put("/updateDrawing/:id", async (req, res) => {
   }
 });
 
+app.delete("/deleteDrawing/:id", async (req, res) => {
+  try {
+    const drawingId = req.params.id;
+
+    await db.query("DELETE FROM drawing_history WHERE drawing_id = ?", [
+      drawingId,
+    ]);
+    await db.query("DELETE FROM drawing_records WHERE id = ?", [drawingId]);
+
+    res.json({ success: true, message: "Drawing deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 app.get("/getDrawingHistory/:id", async (req, res) => {
   try {
     const [rows] = await db.query(
