@@ -4,8 +4,10 @@ import Navbar from "./components/Navbar";
 import ModalEditFile from "./components/ModalEditFile";
 import { FaFilePdf } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
+import { useRouter } from "next/router";
 const Data = () => {
   const [data, setData] = useState([]);
+  const router = useRouter();
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -199,6 +201,10 @@ const Data = () => {
                       <MdHistory
                         className="mx-auto text-blue-500 hover:text-blue-700 cursor-pointer"
                         size={30}
+                        title="View History"
+                        onClick={() => {
+                          router.push(`/History?id=${item.id}`);
+                        }}
                       />
                     </td>
                   </tr>

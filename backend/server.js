@@ -180,7 +180,7 @@ app.post("/searchDrawing", async (req, res) => {
       params.push(`%${drawingNo}%`);
     }
     if (rev) {
-      sql += " AND LOWER(rev) LIKE LOWER(?)"; // แก้ bug จากเดิมดึงผิด field
+      sql += " AND LOWER(rev) LIKE LOWER(?)";
       params.push(`%${rev}%`);
     }
     if (customerPart) {
@@ -236,74 +236,77 @@ app.post("/searchDrawing", async (req, res) => {
 });
 
 app.put("/updateDrawing/:id", async (req, res) => {
-  const id = req.params.id;
-  const {
-    date,
-    drawing_no,
-    description,
-    customer_name,
-    customer_part_no,
-    material_main,
-    pcd_grade,
-    price,
-    cost,
-    rev,
-    coolant_hole,
-    flute,
-    coating,
-    shank_material,
-    shank_shape,
-  } = req.body;
-
+  const drawingId = req.params.id;
+  const updatedData = req.body;
   try {
-    const formattedDate =
-      date && date.includes("T")
-        ? new Date(date).toISOString().split("T")[0]
-        : date || null;
+    const formattedDate = updatedData.date
+      ? new Date(updatedData.date).toISOString().split("T")[0]
+      : null;
 
-    const sql = `
+    const [oldRows] = await db.query(
+      "SELECT * FROM drawing_records WHERE id = ?",
+      [drawingId]
+    );
+    if (!oldRows.length)
+      return res.status(404).json({ success: false, message: "Not found" });
+
+    const oldData = oldRows[0];
+
+    await db.query(
+      `INSERT INTO drawing_history (drawing_id, modified_by, data)
+       VALUES (?, ?, ?)`,
+      [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldData)]
+    );
+
+    await db.query(
+      `
       UPDATE drawing_records
-      SET
-        date = COALESCE(?, date),
-        drawing_no = COALESCE(?, drawing_no),
-        description = COALESCE(?, description),
-        customer_name = COALESCE(?, customer_name),
-        customer_part_no = COALESCE(?, customer_part_no),
-        material_main = COALESCE(?, material_main),
-        pcd_grade = COALESCE(?, pcd_grade),
-        price = COALESCE(?, price),
-        cost = COALESCE(?, cost),
-        rev = COALESCE(?, rev),
-        coolant_hole = COALESCE(?, coolant_hole),
-        flute = COALESCE(?, flute),
-        coating = COALESCE(?, coating),
-        shank_material = COALESCE(?, shank_material),
-        shank_shape = COALESCE(?, shank_shape)
+      SET 
+        customer_name = ?, date = ?, drawing_no = ?, rev = ?, customer_part_no = ?,
+        description = ?, material_main = ?, pcd_grade = ?, price = ?, cost = ?,
+        coolant_hole = ?, flute = ?, coating = ?, shank_material = ?, shank_shape = ?
       WHERE id = ?
-    `;
-
-    await db.query(sql, [
-      formattedDate,
-      drawing_no || null,
-      description || null,
-      customer_name || null,
-      customer_part_no || null,
-      material_main || null,
-      pcd_grade || null,
-      price || null,
-      cost || null,
-      rev || null,
-      coolant_hole || null,
-      flute || null,
-      coating || null,
-      shank_material || null,
-      shank_shape || null,
-      id,
-    ]);
-
+    `,
+      [
+        updatedData.customer_name,
+        formattedDate,
+        updatedData.drawing_no,
+        updatedData.rev,
+        updatedData.customer_part_no,
+        updatedData.description,
+        updatedData.material_main,
+        updatedData.pcd_grade,
+        updatedData.price,
+        updatedData.cost,
+        updatedData.coolant_hole,
+        updatedData.flute,
+        updatedData.coating,
+        updatedData.shank_material,
+        updatedData.shank_shape,
+        drawingId,
+      ]
+    );
     res.json({ success: true });
   } catch (err) {
     console.error("Update error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+app.get("/getDrawingHistory/:id", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT * FROM drawing_history 
+      WHERE drawing_id = ?
+      ORDER BY modified_at DESC
+    `,
+      [req.params.id]
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error("Get history error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });

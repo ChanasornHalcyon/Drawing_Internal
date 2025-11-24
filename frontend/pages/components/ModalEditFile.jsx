@@ -46,7 +46,14 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
+  const handleSubmitClick = () => {
+    const payload = {
+      ...form,
+      updated_by: localStorage.getItem("username") || "System",
+      date: form.date ? new Date(form.date).toISOString().split("T")[0] : null,
+    };
+    onSubmit(payload, sendData.id);
+  };
   return (
     <>
       <motion.div
@@ -109,7 +116,7 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
               Cancel
             </button>
             <button
-              onClick={() => onSubmit(form, sendData.id)}
+              onClick={handleSubmitClick}
               disabled={submitting}
               className="px-4 py-2 rounded-lg bg-[#3698FC] text-white hover:bg-blue-600 cursor-pointer"
             >
