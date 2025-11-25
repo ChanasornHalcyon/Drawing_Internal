@@ -74,14 +74,20 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       customerPart,
       description,
       materialMain,
-      pcdGrade,
       price,
       cost,
       CoolantHole,
       Flute,
       Cloating,
-      ShankMaterial,
-      ShankShape,
+      A1,
+      A2,
+      A3,
+      D1,
+      D2,
+      D3,
+      CL1,
+      CL2,
+      TL,
     } = req.body;
 
     let file_url = null;
@@ -93,9 +99,9 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
     const sql = `
       INSERT INTO drawing_records 
       (customer_name, date, drawing_no, rev, customer_part_no, description,
-       material_main, pcd_grade, price, cost, coolant_hole, flute, coating,
-       shank_material, shank_shape, file_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       material_main, price, cost, coolant_hole, flute, coating,
+       file_url, A1, A2, A3, D1, D2, D3, CL1, CL2, TL)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await db.query(sql, [
@@ -106,15 +112,21 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       customerPart,
       description,
       materialMain,
-      pcdGrade,
       price,
       cost,
       CoolantHole,
       Flute,
       Cloating,
-      ShankMaterial,
-      ShankShape,
       file_url,
+      A1,
+      A2,
+      A3,
+      D1,
+      D2,
+      D3,
+      CL1,
+      CL2,
+      TL,
     ]);
 
     res.json({ success: true, message: "Drawing uploaded successfully!" });

@@ -71,8 +71,6 @@ const Drill = () => {
           CoolantHole: "",
           Flute: "",
           Cloating: "",
-          ShankMaterial: "",
-          ShankShape: "",
           file: null,
         });
         setPreview(null);
@@ -111,18 +109,9 @@ const Drill = () => {
                 ["Rev", "rev"],
                 ["Customer Part  No.", "customerPart"],
                 ["Description", "description"],
-                ["Material", "materialMain"],
-                ["PCD Grade", "pcdGrade"],
-                ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
-                ...(role !== "Sale" ? [["Cost", "cost"]] : []),
-                ["Coolant Hole", "CoolantHole"],
-                ["Flute", "Flute"],
-                ["Coating", "Cloating"],
-                ["Shank Material", "ShankMaterial"],
-                ["Shank Shape", "ShankShape"],
               ].map(([label, name, type = "text"]) => (
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1 text-nowrap">
+                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                     {label}
                   </label>
                   <input
@@ -131,7 +120,96 @@ const Drill = () => {
                     value={form[name]}
                     onChange={handleChange}
                     required={["customerName", "date"].includes(name)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm  focus:border-[#1C70D3] transition"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  />
+                </div>
+              ))}
+
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Material
+                </label>
+                <select
+                  name="materialMain"
+                  value={form.materialMain}
+                  onChange={handleChange}
+                  className="w-full border  border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition "
+                  required
+                >
+                  <option value="">--- Select Material ---</option>
+                  <option value="CB">CB</option>
+                  <option value="STL+CB">STL+CB</option>
+                  <option value="CB+PCD">CB+PCD</option>
+                  <option value="STL+PCD">STL+PCD</option>
+                  <option value="STL+CB+PCD">STL+CB+PCD</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Flute
+                </label>
+                <select
+                  name="Flute"
+                  value={form.Flute}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  required
+                >
+                  <option value="">--- Select Flute ---</option>
+                  <option value="STRAIGHT">STRAIGHT</option>
+                  <option value="HELIX">HELIX</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Coolate
+                </label>
+                <select
+                  name="CoolantHole"
+                  value={form.CoolantHole}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  required
+                >
+                  <option value="">--- Select Coolant ---</option>
+                  <option value="YES">YES</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Cloating
+                </label>
+                <select
+                  name="Cloating"
+                  value={form.Cloating}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                >
+                  <option value="">--- Select Cloating ---</option>
+                  <option value="TiAlN">TiAlN (FUTURA)</option>
+                  <option value="AlTiN">AlTiN (LATUMA)</option>
+                  <option value="TiN"> TiN (A)</option>
+                  <option value="TiCN"> TiCN (B)</option>
+                  <option value="DLC"> DLC (HARDCARBON*)</option>
+                  <option value="AlCrN">AlCrN (AlCrN)</option>
+                </select>
+              </div>
+
+              {[
+                ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
+                ...(role !== "Sale" ? [["Cost", "cost"]] : []),
+              ].map(([label, name]) => (
+                <div key={name} className="flex flex-col">
+                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                    {label}
+                  </label>
+                  <input
+                    type="text"
+                    name={name}
+                    value={form[name]}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                   />
                 </div>
               ))}
