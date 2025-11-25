@@ -78,32 +78,68 @@ const Data = () => {
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-32">
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm text-gray-700 border border-gray-900 rounded-xl shadow overflow-hidden">
-            <thead className="bg-[#1C70D3] text-white text-left">
+          <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+            <thead className="bg-gradient-to-r from-[#1C70D3] to-[#155BB5] text-white shadow">
               <tr>
-                <th className="px-4 py-2 border">Date Drawing</th>
-                <th className="px-4 py-2 border">Date Added</th>
-                <th className="px-4 py-2 border">Drawing No.</th>
-                <th className="px-4 py-2 border">Description</th>
-                <th className="px-4 py-2 border">Customer Name</th>
-                <th className="px-4 py-2 border">Customer Part No.</th>
-                <th className="px-4 py-2 border">Material</th>
-                <th className="px-4 py-2 border">PCD Grade</th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Date Drawing
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Date Added
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Drawing No.
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Description
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Customer Name
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Customer Part No.
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Material
+                </th>
+
                 {role !== "Engineers" && (
-                  <th className="px-4 py-2 border">Sales Price</th>
+                  <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                    Sales Price
+                  </th>
                 )}
-                {role !== "Sale" && <th className="px-4 py-2 border">Cost</th>}
-                <th className="px-4 py-2 border">Rev</th>
-                {/* <th className="px-4 py-2 border">Coolant Hole</th> */}
-                {/* <th className="px-4 py-2 border">Flute</th>
-                <th className="px-4 py-2 border">Coating</th>
-                <th className="px-4 py-2 border">Shank Material</th>
-                <th className="px-4 py-2 border">Shank Shape</th> */}
-                <th className="px-4 py-2 border text-center">Drawing</th>
+                {role !== "Sale" && (
+                  <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                    Cost
+                  </th>
+                )}
+
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Rev
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Coolant Hole
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Flute
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                  Coating
+                </th>
+
+                <th className="px-4 py-3 border-r border-blue-300/30 text-center font-semibold tracking-wide">
+                  Drawing
+                </th>
+
                 {role === "Engineers" && (
-                  <th className="px-4 py-2 border text-center">Action</th>
+                  <th className="px-4 py-3 border-r border-blue-300/30 text-center font-semibold tracking-wide">
+                    Action
+                  </th>
                 )}
-                <th className="px-4 py-2 border text-center">History</th>
+
+                <th className="px-4 py-3 text-center font-semibold tracking-wide">
+                  History
+                </th>
               </tr>
             </thead>
 
@@ -112,68 +148,43 @@ const Data = () => {
                 data.map((item) => (
                   <tr
                     key={item.id}
-                    className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
+                    className="odd:bg-white even:bg-gray-50 hover:bg-blue-50/60 transition-all duration-150 border-b border-gray-200"
                   >
-                    <td className="px-4 py-2 border text-black text-nowrap">
+                    <td className="px-4 py-2 text-gray-800 text-nowrap">
                       {item.date
                         ? new Date(item.date).toLocaleDateString("sv-SE", {
                             timeZone: "Asia/Bangkok",
                           })
                         : "-"}
                     </td>
-                    <td className="px-4 py-2 border text-black text-nowrap">
+
+                    <td className="px-4 py-2 text-gray-800 text-nowrap">
                       {item.date_add
                         ? new Date(item.date_add).toLocaleDateString("sv-SE", {
                             timeZone: "Asia/Bangkok",
                           })
                         : "-"}
                     </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.drawing_no}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.description}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.customer_name}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.customer_part_no}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.material_main}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.pcd_grade}
-                    </td>
+
+                    <td className="px-4 py-2">{item.drawing_no}</td>
+                    <td className="px-4 py-2">{item.description}</td>
+                    <td className="px-4 py-2">{item.customer_name}</td>
+                    <td className="px-4 py-2">{item.customer_part_no}</td>
+                    <td className="px-4 py-2">{item.material_main}</td>
+
                     {role !== "Engineers" && (
-                      <td className="px-4 py-2 border text-black">
-                        {item.price}
-                      </td>
+                      <td className="px-4 py-2">{item.price}</td>
                     )}
                     {role !== "Sale" && (
-                      <td className="px-4 py-2 border text-black">
-                        {item.cost}
-                      </td>
+                      <td className="px-4 py-2">{item.cost}</td>
                     )}
-                    <td className="px-4 py-2 border text-black">{item.rev}</td>
-                    {/* <td className="px-4 py-2 border text-black">
-                      {item.coolant_hole}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.flute}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.coating}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.shank_material}
-                    </td>
-                    <td className="px-4 py-2 border text-black">
-                      {item.shank_shape}
-                    </td> */}
 
-                    <td className="px-4 py-2 border text-center">
+                    <td className="px-4 py-2">{item.rev}</td>
+                    <td className="px-4 py-2">{item.coolant_hole}</td>
+                    <td className="px-4 py-2">{item.flute}</td>
+                    <td className="px-4 py-2">{item.coating}</td>
+
+                    <td className="px-4 py-2 text-center">
                       {item.file_url ? (
                         <a
                           href={`http://localhost:4000${item.file_url}`}
@@ -181,7 +192,7 @@ const Data = () => {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center hover:scale-110 transition-transform"
                         >
-                          <FaFilePdf className="text-red-600 text-2xl" />
+                          <FaFilePdf className="text-red-600 text-2xl drop-shadow-sm" />
                         </a>
                       ) : (
                         <span className="text-gray-400">-</span>
@@ -189,45 +200,25 @@ const Data = () => {
                     </td>
 
                     {role === "Engineers" && (
-                      <td className="px-4 py-2 border text-center">
-                        <div className="flex justify-center items-center gap-2">
+                      <td className="px-4 py-2 text-center">
+                        <div className="flex justify-center gap-2">
                           <button
                             onClick={() => handleEditClick(item)}
-                            className="flex justify-center items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 
-                               text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 
-                                shadow-sm border border-blue-200 cursor-pointer"
-                            title="Edit"
+                            className=" cursor-pointer px-3 py-1 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-sm border border-blue-200"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-4 h-4"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11 5h2m3 0h3m-3 0a2 2 0 012 2v3m-2 8H7a2 2 0 01-2-2V7a2 2 0 012-2h3m6 12l5 5M13 19l5 5"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium">Edit</span>
+                            Edit
                           </button>
                           <button
                             onClick={() => handleDeleteClick(item)}
-                            className="flex justify-center items-center gap-1 px-3 py-1.5 rounded-lg bg-red-100 
-                           text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 
-                            shadow-sm border border-red-200 cursor-pointer"
-                            title="Delete"
+                            className=" cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
                           >
-                            {" "}
-                            <span className="text-sm font-medium">Delete</span>
+                            Delete
                           </button>
                         </div>
                       </td>
                     )}
-                    <td className="px-4 py-2 border text-black text-center align-middle">
+
+                    <td className="px-4 py-2 text-center">
                       <MdHistory
                         className="mx-auto text-blue-500 hover:text-blue-700 cursor-pointer"
                         size={30}
@@ -241,7 +232,7 @@ const Data = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="15" className="text-center py-4 text-gray-500">
+                  <td colSpan="15" className="text-center py-6 text-gray-500">
                     ไม่มีข้อมูลในระบบ
                   </td>
                 </tr>
