@@ -4,11 +4,10 @@ import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { FaFilePdf } from "react-icons/fa6";
 const Search_Drawing = () => {
   const router = useRouter();
   const [role, setRole] = useState("");
-
   const [form, setForm] = useState({
     customerName: "",
     dateRange: { start: null, end: null },

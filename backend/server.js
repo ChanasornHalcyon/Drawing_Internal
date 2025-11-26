@@ -247,30 +247,50 @@ app.post("/searchDrawing", async (req, res) => {
   }
 });
 
-app.put("/updateDrawing/:id", async (req, res) => {
+app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
   const drawingId = req.params.id;
   const updatedData = req.body;
+  const file = req.file;
 
   try {
-    const formattedDate = updatedData.date
-      ? new Date(updatedData.date).toISOString().split("T")[0]
-      : null;
+    const formattedDate =
+      updatedData.date && /^\d{4}-\d{2}-\d{2}$/.test(updatedData.date)
+        ? updatedData.date
+        : null;
 
     const [oldRows] = await db.query(
       "SELECT * FROM drawing_records WHERE id = ?",
       [drawingId]
     );
 
-    if (!oldRows.length)
+    if (!oldRows.length) {
       return res.status(404).json({ success: false, message: "Not found" });
+    }
 
     const oldData = oldRows[0];
 
-    -(await db.query(
+    await db.query(
       `INSERT INTO drawing_history (drawing_id, modified_by, data)
        VALUES (?, ?, ?)`,
       [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldData)]
-    ));
+    );
+
+    let fileUrl = oldData.file_url;
+
+    if (file) {
+      const customerFolder =
+        updatedData.customer_name?.trim().replace(/\s+/g, "_") || "Unknown";
+
+      const finalPath = path.join(uploadDir, customerFolder, file.originalname);
+
+      if (!fs.existsSync(path.dirname(finalPath))) {
+        fs.mkdirSync(path.dirname(finalPath), { recursive: true });
+      }
+
+      fs.renameSync(file.path, finalPath);
+
+      fileUrl = `/uploads/${customerFolder}/${file.originalname}`;
+    }
 
     await db.query(
       `
@@ -286,7 +306,8 @@ app.put("/updateDrawing/:id", async (req, res) => {
         cost = ?,
         coolant_hole = ?, 
         flute = ?, 
-        coating = ?
+        coating = ?,
+        file_url = ?
       WHERE id = ?
     `,
       [
@@ -301,6 +322,7 @@ app.put("/updateDrawing/:id", async (req, res) => {
         updatedData.coolant_hole,
         updatedData.flute,
         updatedData.coating,
+        fileUrl,
         drawingId,
       ]
     );
