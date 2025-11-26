@@ -5,7 +5,7 @@ const ModalDeleteFile = ({ onClose, onConfirm, submitting, sendData = {} }) => {
   return (
     <>
       <motion.div
-           className="fixed inset-0 z-50 flex justify-center items-start mt-10"
+        className="fixed inset-0 z-50 flex justify-center items-start mt-10"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -16,7 +16,7 @@ const ModalDeleteFile = ({ onClose, onConfirm, submitting, sendData = {} }) => {
             Confirm Delete
           </h5>
           <p className="text-gray-700 text-sm mb-6">
-            คุณแน่ใจหรือไม่ว่าต้องการลบไฟล์{" "}
+            คุณแน่ใจหรือไม่ว่าต้องการลบ History นี้{" "}
             <span className="font-semibold text-red-600">
               {sendData.drawing_no || "นี้"}
             </span>{" "}

@@ -312,18 +312,15 @@ app.put("/updateDrawing/:id", async (req, res) => {
   }
 });
 
-app.delete("/deleteDrawing/:id", async (req, res) => {
+app.delete("/deleteDrawingHistory/:id", async (req, res) => {
   try {
-    const drawingId = req.params.id;
+    const historyId = req.params.id;
 
-    await db.query("DELETE FROM drawing_history WHERE drawing_id = ?", [
-      drawingId,
-    ]);
-    await db.query("DELETE FROM drawing_records WHERE id = ?", [drawingId]);
+    await db.query("DELETE FROM drawing_history WHERE id = ?", [historyId]);
 
-    res.json({ success: true, message: "Drawing deleted successfully" });
+    res.json({ success: true, message: "History record deleted successfully" });
   } catch (err) {
-    console.error("Delete error:", err);
+    console.error("Delete history error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });

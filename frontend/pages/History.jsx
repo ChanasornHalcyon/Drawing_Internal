@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
-
+import ModalDeleteFile from "./components/ModalDelete";
 const History = () => {
   const [history, setHistory] = useState([]);
   const router = useRouter();
   const { id } = router.query;
-
+  const [showDelete, setShowDelete] = useState(false);
+  const [selected, setSelected] = useState(null);
   useEffect(() => {
     if (id) {
       axios
@@ -29,7 +30,18 @@ const History = () => {
       return {};
     }
   };
-
+  const handleDelete = async (deleteId) => {
+    try {
+      await axios.delete(
+        `http://localhost:4000/deleteDrawingHistory/${deleteId}`
+      );
+      setShowDelete(false);
+      setSelected(null);
+      setHistory(history.filter((h) => h.id !== deleteId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
@@ -77,6 +89,9 @@ const History = () => {
                 <th className="px-4 py-3 border-r font-semibold border-blue-300/30 text-nowrap  tracking-wide text-left">
                   Drawing
                 </th>
+                <th className="px-4 py-3 border-r font-semibold border-blue-300/30 text-nowrap  tracking-wide text-left">
+                  Action
+                </th>
               </tr>
             </thead>
 
@@ -111,6 +126,17 @@ const History = () => {
                       <td className="px-4 py-2">{d.flute || "-"}</td>
                       <td className="px-4 py-2">{d.coating || "-"}</td>
                       <td className="px-4 py-2">{d.drawing || "-"}</td>
+                      <td className="px-4 py-2">
+                        <button
+                          onClick={() => {
+                            setSelected(item);
+                            setShowDelete(true);
+                          }}
+                          className=" cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   );
                 })
@@ -128,6 +154,14 @@ const History = () => {
           </table>
         </div>
       </div>
+      {showDelete && (
+        <ModalDeleteFile
+          onClose={() => setShowDelete(false)}
+          onConfirm={handleDelete}
+          submitting={false}
+          sendData={selected}
+        />
+      )}
     </div>
   );
 };
