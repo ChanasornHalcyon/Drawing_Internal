@@ -69,7 +69,13 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
 
   return (
     <>
-      <motion.div className="fixed inset-0 z-50 flex justify-center items-start mt-10">
+      <motion.div
+        className="fixed inset-0 z-50 flex justify-center items-start mt-10"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="bg-white rounded-2xl shadow-xl w-[360px] sm:w-[420px] md:w-[520px] max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center p-4 border-b bg-white sticky top-0">
             <h5 className="text-2xl font-semibold text-black">
