@@ -12,13 +12,20 @@ const History = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [selected, setSelected] = useState(null);
   const [role, setRole] = useState("");
+
   useEffect(() => {
     const userRole = localStorage.getItem("role");
     setRole(userRole || "");
+
     if (id) {
       axios
         .get(`http://localhost:4000/getDrawingHistory/${id}`)
-        .then((res) => setHistory(res.data.data || []))
+        .then((res) => {
+          const list = [...res.data.data].sort(
+            (a, b) => new Date(b.modified_at) - new Date(a.modified_at)
+          );
+          setHistory(list);
+        })
         .catch((err) => console.error(err));
     }
   }, [id]);
@@ -35,14 +42,13 @@ const History = () => {
       return {};
     }
   };
-  const handleDelete = async (deleteId) => {
+  const handleDelete = async (deleteId, drawingId) => {
     try {
       await axios.delete(
-        `http://localhost:4000/deleteDrawingHistory/${deleteId}`
+        `http://localhost:4000/deleteDrawingHistory/${deleteId}?drawingId=${drawingId}`
       );
-      setShowDelete(false);
-      setSelected(null);
       setHistory(history.filter((h) => h.id !== deleteId));
+      setShowDelete(false);
     } catch (err) {
       console.error(err);
     }
@@ -61,9 +67,7 @@ const History = () => {
                 <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
                   Modified At
                 </th>
-                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
-                  Modified By
-                </th>
+
                 <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
                   Drawing No.
                 </th>
@@ -118,8 +122,6 @@ const History = () => {
                           timeZone: "Asia/Bangkok",
                         })}
                       </td>
-
-                      <td className="px-4 py-2">{item.modified_by}</td>
 
                       <td className="px-4 py-2">{d.drawing_no || "-"}</td>
                       <td className="px-4 py-2  max-w-[250px]">
@@ -183,7 +185,7 @@ const History = () => {
       {showDelete && (
         <ModalDeleteFile
           onClose={() => setShowDelete(false)}
-          onConfirm={handleDelete}
+          onConfirm={(deleteId) => handleDelete(deleteId, id)}
           submitting={false}
           sendData={selected}
         />

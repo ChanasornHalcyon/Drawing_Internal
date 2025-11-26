@@ -335,33 +335,57 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
 });
 
 app.delete("/deleteDrawingHistory/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
   try {
-    const historyId = req.params.id;
+    if (id === 0) {
+      const drawingId = req.query.drawingId;
+      if (!drawingId) return res.status(400).json({ success: false });
 
-    await db.query("DELETE FROM drawing_history WHERE id = ?", [historyId]);
+      await db.query("DELETE FROM drawing_history WHERE drawing_id = ?", [
+        drawingId,
+      ]);
+      await db.query("DELETE FROM drawing_records WHERE id = ?", [drawingId]);
 
-    res.json({ success: true, message: "History record deleted successfully" });
+      return res.json({ success: true });
+    }
+    await db.query("DELETE FROM drawing_history WHERE id = ?", [id]);
+    res.json({ success: true });
   } catch (err) {
     console.error("Delete history error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false });
   }
 });
 
 app.get("/getDrawingHistory/:id", async (req, res) => {
+  const drawingId = req.params.id;
   try {
-    const [rows] = await db.query(
-      `
-      SELECT * FROM drawing_history 
-      WHERE drawing_id = ?
-      ORDER BY modified_at DESC
-    `,
-      [req.params.id]
+    const [currentRows] = await db.query(
+      "SELECT *, NOW() AS modified_at FROM drawing_records WHERE id = ?",
+      [drawingId]
+    );
+    const [historyRows] = await db.query(
+      "SELECT * FROM drawing_history WHERE drawing_id = ? ORDER BY modified_at DESC",
+      [drawingId]
     );
 
-    res.json({ success: true, data: rows });
+    const result = [];
+
+    if (currentRows.length > 0) {
+      const cur = currentRows[0];
+      result.push({
+        id: 0,
+        modified_at: cur.modified_at,
+        modified_by: cur.updated_by || "Current Version",
+        data: JSON.stringify(cur),
+      });
+    }
+
+    result.push(...historyRows);
+    res.json({ success: true, data: result });
   } catch (err) {
-    console.error("Get history error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error(err);
+    res.status(500).json({ success: false });
   }
 });
 
