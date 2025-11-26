@@ -9,7 +9,10 @@ const History = () => {
   const { id } = router.query;
   const [showDelete, setShowDelete] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [role, setRole] = useState("");
   useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
     if (id) {
       axios
         .get(`http://localhost:4000/getDrawingHistory/${id}`)
@@ -89,9 +92,11 @@ const History = () => {
                 <th className="px-4 py-3 border-r font-semibold border-blue-300/30 text-nowrap  tracking-wide text-left">
                   Drawing
                 </th>
-                <th className="px-4 py-3 border-r font-semibold border-blue-300/30 text-nowrap  tracking-wide text-left">
-                  Action
-                </th>
+                {role === "Engineers" && (
+                  <th className="px-4 py-3 border-r font-semibold border-blue-300/30 text-left">
+                    Action
+                  </th>
+                )}
               </tr>
             </thead>
 
@@ -126,17 +131,19 @@ const History = () => {
                       <td className="px-4 py-2">{d.flute || "-"}</td>
                       <td className="px-4 py-2">{d.coating || "-"}</td>
                       <td className="px-4 py-2">{d.drawing || "-"}</td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={() => {
-                            setSelected(item);
-                            setShowDelete(true);
-                          }}
-                          className=" cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
-                        >
-                          Delete
-                        </button>
-                      </td>
+                      {role === "Engineers" && (
+                        <td className="px-4 py-2">
+                          <button
+                            onClick={() => {
+                              setSelected(item);
+                              setShowDelete(true);
+                            }}
+                            className="cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   );
                 })

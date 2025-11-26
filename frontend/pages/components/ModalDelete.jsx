@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const ModalDeleteFile = ({ onClose, onConfirm, submitting, sendData = {} }) => {
+  
   return (
     <>
       <motion.div
