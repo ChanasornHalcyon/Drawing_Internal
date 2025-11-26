@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const ModalDeleteFile = ({ onClose, onConfirm, submitting, sendData = {} }) => {
-  
   return (
     <>
       <motion.div
@@ -16,12 +15,12 @@ const ModalDeleteFile = ({ onClose, onConfirm, submitting, sendData = {} }) => {
           <h5 className="text-2xl font-semibold text-black mb-3">
             Confirm Delete
           </h5>
-          <p className="text-gray-700 text-sm mb-6">
-            คุณแน่ใจหรือไม่ว่าต้องการลบ History นี้{" "}
+          <p className=" text-sm mb-6 text-red-600 font-semibold">
+            คุณแน่ใจว่าต้องการลบ Drawing_No{" "}
             <span className="font-semibold text-red-600">
-              {sendData.drawing_no || "นี้"}
-            </span>{" "}
-            ?
+              {sendData.drawing_no}{" "}
+            </span>
+            นี้ ?
           </p>
 
           <div className="flex justify-center gap-4">

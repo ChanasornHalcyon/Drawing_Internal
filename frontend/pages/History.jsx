@@ -150,7 +150,11 @@ const History = () => {
                         <td className="px-4 py-2">
                           <button
                             onClick={() => {
-                              setSelected(item);
+                              const d = parseData(item.data);
+                              setSelected({
+                                id: item.id,
+                                drawing_no: d.drawing_no || "-",
+                              });
                               setShowDelete(true);
                             }}
                             className="cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
