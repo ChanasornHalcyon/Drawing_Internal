@@ -3,6 +3,8 @@ import axios from "axios";
 import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
 import ModalDeleteFile from "./components/ModalDelete";
+import { FaFilePdf } from "react-icons/fa6";
+
 const History = () => {
   const [history, setHistory] = useState([]);
   const router = useRouter();
@@ -130,7 +132,20 @@ const History = () => {
                       <td className="px-4 py-2">{d.coolant_hole || "-"}</td>
                       <td className="px-4 py-2">{d.flute || "-"}</td>
                       <td className="px-4 py-2">{d.coating || "-"}</td>
-                      <td className="px-4 py-2">{d.drawing || "-"}</td>
+                      <td className="px-4 py-2 text-center">
+                        {d.file_url ? (
+                          <a
+                            href={`http://localhost:4000${d.file_url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center hover:scale-110 transition-transform"
+                          >
+                            <FaFilePdf className="text-red-600 text-2xl drop-shadow-sm" />
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
                       {role === "Engineers" && (
                         <td className="px-4 py-2">
                           <button
