@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import ModalEditFile from "./components/ModalEditFile";
-import ModalDeleteFile from "./components/ModalDelete";
+
 import { FaFilePdf } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
 import { useRouter } from "next/router";
@@ -12,7 +12,7 @@ const Data = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [role, setRole] = useState("");
   const fetchData = async () => {
     try {
@@ -38,25 +38,6 @@ const Data = () => {
     } catch (err) {
       console.error("Error updating:", err);
       alert(" Update failed");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleDeleteClick = (item) => {
-    setSelectedItem(item);
-    setShowDeleteModal(true);
-  };
-
-  const handleConfirmDelete = async (id) => {
-    try {
-      setSubmitting(true);
-      await axios.delete(`http://localhost:4000/deleteDrawing/${id}`);
-      setShowDeleteModal(false);
-      fetchData();
-    } catch (err) {
-      console.error("Error deleting:", err);
-      alert("Delete failed");
     } finally {
       setSubmitting(false);
     }
@@ -94,7 +75,7 @@ const Data = () => {
                   Description
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
-                  Customer 
+                  Customer
                 </th>
                 {/* <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
                   Customer Part No.
@@ -118,7 +99,7 @@ const Data = () => {
                   Rev
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
-                  Coolant 
+                  Coolant
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
                   Flute
@@ -208,12 +189,6 @@ const Data = () => {
                           >
                             Update
                           </button>
-                          {/* <button
-                            onClick={() => handleDeleteClick(item)}
-                            className=" cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
-                          >
-                            Delete
-                          </button> */}
                         </div>
                       </td>
                     )}
@@ -250,14 +225,6 @@ const Data = () => {
           sendData={selectedItem}
         />
       )}
-      {/* {showDeleteModal && (
-        <ModalDeleteFile
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleConfirmDelete}
-          submitting={submitting}
-          sendData={selectedItem}
-        />
-      )} */}
     </div>
   );
 };

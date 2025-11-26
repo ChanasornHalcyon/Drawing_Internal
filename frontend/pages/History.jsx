@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
 import Navbar from "./components/Navbar";
+import { useRouter } from "next/router";
 
 const History = () => {
   const [history, setHistory] = useState([]);
@@ -23,8 +23,9 @@ const History = () => {
         return JSON.parse(data);
       } else if (typeof data === "object") {
         return data;
-      } else return {};
-    } catch (err) {
+      }
+      return {};
+    } catch {
       return {};
     }
   };
@@ -32,47 +33,65 @@ const History = () => {
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
+
       <div className="container mx-auto max-w-[1450px] pt-32">
-        <div className="overflow-x-auto">
-          <h2 className="text-2xl font-semibold mb-6 text-center text-[#1C70D3]">
+        <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
+          <h2 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
             History of Drawing
           </h2>
 
-          {history.length === 0 ? (
-            <p className="text-gray-500 text-center">No history found.</p>
-          ) : (
-            <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-              <thead className="bg-[#1C70D3] text-white sticky top-0 z-10">
-                <tr>
-                  {[
-                    "Modified At",
-                    "Modified By",
-                    "Drawing No.",
-                    "Customer Name",
-                    "Customer Part No.",
-                    "Material",
-                    "Rev",
-                    "Description",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className="px-4 py-3 border border-[#1C70D3]/40 text-left text-[13px] font-semibold whitespace-nowrap"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
+          <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+            <thead className="bg-linear-to-br from-[#1C70D3] to-[#155BB5] text-white">
+              <tr>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Modified At
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Modified By
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Drawing No.
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Description
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Customer
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Material
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Cost
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Rev
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 font-semibold text-nowrap tracking-wide text-left">
+                  Coolant
+                </th>
+                <th className="px-4 py-3 border-r font-semibold  border-blue-300/30 text-nowrap tracking-wide text-left">
+                  Flute
+                </th>
+                <th className="px-4 py-3 border-r font-semibold  border-blue-300/30 text-nowrap tracking-wide text-left">
+                  Coating
+                </th>
+                <th className="px-4 py-3 border-r font-semibold border-blue-300/30 text-nowrap  tracking-wide text-left">
+                  Drawing
+                </th>
+              </tr>
+            </thead>
 
-              <tbody>
-                {history.map((item) => {
-                  const data = parseData(item.data);
+            <tbody>
+              {history.length > 0 ? (
+                history.map((item) => {
+                  const d = parseData(item.data);
                   return (
                     <tr
                       key={item.id}
-                      className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition-all duration-150"
+                      className="odd:bg-white even:bg-gray-50 hover:bg-blue-50/60 transition-all duration-150 border-b border-gray-200"
                     >
-                      <td className="px-4 py-2 border whitespace-nowrap text-gray-800">
+                      <td className="px-4 py-2 text-gray-800 text-nowrap">
                         {new Date(item.modified_at).toLocaleString("th-TH", {
                           dateStyle: "short",
                           timeStyle: "short",
@@ -80,32 +99,35 @@ const History = () => {
                         })}
                       </td>
 
-                      <td className="px-4 py-2 border">{item.modified_by}</td>
+                      <td className="px-4 py-2">{item.modified_by}</td>
 
-                      <td className="px-4 py-2 border">
-                        {data.drawing_no || "-"}
+                      <td className="px-4 py-2">{d.drawing_no || "-"}</td>
+                      <td className="px-4 py-2  max-w-[250px]">
+                        {d.description || "-"}
                       </td>
-                      <td className="px-4 py-2 border">
-                        {data.customer_name || "-"}
-                      </td>
-                      <td className="px-4 py-2 border">
-                        {data.customer_part_no || "-"}
-                      </td>
-                      <td className="px-4 py-2 border">
-                        {data.material_main || "-"}
-                      </td>
-
-                      <td className="px-4 py-2 border">{data.rev || "-"}</td>
-
-                      <td className="px-4 py-2 border break-words max-w-[200px]">
-                        {data.description || "-"}
-                      </td>
+                      <td className="px-4 py-2">{d.customer_name || "-"}</td>
+                      <td className="px-4 py-2">{d.material_main || "-"}</td>
+                      <td className="px-4 py-2">{d.cost || "-"}</td>
+                      <td className="px-4 py-2">{d.rev || "-"}</td>
+                      <td className="px-4 py-2">{d.coolant_hole || "-"}</td>
+                      <td className="px-4 py-2">{d.flute || "-"}</td>
+                      <td className="px-4 py-2">{d.coating || "-"}</td>
+                      <td className="px-4 py-2">{d.drawing || "-"}</td>
                     </tr>
                   );
-                })}
-              </tbody>
-            </table>
-          )}
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan="10"
+                    className="text-center py-6 text-gray-500 italic"
+                  >
+                    No history found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
