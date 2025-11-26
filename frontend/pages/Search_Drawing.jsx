@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const Search_Drawing = () => {
   const router = useRouter();
+  const [role, setRole] = useState("");
 
   const [form, setForm] = useState({
     customerName: "",
@@ -16,12 +17,11 @@ const Search_Drawing = () => {
     customerPart: "",
     description: "",
     materialMain: "",
-    pcdGrade: "",
     coolantHole: "",
     flute: "",
     cloating: "",
-    shankMaterial: "",
-    shankShape: "",
+    price: "",
+    cost: "",
   });
 
   const handleChange = (e) => {
@@ -32,7 +32,8 @@ const Search_Drawing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { dateRange } = form;
-    if (
+
+    const isEmpty =
       !form.customerName &&
       !dateRange.start &&
       !dateRange.end &&
@@ -41,18 +42,16 @@ const Search_Drawing = () => {
       !form.customerPart &&
       !form.description &&
       !form.materialMain &&
-      !form.pcdGrade &&
       !form.coolantHole &&
       !form.flute &&
       !form.cloating &&
-      !form.shankMaterial &&
-      !form.shankShape
-    ) {
+      !form.price &&
+      !form.cost;
+    if (isEmpty) {
       localStorage.removeItem("searchResults");
       router.push("/Data");
       return;
     }
-
     try {
       const payload = {
         ...form,
@@ -64,6 +63,7 @@ const Search_Drawing = () => {
         "http://localhost:4000/searchDrawing",
         payload
       );
+
       if (res.data.success) {
         localStorage.setItem("searchResults", JSON.stringify(res.data.data));
         router.push("/Data");
@@ -72,6 +72,11 @@ const Search_Drawing = () => {
       console.error("Search Error:", err);
     }
   };
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
+  }, []);
 
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
@@ -86,8 +91,8 @@ const Search_Drawing = () => {
               Search Drawing
             </h1>
 
-            <div className="grid grid-cols-2 gap-5">
-              <div className="flex flex-col col-span-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col">
                 <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Date
                 </label>
@@ -107,19 +112,23 @@ const Search_Drawing = () => {
                 />
               </div>
 
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Customer Name
+                </label>
+                <input
+                  type="text"
+                  name="customerName"
+                  value={form.customerName}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                />
+              </div>
               {[
-                ["Customer Name", "customerName"],
                 ["Drawing No.", "drawingNo"],
                 ["Rev", "rev"],
                 ["Customer Part No.", "customerPart"],
                 ["Description", "description"],
-                ["Material", "materialMain"],
-                ["PCD Grade", "pcdGrade"],
-                ["Coolant Hole", "coolantHole"],
-                ["Flute", "flute"],
-                ["Coating", "cloating"],
-                ["Shank Material", "shankMaterial"],
-                ["Shank Shape", "shankShape"],
               ].map(([label, name]) => (
                 <div key={name} className="flex flex-col">
                   <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
@@ -134,6 +143,107 @@ const Search_Drawing = () => {
                   />
                 </div>
               ))}
+
+              {role !== "Engineers" && (
+                <div className="flex flex-col">
+                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                    Sales Price
+                  </label>
+                  <input
+                    type="text"
+                    name="price"
+                    value={form.price}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  />
+                </div>
+              )}
+
+              {role !== "Sale" && (
+                <div className="flex flex-col">
+                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                    Cost
+                  </label>
+                  <input
+                    type="text"
+                    name="cost"
+                    value={form.cost}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  />
+                </div>
+              )}
+
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Material
+                </label>
+                <select
+                  name="materialMain"
+                  value={form.materialMain}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                >
+                  <option value="">--- Select Material ---</option>
+                  <option value="CB">CB</option>
+                  <option value="STL+CB">STL+CB</option>
+                  <option value="CB+PCD">CB+PCD</option>
+                  <option value="STL+PCD">STL+PCD</option>
+                  <option value="STL+CB+PCD">STL+CB+PCD</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Flute
+                </label>
+                <select
+                  name="flute"
+                  value={form.flute}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                >
+                  <option value="">--- Select Flute ---</option>
+                  <option value="STRAIGHT">STRAIGHT</option>
+                  <option value="HELIX">HELIX</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Coolant
+                </label>
+                <select
+                  name="coolantHole"
+                  value={form.coolantHole}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                >
+                  <option value="">--- Select Coolant ---</option>
+                  <option value="YES">YES</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Coating
+                </label>
+                <select
+                  name="cloating"
+                  value={form.cloating}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                >
+                  <option value="">--- Select Coating ---</option>
+                  <option value="TiAlN">TiAlN (FUTURA)</option>
+                  <option value="AlTiN">AlTiN (LATUMA)</option>
+                  <option value="TiN">TiN (A)</option>
+                  <option value="TiCN">TiCN (B)</option>
+                  <option value="DLC">DLC (HARDCARBON)</option>
+                  <option value="AlCrN">AlCrN (AlCrN)</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex justify-center mt-10">
