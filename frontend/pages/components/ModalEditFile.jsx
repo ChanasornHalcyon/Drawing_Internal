@@ -12,7 +12,7 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
     material_main: "",
     coolant_hole: "",
     flute: "",
-    cloating: "",
+    coating: "",
     price: "",
     cost: "",
   });
@@ -31,7 +31,7 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
         material_main: sendData.material_main || "",
         coolant_hole: sendData.coolant_hole || "",
         flute: sendData.flute || "",
-        cloating: sendData.cloating || sendData.coating || "",
+        coating: sendData.coating || "",
         price: sendData.price || "",
         cost: sendData.cost || "",
       });
@@ -100,33 +100,6 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
                 className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Rev
-              </label>
-              <input
-                type="text"
-                name="rev"
-                value={form.rev}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Customer Name
-              </label>
-              <input
-                type="text"
-                name="customer_name"
-                value={form.customer_name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
-              />
-            </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Description
@@ -135,6 +108,18 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
                 type="text"
                 name="description"
                 value={form.description}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Customer Name
+              </label>
+              <input
+                type="text"
+                name="customer_name"
+                value={form.customer_name}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
               />
@@ -158,59 +143,6 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
                 <option value="STL+CB+PCD">STL+CB+PCD</option>
               </select>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Flute
-              </label>
-              <select
-                name="flute"
-                value={form.flute}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
-              >
-                <option value="">--- Select Flute ---</option>
-                <option value="STRAIGHT">STRAIGHT</option>
-                <option value="HELIX">HELIX</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Coolant
-              </label>
-              <select
-                name="coolant_hole"
-                value={form.coolant_hole}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
-              >
-                <option value="">--- Select Coolant ---</option>
-                <option value="YES">YES</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Coating
-              </label>
-              <select
-                name="cloating"
-                value={form.cloating}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
-              >
-                <option value="">--- Select Coating ---</option>
-                <option value="TiAlN">TiAlN (FUTURA)</option>
-                <option value="AlTiN">AlTiN (LATUMA)</option>
-                <option value="TiN">TiN (A)</option>
-                <option value="TiCN">TiCN (B)</option>
-                <option value="DLC">DLC (HARDCARBON)</option>
-                <option value="AlCrN">AlCrN</option>
-              </select>
-            </div>
-
             {role !== "Engineers" && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -240,13 +172,77 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
                 />
               </div>
             )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rev
+              </label>
+              <input
+                type="text"
+                name="rev"
+                value={form.rev}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Coolant
+              </label>
+              <select
+                name="coolant_hole"
+                value={form.coolant_hole}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
+              >
+                <option value="">--- Select Coolant ---</option>
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Flute
+              </label>
+              <select
+                name="flute"
+                value={form.flute}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
+              >
+                <option value="">--- Select Flute ---</option>
+                <option value="STRAIGHT">STRAIGHT</option>
+                <option value="HELIX">HELIX</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Coating
+              </label>
+              <select
+                name="coating"
+                value={form.coating}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border text-black border-gray-300 rounded-md"
+              >
+                <option value="">--- Select Coating ---</option>
+                <option value="TiAlN">TiAlN (FUTURA)</option>
+                <option value="AlTiN">AlTiN (LATUMA)</option>
+                <option value="TiN(A)">TiN (A)</option>
+                <option value="TiCN(B)">TiCN (B)</option>
+                <option value="DLC">DLC (HARDCARBON)</option>
+                <option value="AlCrN">AlCrN</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex justify-end gap-2 p-4 border-t bg-white sticky bottom-0">
             <button
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+              className="px-4 py-2 rounded-lg bg-gray-200 text-black hover:bg-gray-300 cursor-pointer"
             >
               Cancel
             </button>
@@ -254,7 +250,7 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
             <button
               onClick={handleSubmitClick}
               disabled={submitting}
-              className="px-4 py-2 rounded-lg bg-[#3698FC] text-white hover:bg-blue-600"
+              className="px-4 py-2 rounded-lg bg-[#3698FC] text-white hover:bg-blue-600 cursor-pointer"
             >
               {submitting ? "Saving..." : "Submit"}
             </button>

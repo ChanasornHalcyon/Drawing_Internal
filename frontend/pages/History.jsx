@@ -33,13 +33,11 @@ const History = () => {
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
-
-      <div className="container mx-auto max-w-[1450px] pt-32">
+      <div className="container mx-auto max-w-[1450px] pt-32 pb-10">
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
           <h2 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
             History of Drawing
           </h2>
-
           <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
             <thead className="bg-linear-to-br from-[#1C70D3] to-[#155BB5] text-white">
               <tr>

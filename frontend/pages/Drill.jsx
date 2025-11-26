@@ -250,8 +250,8 @@ const Drill = () => {
                   <option value="">--- Select Cloating ---</option>
                   <option value="TiAlN">TiAlN (FUTURA)</option>
                   <option value="AlTiN">AlTiN (LATUMA)</option>
-                  <option value="TiN"> TiN (A)</option>
-                  <option value="TiCN"> TiCN (B)</option>
+                  <option value="TiN(A)">TiN (A)</option>
+                  <option value="TiCN(B)">TiCN (B)</option>
                   <option value="DLC"> DLC (HARDCARBON*)</option>
                   <option value="AlCrN">AlCrN (AlCrN)</option>
                 </select>
