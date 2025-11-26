@@ -41,38 +41,47 @@ const History = () => {
           {history.length === 0 ? (
             <p className="text-gray-500 text-center">No history found.</p>
           ) : (
-            <table className="min-w-full text-sm text-gray-700 border border-gray-300 rounded-lg overflow-hidden">
-              <thead className="bg-[#1C70D3] text-white">
+            <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+              <thead className="bg-[#1C70D3] text-white sticky top-0 z-10">
                 <tr>
-                  <th className="px-4 py-2 border text-left">Modified At</th>
-                  <th className="px-4 py-2 border text-left">Modified By</th>
-                  <th className="px-4 py-2 border text-left">Drawing No.</th>
-                  <th className="px-4 py-2 border text-left">Customer Name</th>
-                  <th className="px-4 py-2 border text-left">
-                    Customer Part No.
-                  </th>
-                  <th className="px-4 py-2 border text-left">Material</th>
-                  <th className="px-4 py-2 border text-left">PCD Grade</th>
-                  <th className="px-4 py-2 borde text-left">Rev</th>
-                  <th className="px-4 py-2 border text-left">Description</th>
+                  {[
+                    "Modified At",
+                    "Modified By",
+                    "Drawing No.",
+                    "Customer Name",
+                    "Customer Part No.",
+                    "Material",
+                    "Rev",
+                    "Description",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="px-4 py-3 border border-[#1C70D3]/40 text-left text-[13px] font-semibold whitespace-nowrap"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
+
               <tbody>
                 {history.map((item) => {
                   const data = parseData(item.data);
                   return (
                     <tr
                       key={item.id}
-                      className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
+                      className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition-all duration-150"
                     >
-                      <td className="px-4 py-2 border text-nowrap">
+                      <td className="px-4 py-2 border whitespace-nowrap text-gray-800">
                         {new Date(item.modified_at).toLocaleString("th-TH", {
                           dateStyle: "short",
                           timeStyle: "short",
                           timeZone: "Asia/Bangkok",
                         })}
                       </td>
+
                       <td className="px-4 py-2 border">{item.modified_by}</td>
+
                       <td className="px-4 py-2 border">
                         {data.drawing_no || "-"}
                       </td>
@@ -85,11 +94,10 @@ const History = () => {
                       <td className="px-4 py-2 border">
                         {data.material_main || "-"}
                       </td>
-                      <td className="px-4 py-2 border">
-                        {data.pcd_grade || "-"}
-                      </td>
+
                       <td className="px-4 py-2 border">{data.rev || "-"}</td>
-                      <td className="px-4 py-2 border">
+
+                      <td className="px-4 py-2 border break-words max-w-[200px]">
                         {data.description || "-"}
                       </td>
                     </tr>

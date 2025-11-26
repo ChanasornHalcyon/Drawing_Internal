@@ -250,6 +250,7 @@ app.post("/searchDrawing", async (req, res) => {
 app.put("/updateDrawing/:id", async (req, res) => {
   const drawingId = req.params.id;
   const updatedData = req.body;
+
   try {
     const formattedDate = updatedData.date
       ? new Date(updatedData.date).toISOString().split("T")[0]
@@ -259,24 +260,34 @@ app.put("/updateDrawing/:id", async (req, res) => {
       "SELECT * FROM drawing_records WHERE id = ?",
       [drawingId]
     );
+
     if (!oldRows.length)
       return res.status(404).json({ success: false, message: "Not found" });
 
     const oldData = oldRows[0];
 
-    await db.query(
+    -(await db.query(
       `INSERT INTO drawing_history (drawing_id, modified_by, data)
        VALUES (?, ?, ?)`,
       [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldData)]
-    );
+    ));
 
     await db.query(
       `
       UPDATE drawing_records
       SET 
-        customer_name = ?, date = ?, drawing_no = ?, rev = ?, customer_part_no = ?,
-        description = ?, material_main = ?, pcd_grade = ?, price = ?, cost = ?,
-        coolant_hole = ?, flute = ?, coating = ?, shank_material = ?, shank_shape = ?
+        customer_name = ?, 
+        date = ?, 
+        drawing_no = ?, 
+        rev = ?, 
+        customer_part_no = ?,
+        description = ?, 
+        material_main = ?, 
+        price = ?, 
+        cost = ?,
+        coolant_hole = ?, 
+        flute = ?, 
+        coating = ?
       WHERE id = ?
     `,
       [
@@ -287,17 +298,15 @@ app.put("/updateDrawing/:id", async (req, res) => {
         updatedData.customer_part_no,
         updatedData.description,
         updatedData.material_main,
-        updatedData.pcd_grade,
         updatedData.price,
         updatedData.cost,
         updatedData.coolant_hole,
         updatedData.flute,
         updatedData.coating,
-        updatedData.shank_material,
-        updatedData.shank_shape,
         drawingId,
       ]
     );
+
     res.json({ success: true });
   } catch (err) {
     console.error("Update error:", err);

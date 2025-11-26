@@ -77,9 +77,9 @@ const Data = () => {
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-32">
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-            <thead className="bg-gradient-to-r from-[#1C70D3] to-[#155BB5] text-white shadow">
+        <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
+          <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden  ">
+            <thead className="bg-linear-to-br from-[#1C70D3] to-[#155BB5] text-white shadow">
               <tr>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
                   Date Drawing
@@ -94,11 +94,11 @@ const Data = () => {
                   Description
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
-                  Customer Name
+                  Customer 
                 </th>
-                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
+                {/* <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
                   Customer Part No.
-                </th>
+                </th> */}
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
                   Material
                 </th>
@@ -118,7 +118,7 @@ const Data = () => {
                   Rev
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
-                  Coolant Hole
+                  Coolant 
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide">
                   Flute
@@ -169,7 +169,7 @@ const Data = () => {
                     <td className="px-4 py-2">{item.drawing_no}</td>
                     <td className="px-4 py-2">{item.description}</td>
                     <td className="px-4 py-2">{item.customer_name}</td>
-                    <td className="px-4 py-2">{item.customer_part_no}</td>
+                    {/* <td className="px-4 py-2">{item.customer_part_no}</td> */}
                     <td className="px-4 py-2">{item.material_main}</td>
 
                     {role !== "Engineers" && (
@@ -206,14 +206,14 @@ const Data = () => {
                             onClick={() => handleEditClick(item)}
                             className=" cursor-pointer px-3 py-1 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition shadow-sm border border-blue-200"
                           >
-                            Edit
+                            Update
                           </button>
-                          <button
+                          {/* <button
                             onClick={() => handleDeleteClick(item)}
                             className=" cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
                           >
                             Delete
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     )}
@@ -250,14 +250,14 @@ const Data = () => {
           sendData={selectedItem}
         />
       )}
-      {showDeleteModal && (
+      {/* {showDeleteModal && (
         <ModalDeleteFile
           onClose={() => setShowDeleteModal(false)}
           onConfirm={handleConfirmDelete}
           submitting={submitting}
           sendData={selectedItem}
         />
-      )}
+      )} */}
     </div>
   );
 };

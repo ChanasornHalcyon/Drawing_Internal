@@ -12,22 +12,28 @@ const Drill = () => {
     customerPart: "",
     description: "",
     materialMain: "",
-    materialSub: "",
     pcdGrade: "",
     price: "",
     cost: "",
     CoolantHole: "",
     Flute: "",
     Cloating: "",
-    ShankMaterial: "",
-    ShankShape: "",
+    A1: "",
+    A2: "",
+    A3: "",
+    D1: "",
+    D2: "",
+    D3: "",
+    Cl1: "",
+    CL2: "",
+    TL: "",
     file: null,
   });
 
   const [preview, setPreview] = useState(null);
   const [fileType, setFileType] = useState(null);
   const [role, setRole] = useState("");
-
+  const [selectedDrawing, setSelectedDrawing] = useState("");
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files && files.length > 0) {
@@ -71,6 +77,15 @@ const Drill = () => {
           CoolantHole: "",
           Flute: "",
           Cloating: "",
+          A1: "",
+          A2: "",
+          A3: "",
+          D1: "",
+          D2: "",
+          D3: "",
+          Cl1: "",
+          CL2: "",
+          TL: "",
           file: null,
         });
         setPreview(null);
@@ -91,7 +106,7 @@ const Drill = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-100 flex flex-col">
         <div className="flex justify-center py-10 px-6 ">
           <form
             onSubmit={handleSubmit}
@@ -100,8 +115,45 @@ const Drill = () => {
             <h1 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
               Drill Drawing
             </h1>
+            <div className="flex flex-col">
+              <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                Select Drawing Type
+              </label>
 
-            <div className="grid grid-cols-2 gap-5">
+              <select
+                name="drawingType"
+                value={selectedDrawing}
+                onChange={(e) => setSelectedDrawing(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm
+               focus:border-[#1C70D3] transition"
+              >
+                <option value="">--- Select Drawing ---</option>
+                <option value="Drawing1.png">CDR CARBIDE DRILL STRAIGTH</option>
+                <option value="Drawing2.png">CDR CARBIDE DRILL HELIX </option>
+                <option value="Drawing3.png">DDR PCD DRILL STRAIGTH </option>
+                <option value="Drawing4.png">DDR PCD DRILL HELIX</option>
+                <option value="Drawing5.png">
+                  DDRS PCD SOLID DRILL STRAIGTH
+                </option>
+                <option value="Drawing6.png">
+                  DDRS PCD SOLID DRILL HELIX{" "}
+                </option>
+                <option value="Drawing7.png">DDRW PCD SANDWICH DRILL </option>
+                <option value="Drawing8.png">
+                  DDRW PCD SANDWICH DRILL HELIX
+                </option>
+              </select>
+            </div>
+            {selectedDrawing && (
+              <div className="flex justify-center mt-6">
+                <img
+                  src={`/${selectedDrawing}`}
+                  className="w-[600px] h-auto object-contain rounded-xl shadow-lg border"
+                  alt="Drawing Preview"
+                />
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-5 mt-5">
               {[
                 ["Customer Name", "customerName"],
                 ["Date", "date", "date"],
@@ -109,6 +161,15 @@ const Drill = () => {
                 ["Rev", "rev"],
                 ["Customer Part  No.", "customerPart"],
                 ["Description", "description"],
+                ["A1", "A1"],
+                ["A2", "A2"],
+                ["A3", "A3"],
+                ["D1", "D1"],
+                ["D2", "D2"],
+                ["D3", "D3"],
+                ["CL1", "CL1"],
+                ["CL2", "CL2"],
+                ["TL", "TL"],
               ].map(([label, name, type = "text"]) => (
                 <div key={name} className="flex flex-col">
                   <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">

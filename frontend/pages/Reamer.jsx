@@ -89,11 +89,11 @@ const Reamer = () => {
     const userRole = localStorage.getItem("role");
     setRole(userRole || "");
   }, []);
-  
+
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-100 flex flex-col">
         <div className="flex justify-center py-10 px-6 ">
           <form
             onSubmit={handleSubmit}
