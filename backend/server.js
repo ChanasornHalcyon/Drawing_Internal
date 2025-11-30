@@ -235,9 +235,9 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND LOWER(shank_shape) LIKE LOWER(?)";
       params.push(`%${shankShape}%`);
     }
-    if (req.body.type) {
+    if (type) {
       sql += " AND LOWER(type) LIKE LOWER(?)";
-      params.push(`%${req.body.type}%`);
+      params.push(`%${type}%`);
     }
     sql += " ORDER BY id ASC";
 
