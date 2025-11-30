@@ -88,6 +88,7 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       CL1,
       CL2,
       TL,
+      type,
     } = req.body;
 
     let file_url = null;
@@ -97,11 +98,12 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
     }
 
     const sql = `
-      INSERT INTO drawing_records 
-      (customer_name, date, drawing_no, rev, customer_part_no, description,
-       material_main, price, cost, coolant_hole, flute, coating,
-       file_url, A1, A2, A3, D1, D2, D3, CL1, CL2, TL)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     INSERT INTO drawing_records 
+(customer_name, date, drawing_no, rev, customer_part_no, description,
+ material_main, price, cost, coolant_hole, flute, coating, file_url,
+ A1, A2, A3, D1, D2, D3, CL1, CL2, TL, type)
+ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
     `;
 
     await db.query(sql, [
@@ -127,6 +129,7 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       CL1,
       CL2,
       TL,
+      type,
     ]);
 
     res.json({ success: true, message: "Drawing uploaded successfully!" });
@@ -294,22 +297,23 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
 
     await db.query(
       `
-      UPDATE drawing_records
-      SET 
-        customer_name = ?, 
-        date = ?, 
-        drawing_no = ?, 
-        rev = ?, 
-        description = ?, 
-        material_main = ?, 
-        price = ?, 
-        cost = ?,
-        coolant_hole = ?, 
-        flute = ?, 
-        coating = ?,
-        file_url = ?
-      WHERE id = ?
-    `,
+  UPDATE drawing_records
+  SET 
+    customer_name = ?, 
+    date = ?, 
+    drawing_no = ?, 
+    rev = ?, 
+    description = ?, 
+    material_main = ?, 
+    price = ?, 
+    cost = ?,
+    coolant_hole = ?, 
+    flute = ?, 
+    coating = ?,
+    type = ?, 
+    file_url = ?
+  WHERE id = ?
+`,
       [
         updatedData.customer_name,
         formattedDate,
@@ -322,6 +326,7 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
         updatedData.coolant_hole,
         updatedData.flute,
         updatedData.coating,
+        updatedData.type,
         fileUrl,
         drawingId,
       ]
