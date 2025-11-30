@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import { useRouter } from "next/router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaFilePdf } from "react-icons/fa6";
+
 const Search_Drawing = () => {
   const router = useRouter();
   const [role, setRole] = useState("");
@@ -21,7 +21,14 @@ const Search_Drawing = () => {
     cloating: "",
     price: "",
     cost: "",
+    type: "",
+    img: "",
   });
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,24 +52,26 @@ const Search_Drawing = () => {
       !form.flute &&
       !form.cloating &&
       !form.price &&
-      !form.cost;
+      !form.cost &&
+      !form.type;
+
     if (isEmpty) {
       localStorage.removeItem("searchResults");
       router.push("/Data");
       return;
     }
-    try {
-      const payload = {
-        ...form,
-        startDate: dateRange.start,
-        endDate: dateRange.end,
-      };
 
+    const payload = {
+      ...form,
+      startDate: dateRange.start,
+      endDate: dateRange.end,
+    };
+
+    try {
       const res = await axios.post(
         "http://localhost:4000/searchDrawing",
         payload
       );
-
       if (res.data.success) {
         localStorage.setItem("searchResults", JSON.stringify(res.data.data));
         router.push("/Data");
@@ -73,11 +82,6 @@ const Search_Drawing = () => {
       console.error("Search Error:", err);
     }
   };
-
-  useEffect(() => {
-    const userRole = localStorage.getItem("role");
-    setRole(userRole || "");
-  }, []);
 
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
@@ -92,9 +96,76 @@ const Search_Drawing = () => {
               Search Drawing
             </h1>
 
+            <div className="flex flex-col mb-5">
+              <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                Drawing Type
+              </label>
+
+              <select
+                name="type"
+                value={form.type}
+                onChange={(e) => {
+                  const opt = e.target.selectedOptions[0];
+                  setForm({
+                    ...form,
+                    type: opt.value,
+                    img: opt.getAttribute("data-img"),
+                  });
+                }}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+              >
+                <option value="">--- Select Drawing ---</option>
+                <option
+                  value="CDR CARBIDE DRILL STRAIGTH"
+                  data-img="Drawing1.png"
+                >
+                  CDR CARBIDE DRILL STRAIGTH
+                </option>
+                <option value="CDR CARBIDE DRILL HELIX" data-img="Drawing2.png">
+                  CDR CARBIDE DRILL HELIX
+                </option>
+                <option value="DDR PCD DRILL STRAIGTH" data-img="Drawing3.png">
+                  DDR PCD DRILL STRAIGTH
+                </option>
+                <option value="DDR PCD DRILL HELIX" data-img="Drawing4.png">
+                  DDR PCD DRILL HELIX
+                </option>
+                <option
+                  value="DDRS PCD SOLID DRILL STRAIGTH"
+                  data-img="Drawing5.png"
+                >
+                  DDRS PCD SOLID DRILL STRAIGTH
+                </option>
+                <option
+                  value="DDRS PCD SOLID DRILL HELIX"
+                  data-img="Drawing6.png"
+                >
+                  DDRS PCD SOLID DRILL HELIX
+                </option>
+                <option value="DDRW PCD SANDWICH DRILL" data-img="Drawing7.png">
+                  DDRW PCD SANDWICH DRILL
+                </option>
+                <option
+                  value="DDRW PCD SANDWICH DRILL HELIX"
+                  data-img="Drawing8.png"
+                >
+                  DDRW PCD SANDWICH DRILL HELIX
+                </option>
+              </select>
+
+              {form.img && (
+                <div className="flex justify-center mt-6">
+                  <img
+                    src={`/${form.img}`}
+                    className="w-[600px] h-auto object-contain rounded-xl shadow-lg border"
+                  />
+                </div>
+              )}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Date
                 </label>
                 <DatePicker
@@ -102,10 +173,7 @@ const Search_Drawing = () => {
                   startDate={form.dateRange.start}
                   endDate={form.dateRange.end}
                   onChange={([start, end]) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      dateRange: { start, end },
-                    }))
+                    setForm((prev) => ({ ...prev, dateRange: { start, end } }))
                   }
                   isClearable
                   placeholderText="Select start and end date"
@@ -114,7 +182,7 @@ const Search_Drawing = () => {
               </div>
 
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Customer Name
                 </label>
                 <input
@@ -125,6 +193,7 @@ const Search_Drawing = () => {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                 />
               </div>
+
               {[
                 ["Drawing No.", "drawingNo"],
                 ["Rev", "rev"],
@@ -132,7 +201,7 @@ const Search_Drawing = () => {
                 ["Description", "description"],
               ].map(([label, name]) => (
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                     {label}
                   </label>
                   <input
@@ -147,7 +216,7 @@ const Search_Drawing = () => {
 
               {role !== "Engineers" && (
                 <div className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                     Sales Price
                   </label>
                   <input
@@ -162,7 +231,7 @@ const Search_Drawing = () => {
 
               {role !== "Sale" && (
                 <div className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                     Cost
                   </label>
                   <input
@@ -176,7 +245,7 @@ const Search_Drawing = () => {
               )}
 
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Material
                 </label>
                 <select
@@ -195,7 +264,7 @@ const Search_Drawing = () => {
               </div>
 
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Flute
                 </label>
                 <select
@@ -211,7 +280,7 @@ const Search_Drawing = () => {
               </div>
 
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Coolant
                 </label>
                 <select
@@ -227,7 +296,7 @@ const Search_Drawing = () => {
               </div>
 
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Coating
                 </label>
                 <select

@@ -169,6 +169,7 @@ app.post("/searchDrawing", async (req, res) => {
       cloating,
       shankMaterial,
       shankShape,
+      type,
     } = req.body;
 
     let sql = "SELECT * FROM drawing_records WHERE 1=1";
@@ -234,7 +235,10 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND LOWER(shank_shape) LIKE LOWER(?)";
       params.push(`%${shankShape}%`);
     }
-
+    if (req.body.type) {
+      sql += " AND LOWER(type) LIKE LOWER(?)";
+      params.push(`%${req.body.type}%`);
+    }
     sql += " ORDER BY id ASC";
 
     const [rows] = await db.query(sql, params);

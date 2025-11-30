@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
-
-
+import { FaFilePdf } from "react-icons/fa6";
 const Drill = () => {
   const [form, setForm] = useState({
     customerName: "",
@@ -27,13 +26,14 @@ const Drill = () => {
     Cl1: "",
     CL2: "",
     TL: "",
+    type: "",
     file: null,
   });
 
   const [preview, setPreview] = useState(null);
   const [fileType, setFileType] = useState(null);
   const [role, setRole] = useState("");
-  const [selectedDrawing, setSelectedDrawing] = useState("");
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files && files.length > 0) {
@@ -86,6 +86,7 @@ const Drill = () => {
           Cl1: "",
           CL2: "",
           TL: "",
+          type: "",
           file: null,
         });
         setPreview(null);
@@ -121,33 +122,69 @@ const Drill = () => {
               </label>
 
               <select
-                name="drawingType"
-                value={selectedDrawing}
-                onChange={(e) => setSelectedDrawing(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm
-               focus:border-[#1C70D3] transition"
+                name="type"
+                value={form.type}
+                onChange={(e) => {
+                  const option = e.target.selectedOptions[0];
+                  setForm({
+                    ...form,
+                    type: option.value,
+                    img: option.getAttribute("data-img"),
+                  });
+                }}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
               >
                 <option value="">--- Select Drawing ---</option>
-                <option value="Drawing1.png">CDR CARBIDE DRILL STRAIGTH</option>
-                <option value="Drawing2.png">CDR CARBIDE DRILL HELIX </option>
-                <option value="Drawing3.png">DDR PCD DRILL STRAIGTH </option>
-                <option value="Drawing4.png">DDR PCD DRILL HELIX</option>
-                <option value="Drawing5.png">
+
+                <option
+                  value="CDR CARBIDE DRILL STRAIGTH"
+                  data-img="Drawing1.png"
+                >
+                  CDR CARBIDE DRILL STRAIGTH
+                </option>
+
+                <option value="CDR CARBIDE DRILL HELIX" data-img="Drawing2.png">
+                  CDR CARBIDE DRILL HELIX
+                </option>
+
+                <option value="DDR PCD DRILL STRAIGTH" data-img="Drawing3.png">
+                  DDR PCD DRILL STRAIGTH
+                </option>
+
+                <option value="DDR PCD DRILL HELIX" data-img="Drawing4.png">
+                  DDR PCD DRILL HELIX
+                </option>
+
+                <option
+                  value="DDRS PCD SOLID DRILL STRAIGTH"
+                  data-img="Drawing5.png"
+                >
                   DDRS PCD SOLID DRILL STRAIGTH
                 </option>
-                <option value="Drawing6.png">
-                  DDRS PCD SOLID DRILL HELIX{" "}
+
+                <option
+                  value="DDRS PCD SOLID DRILL HELIX"
+                  data-img="Drawing6.png"
+                >
+                  DDRS PCD SOLID DRILL HELIX
                 </option>
-                <option value="Drawing7.png">DDRW PCD SANDWICH DRILL </option>
-                <option value="Drawing8.png">
+
+                <option value="DDRW PCD SANDWICH DRILL" data-img="Drawing7.png">
+                  DDRW PCD SANDWICH DRILL
+                </option>
+
+                <option
+                  value="DDRW PCD SANDWICH DRILL HELIX"
+                  data-img="Drawing8.png"
+                >
                   DDRW PCD SANDWICH DRILL HELIX
                 </option>
               </select>
             </div>
-            {selectedDrawing && (
+            {form.img && (
               <div className="flex justify-center mt-6">
                 <img
-                  src={`/${selectedDrawing}`}
+                  src={`/${form.img}`}
                   className="w-[600px] h-auto object-contain rounded-xl shadow-lg border"
                   alt="Drawing Preview"
                 />
