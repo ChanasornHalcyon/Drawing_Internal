@@ -64,6 +64,19 @@ app.post("/verifyUser", async (req, res) => {
   }
 });
 
+app.get("/getUser", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT id, username, role,name FROM user");
+    res.json({
+      success: true,
+      users: rows,
+    });
+  } catch (err) {
+    console.error("Fetch users error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
     const {
