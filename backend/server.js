@@ -64,6 +64,20 @@ app.post("/verifyUser", async (req, res) => {
   }
 });
 
+app.post("/addUser", async (req, res) => {
+  const { name, username, password, role } = req.body;
+  try {
+    await db.query(
+      "INSERT INTO user (name, username, password, role) VALUES (?, ?, ?, ?)",
+      [name, username, password, role]
+    );
+    res.json({ success: true, message: "User added" });
+  } catch (err) {
+    console.error("Add user error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 app.get("/getUser", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT id, username, role,name FROM user");

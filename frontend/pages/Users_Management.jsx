@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
+import ModalAddUser from "./components/ModalAddUser";
 
 const Users_Management = () => {
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    username: "",
+    password: "",
+    role: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
 
   const getUser = async () => {
     try {
       const res = await axios.get("http://localhost:4000/getUser");
-      console.log("API Response:", res.data);
       setData(res.data.users);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -20,7 +28,6 @@ const Users_Management = () => {
   useEffect(() => {
     getUser();
     const userRole = localStorage.getItem("role");
-    console.log("role from localStorage:", userRole);
     setRole(userRole || "");
   }, []);
 
@@ -30,16 +37,21 @@ const Users_Management = () => {
       <div className="container mx-auto max-w-[1450px] pt-24">
         <div className="flex justify-end mb-4">
           <button
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#DEB887] 
+            onClick={() => {
+              setForm({ name: "", username: "", password: "", role: "" });
+              setShowModal(true);
+            }}
+            className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 
              text-white text-sm font-semibold rounded-full shadow-md cursor-pointer 
-             hover:brightness-110 hover:shadow-lg transition duration-200"
+             hover:bg-pink-600 hover:shadow-lg transition duration-200"
           >
             Add User
           </button>
         </div>
+
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
-          <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden  ">
-            <thead className="bg-linear-to-br from-[#1C70D3] to-[#155BB5] text-white shadow">
+          <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+            <thead className="bg-gradient-to-br from-[#1C70D3] to-[#155BB5] text-white shadow">
               <tr>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Name
@@ -89,6 +101,17 @@ const Users_Management = () => {
             </tbody>
           </table>
         </div>
+
+        {showModal && (
+          <ModalAddUser
+            onClose={() => setShowModal(false)}
+            submitting={submitting}
+            setSubmitting={setSubmitting}
+            refreshData={getUser}
+            form={form}
+            setForm={setForm}
+          />
+        )}
       </div>
     </div>
   );
