@@ -3,12 +3,14 @@ import axios from "axios";
 import Navbar from "./components/Navbar";
 import ModalAddUser from "./components/ModalAddUser";
 import ModalResetPassword from "./components/ModalResetPassword";
-
+import ModalDeleteUser from "./components/ModalDeleteUser";
 const Users_Management = () => {
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false); // ✅
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [form, setForm] = useState({
     id: "",
     name: "",
@@ -26,6 +28,11 @@ const Users_Management = () => {
       console.error("Error fetching data:", err);
       setData([]);
     }
+  };
+
+  const handleOpenDelete = (user) => {
+    setSelectedUser(user);
+    setShowDeleteModal(true);
   };
 
   useEffect(() => {
@@ -107,7 +114,10 @@ const Users_Management = () => {
                     </button>
                   </td>
                   <td className="px-4 py-2 text-nowrap">
-                    <button className="cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200">
+                    <button
+                      onClick={() => handleOpenDelete(item)}
+                      className="cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
+                    >
                       Delete
                     </button>
                   </td>
@@ -136,6 +146,15 @@ const Users_Management = () => {
             refreshData={getUser}
             form={form}
             setForm={setForm}
+          />
+        )}
+        {showDeleteModal && (
+          <ModalDeleteUser
+            onClose={() => setShowDeleteModal(false)}
+            submitting={submitting}
+            setSubmitting={setSubmitting}
+            refreshData={getUser}
+            form={selectedUser}
           />
         )}
       </div>

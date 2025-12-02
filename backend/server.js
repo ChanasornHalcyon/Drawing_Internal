@@ -100,6 +100,17 @@ app.get("/getUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+app.delete("/deleteUser/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await db.query("DELETE FROM user WHERE id = ?", [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Delete user error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 app.post("/pushData", upload.single("file"), async (req, res) => {
   try {
