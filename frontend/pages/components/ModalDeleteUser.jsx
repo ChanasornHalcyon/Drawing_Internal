@@ -51,7 +51,7 @@ const ModalDeleteUser = ({
           </div>
 
           <div className="p-5 text-center text-gray-700 text-base">
-            คุณต้องการลบผู้ใช้{" "}
+            คุณต้องการลบ User{" "}
             <span className="font-semibold text-black">{form?.username}</span>{" "}
             ใช่หรือไม่?
           </div>
