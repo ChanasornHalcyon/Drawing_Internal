@@ -77,6 +77,16 @@ app.post("/addUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+app.put("/updatePassword", async (req, res) => {
+  const { id, password } = req.body;
+  try {
+    await db.query("UPDATE user SET password = ? WHERE id = ?", [password, id]);
+    res.json({ success: true, message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Update password error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 app.get("/getUser", async (req, res) => {
   try {

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import ModalAddUser from "./components/ModalAddUser";
+import ModalResetPassword from "./components/ModalResetPassword";
 
 const Users_Management = () => {
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false); // ✅
   const [form, setForm] = useState({
+    id: "",
     name: "",
     username: "",
     password: "",
@@ -38,7 +41,13 @@ const Users_Management = () => {
         <div className="flex justify-end mb-4">
           <button
             onClick={() => {
-              setForm({ name: "", username: "", password: "", role: "" });
+              setForm({
+                id: "",
+                name: "",
+                username: "",
+                password: "",
+                role: "",
+              });
               setShowModal(true);
             }}
             className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 
@@ -87,7 +96,13 @@ const Users_Management = () => {
                     {item.role}
                   </td>
                   <td className="px-4 py-2 text-nowrap">
-                    <button className="cursor-pointer px-3 py-1 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition shadow-sm border border-blue-200">
+                    <button
+                      onClick={() => {
+                        setForm({ id: item.id, password: "" });
+                        setShowResetModal(true);
+                      }}
+                      className="cursor-pointer px-3 py-1 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition shadow-sm border border-blue-200"
+                    >
                       Reset Password
                     </button>
                   </td>
@@ -105,6 +120,17 @@ const Users_Management = () => {
         {showModal && (
           <ModalAddUser
             onClose={() => setShowModal(false)}
+            submitting={submitting}
+            setSubmitting={setSubmitting}
+            refreshData={getUser}
+            form={form}
+            setForm={setForm}
+          />
+        )}
+
+        {showResetModal && (
+          <ModalResetPassword
+            onClose={() => setShowResetModal(false)}
             submitting={submitting}
             setSubmitting={setSubmitting}
             refreshData={getUser}
