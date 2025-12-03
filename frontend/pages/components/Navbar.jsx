@@ -8,6 +8,7 @@ import ModalResetPassword from "./ModalResetPassword";
 const Navbar = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
+  const [role, setRole] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [form, setForm] = useState({
@@ -27,6 +28,8 @@ const Navbar = () => {
   useEffect(() => {
     const uname = localStorage.getItem("username");
     const uid = localStorage.getItem("userId");
+    const userRole = localStorage.getItem("role");
+    setRole(userRole || "");
     if (uname) setUsername(uname);
     if (uid) {
       setForm((prev) => ({ ...prev, id: uid }));
@@ -64,13 +67,15 @@ const Navbar = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-xl z-50 border border-gray-200">
-                <button
-                  onClick={() => setShowResetModal(true)}
-                  className="text-nowrap cursor-pointer w-full px-4 py-2 text-left text-sm text-gray-700 hover:text-blue-600 transition flex items-center gap-2"
-                >
-                  <RiLockPasswordFill className="text-base" />
-                  เปลี่ยนรหัสผ่าน
-                </button>
+                {role !== "Admin" && (
+                  <button
+                    onClick={() => setShowResetModal(true)}
+                    className="text-nowrap cursor-pointer w-full px-4 py-2 text-left text-sm text-gray-700 hover:text-blue-600 transition flex items-center gap-2"
+                  >
+                    <RiLockPasswordFill className="text-base" />
+                    เปลี่ยนรหัสผ่าน
+                  </button>
+                )}
 
                 <button
                   onClick={handleLogout}
