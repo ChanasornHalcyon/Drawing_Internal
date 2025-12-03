@@ -102,7 +102,7 @@ const ModalAddUser = ({
               >
                 <option value="">-- Select Role --</option>
                 <option value="Admin">Admin</option>
-                <option value="Engineer">Engineer</option>
+                <option value="Engineer">Engineers</option>
                 <option value="Sale">Sale</option>
                 <option value="Management">Management</option>
               </select>
