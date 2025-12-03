@@ -43,7 +43,7 @@ const Homepage = () => {
           className={`grid gap-10 mx-5 md:mx-auto ${
             cards.length === 1
               ? "grid-cols-1 justify-center max-w-[350px]"
-              : "grid-cols-3 md:grid-cols-2 max-w-2xl"
+              : "grid-cols-2 md:grid-cols-2 max-w-2xl"
           }`}
         >
           {cards.map((card) => (
