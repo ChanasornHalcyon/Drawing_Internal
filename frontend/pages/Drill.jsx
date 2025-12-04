@@ -16,7 +16,7 @@ const Drill = () => {
     cost: "",
     CoolantHole: "",
     Flute: "",
-    Cloating: "",
+    Coating: "",
     A1: "",
     A2: "",
     A3: "",
@@ -76,7 +76,7 @@ const Drill = () => {
           cost: "",
           CoolantHole: "",
           Flute: "",
-          Cloating: "",
+          Coating: "",
           A1: "",
           A2: "",
           A3: "",
@@ -145,7 +145,7 @@ const Drill = () => {
                     img: option.getAttribute("data-img"),
                   });
                 }}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
               >
                 <option value="">--- Select Drawing ---</option>
 
@@ -220,12 +220,12 @@ const Drill = () => {
                     checkDrawingNo(e.target.value);
                   }}
                   required
-                  className={`w-full border rounded-lg px-3 py-2 shadow-sm transition text-black
+                  className={`w-full border border-l-4 border-l-red-500  rounded-lg px-3 py-2 shadow-sm transition text-black
                   ${
-                       checkDrawigs
-                  ? "border-red-500"
-                 : "border-gray-300 focus:border-[#1C70D3]"
-                 }`}
+                    checkDrawigs
+                      ? "border-red-500"
+                      : "border-gray-300 focus:border-[#1C70D3]"
+                  }`}
                 />
 
                 {checkDrawigs && (
@@ -234,9 +234,34 @@ const Drill = () => {
                   </p>
                 )}
               </div>
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Customer Name
+                </label>
+                <input
+                  type="text"
+                  name="customerName"
+                  value={form.customerName}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  name="date"
+                  value={form.date}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                />
+              </div>
+
               {[
-                ["Customer Name", "customerName"],
-                ["Date", "date", "date"],
                 ["Rev", "rev"],
                 ["Customer Part  No.", "customerPart"],
                 ["Description", "description"],
@@ -249,22 +274,20 @@ const Drill = () => {
                 ["CL1", "CL1"],
                 ["CL2", "CL2"],
                 ["TL", "TL"],
-              ].map(([label, name, type = "text"]) => (
+              ].map(([label, name]) => (
                 <div key={name} className="flex flex-col">
                   <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                     {label}
                   </label>
                   <input
-                    type={type}
+                    type="text"
                     name={name}
                     value={form[name]}
                     onChange={handleChange}
-                    required={["customerName", "date"].includes(name)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                   />
                 </div>
               ))}
-
               <div className="flex flex-col">
                 <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
                   Material
@@ -273,7 +296,7 @@ const Drill = () => {
                   name="materialMain"
                   value={form.materialMain}
                   onChange={handleChange}
-                  className="w-full border  border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition "
+                  className="w-full border border-l-4 border-l-red-500   border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition "
                   required
                 >
                   <option value="">--- Select Material ---</option>
@@ -292,7 +315,7 @@ const Drill = () => {
                   name="Flute"
                   value={form.Flute}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  className="w-full border border-gray-300 border-l-4 border-l-red-500 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                   required
                 >
                   <option value="">--- Select Flute ---</option>
@@ -302,13 +325,13 @@ const Drill = () => {
               </div>
               <div className="flex flex-col">
                 <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
-                  Coolate
+                  Coolant
                 </label>
                 <select
                   name="CoolantHole"
                   value={form.CoolantHole}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  className="w-full border border-gray-300 border-l-4 border-l-red-500 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                   required
                 >
                   <option value="">--- Select Coolant ---</option>
@@ -318,15 +341,15 @@ const Drill = () => {
               </div>
               <div className="flex flex-col">
                 <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
-                  Cloating
+                  Coating
                 </label>
                 <select
-                  name="Cloating"
-                  value={form.Cloating}
+                  name="Coating"
+                  value={form.Coating}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  className="w-full border border-l-4  border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                 >
-                  <option value="">--- Select Cloating ---</option>
+                  <option value="">--- Select Coating ---</option>
                   <option value="TiAlN">TiAlN (FUTURA)</option>
                   <option value="AlTiN">AlTiN (LATUMA)</option>
                   <option value="TiN(A)">TiN (A)</option>
@@ -335,7 +358,6 @@ const Drill = () => {
                   <option value="AlCrN">AlCrN (AlCrN)</option>
                 </select>
               </div>
-
               {[
                 ...(role !== "Engineers" ? [["Sales Price", "price"]] : []),
                 ...(role !== "Sale" ? [["Cost", "cost"]] : []),
@@ -402,7 +424,7 @@ const Drill = () => {
             <div className="flex justify-center mt-10">
               <button
                 type="submit"
-                className="px-10 py-3 bg-[#1C70D3] text-white rounded-full text-lg font-medium shadow-md hover:bg-[#0A4EA3] hover:shadow-xl transition"
+                className=" cursor-pointer px-10 py-3 bg-[#1C70D3] text-white rounded-full text-lg font-medium shadow-md hover:bg-[#0A4EA3] hover:shadow-xl transition"
               >
                 Submit
               </button>
