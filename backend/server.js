@@ -186,6 +186,19 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+app.get("/checkDrawingNo", async (req, res) => {
+  try {
+    const { drawingNo } = req.query;
+
+    const sql = `SELECT COUNT(*) AS count FROM drawing_records WHERE drawing_no = ?`;
+    const [rows] = await db.query(sql, [drawingNo]);
+
+    res.json({ exists: rows[0].count > 0 });
+  } catch (err) {
+    console.error("Check error:", err);
+    res.status(500).json({ exists: false });
+  }
+});
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

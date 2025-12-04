@@ -33,7 +33,7 @@ const Drill = () => {
   const [preview, setPreview] = useState(null);
   const [fileType, setFileType] = useState(null);
   const [role, setRole] = useState("");
-
+  const [checkDrawigs, setCheckDrawings] = useState(false);
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files && files.length > 0) {
@@ -98,7 +98,20 @@ const Drill = () => {
       alert("Server Error!");
     }
   };
-
+  const checkDrawingNo = async (value) => {
+    try {
+      if (!value.trim()) {
+        setCheckDrawings(false);
+        return;
+      }
+      const res = await axios.get("http://localhost:4000/checkDrawingNo", {
+        params: { drawingNo: value },
+      });
+      setCheckDrawings(res.data.exists);
+    } catch (err) {
+      console.error("Check error:", err);
+    }
+  };
   useEffect(() => {
     const userRole = localStorage.getItem("role");
     setRole(userRole || "");
@@ -181,6 +194,7 @@ const Drill = () => {
                 </option>
               </select>
             </div>
+
             {form.img && (
               <div className="flex justify-center mt-6">
                 <img
@@ -190,11 +204,39 @@ const Drill = () => {
                 />
               </div>
             )}
+
             <div className="grid grid-cols-2 gap-5 mt-5">
+              <div className="flex flex-col">
+                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  Drawing No.
+                </label>
+
+                <input
+                  type="text"
+                  name="drawingNo"
+                  value={form.drawingNo}
+                  onChange={(e) => {
+                    handleChange(e);
+                    checkDrawingNo(e.target.value);
+                  }}
+                  required
+                  className={`w-full border rounded-lg px-3 py-2 shadow-sm transition text-black
+                  ${
+                       checkDrawigs
+                  ? "border-red-500"
+                 : "border-gray-300 focus:border-[#1C70D3]"
+                 }`}
+                />
+
+                {checkDrawigs && (
+                  <p className="text-red-500 text-[13px] mt-1">
+                    Drawing Number นี้มีในระบบแล้ว
+                  </p>
+                )}
+              </div>
               {[
                 ["Customer Name", "customerName"],
                 ["Date", "date", "date"],
-                ["Drawing No.", "drawingNo"],
                 ["Rev", "rev"],
                 ["Customer Part  No.", "customerPart"],
                 ["Description", "description"],
