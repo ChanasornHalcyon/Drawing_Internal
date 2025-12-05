@@ -231,6 +231,15 @@ app.post("/searchDrawing", async (req, res) => {
       shankMaterial,
       shankShape,
       type,
+      A1,
+      A2,
+      A3,
+      D1,
+      D2,
+      D3,
+      CL1,
+      CL2,
+      TL,
     } = req.body;
 
     let sql = "SELECT * FROM drawing_records WHERE 1=1";
@@ -300,6 +309,46 @@ app.post("/searchDrawing", async (req, res) => {
       sql += " AND LOWER(type) LIKE LOWER(?)";
       params.push(`%${type}%`);
     }
+    if (A1) {
+      sql += " AND LOWER(A1) LIKE LOWER(?)";
+      params.push(`%${A1}%`);
+    }
+    if (A2) {
+      sql += " AND LOWER(A2) LIKE LOWER(?)";
+      params.push(`%${A2}%`);
+    }
+    if (A3) {
+      sql += " AND LOWER(A3) LIKE LOWER(?)";
+      params.push(`%${A3}%`);
+    }
+
+    if (D1) {
+      sql += " AND LOWER(D1) LIKE LOWER(?)";
+      params.push(`%${D1}%`);
+    }
+    if (D2) {
+      sql += " AND LOWER(D2) LIKE LOWER(?)";
+      params.push(`%${D2}%`);
+    }
+    if (D3) {
+      sql += " AND LOWER(D3) LIKE LOWER(?)";
+      params.push(`%${D3}%`);
+    }
+
+    if (CL1) {
+      sql += " AND LOWER(CL1) LIKE LOWER(?)";
+      params.push(`%${CL1}%`);
+    }
+    if (CL2) {
+      sql += " AND LOWER(CL2) LIKE LOWER(?)";
+      params.push(`%${CL2}%`);
+    }
+
+    if (TL) {
+      sql += " AND LOWER(TL) LIKE LOWER(?)";
+      params.push(`%${TL}%`);
+    }
+
     sql += " ORDER BY id ASC";
 
     const [rows] = await db.query(sql, params);
