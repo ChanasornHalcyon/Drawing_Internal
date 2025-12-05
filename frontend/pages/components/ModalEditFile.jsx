@@ -16,6 +16,15 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
     coating: "",
     price: "",
     cost: "",
+    A1: "",
+    A2: "",
+    A3: "",
+    D1: "",
+    D2: "",
+    D3: "",
+    CL1: "",
+    CL2: "",
+    TL: "",
   });
 
   const handleChange = (e) => {
@@ -63,6 +72,15 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
         coating: sendData.coating || "",
         price: sendData.price || "",
         cost: sendData.cost || "",
+        A1: sendData.A1 || "",
+        A2: sendData.A2 || "",
+        A3: sendData.A3 || "",
+        D1: sendData.D1 || "",
+        D2: sendData.D2 || "",
+        D3: sendData.D3 || "",
+        CL1: sendData.CL1 || "",
+        CL2: sendData.CL2 || "",
+        TL: sendData.TL || "",
       });
     }
   }, [sendData]);
