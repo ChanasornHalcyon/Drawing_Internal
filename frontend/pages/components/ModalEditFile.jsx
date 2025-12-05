@@ -158,17 +158,34 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Description
-              </label>
-              <input
-                type="text"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg text-black"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">
+                  Description
+                </label>
+                <input
+                  type="text"
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black"
+                />
+              </div>
+
+              {role !== "Sale" && (
+                <div>
+                  <label className="block text-sm text-gray-700 mb-1">
+                    Cost
+                  </label>
+                  <input
+                    type="text"
+                    name="cost"
+                    value={form.cost}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -254,21 +271,6 @@ const ModalEditFile = ({ onClose, onSubmit, submitting, sendData = {} }) => {
                     type="text"
                     name="price"
                     value={form.price}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black"
-                  />
-                </div>
-              )}
-
-              {role !== "Sale" && (
-                <div>
-                  <label className="block text-sm text-gray-700 mb-1">
-                    Cost
-                  </label>
-                  <input
-                    type="text"
-                    name="cost"
-                    value={form.cost}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black"
                   />
