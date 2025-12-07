@@ -213,24 +213,32 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       type,
     });
 
-    await db.query(logSQL, [
-      newId,
-      username ,  
-      actionDetail,
-    ]);
+    await db.query(logSQL, [newId, username, actionDetail]);
 
     res.json({
       success: true,
       message: "Drawing uploaded successfully!",
       drawing_id: newId,
     });
-
   } catch (err) {
     console.error("Upload error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+app.get("/getDrawingLogs", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT id, drawing_id, action_type, action_by, action_detail, created_at
+      FROM drawing_logs
+      ORDER BY created_at DESC
+    `);
 
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error("Get Logs Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 app.get("/checkDrawingNo", async (req, res) => {
   try {
@@ -427,11 +435,12 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
     );
 
     if (!oldRows.length) {
-      return res.status(404).json({ success: false, message: "Not found" });
+      return res.status(404).json({ success: false });
     }
 
     const oldData = oldRows[0];
 
+    // ⛔ เก็บประวัติก่อนแก้ไข → 1 ครั้งพอ
     await db.query(
       `INSERT INTO drawing_history (drawing_id, modified_by, data)
        VALUES (?, ?, ?)`,
@@ -455,34 +464,35 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
       fileUrl = `/uploads/${customerFolder}/${file.originalname}`;
     }
 
+    // UPDATE drawing
     await db.query(
       `
-  UPDATE drawing_records
-  SET 
-    customer_name = ?, 
-    date = ?, 
-    drawing_no = ?, 
-    rev = ?, 
-    description = ?, 
-    material_main = ?, 
-    price = ?, 
-    cost = ?,
-    coolant_hole = ?, 
-    flute = ?, 
-    coating = ?,
-    type = ?, 
-     A1 = ?, 
-  A2 = ?, 
-  A3 = ?, 
-  D1 = ?, 
-  D2 = ?, 
-  D3 = ?, 
-  CL1 = ?, 
-  CL2 = ?, 
-  TL = ?, 
-    file_url = ?
-  WHERE id = ?
-`,
+      UPDATE drawing_records
+      SET 
+        customer_name = ?, 
+        date = ?, 
+        drawing_no = ?, 
+        rev = ?, 
+        description = ?, 
+        material_main = ?, 
+        price = ?, 
+        cost = ?,
+        coolant_hole = ?, 
+        flute = ?, 
+        coating = ?,
+        type = ?, 
+        A1 = ?, 
+        A2 = ?, 
+        A3 = ?, 
+        D1 = ?, 
+        D2 = ?, 
+        D3 = ?, 
+        CL1 = ?, 
+        CL2 = ?, 
+        TL = ?, 
+        file_url = ?
+      WHERE id = ?
+      `,
       [
         updatedData.customer_name,
         formattedDate,
@@ -510,20 +520,80 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
       ]
     );
 
+    // LOG (ข้อมูลก่อนแก้ไข)
+    const oldDatas = {
+      customerName: oldData.customer_name,
+      drawingNo: oldData.drawing_no,
+      rev: oldData.rev,
+      customerPart: oldData.customer_part_no,
+      description: oldData.description,
+      materialMain: oldData.material_main,
+      price: oldData.price,
+      cost: oldData.cost,
+      CoolantHole: oldData.coolant_hole,
+      Flute: oldData.flute,
+      type: oldData.type,
+      file_url: oldData.file_url,
+    };
+
+    await db.query(
+      `INSERT INTO drawing_logs (drawing_id, action_type, action_by, action_detail)
+       VALUES (?, 'EDIT', ?, ?)`,
+      [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldDatas)]
+    );
+
     res.json({ success: true });
   } catch (err) {
-    console.error("Update error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false });
   }
 });
 
 app.delete("/deleteDrawingHistory/:id", async (req, res) => {
   const id = Number(req.params.id);
+  const deletedBy = req.query.deleted_by || "unknown";
 
   try {
+    // ------------------ CASE 1: Delete ALL history + record ------------------
     if (id === 0) {
       const drawingId = req.query.drawingId;
-      if (!drawingId) return res.status(400).json({ success: false });
+
+      // ดึงข้อมูลก่อนลบ เพื่อเก็บลง Logs ด้วย
+      const [rows] = await db.query(
+        "SELECT * FROM drawing_records WHERE id = ?",
+        [drawingId]
+      );
+
+      let detail = {};
+      if (rows.length) {
+        const old = rows[0];
+        detail = {
+          customerName: old.customer_name || "",
+          drawingNo: old.drawing_no || "",
+          rev: old.rev || "",
+          customerPart: old.customer_part_no || "",
+          description: old.description || "",
+          materialMain: old.material_main || "",
+          price: old.price || "",
+          cost: old.cost || "",
+          CoolantHole: old.coolant_hole || "",
+          Flute: old.flute || "",
+          type: old.type || "",
+          file_url: old.file_url || "",
+        };
+      }
+
+      await db.query(
+        `INSERT INTO drawing_logs (drawing_id, action_type, action_by, action_detail)
+         VALUES (?, 'DELETE', ?, ?)`,
+        [
+          drawingId,
+          deletedBy,
+          JSON.stringify({
+            reason: "Delete all history + record",
+            data_before_delete: detail,
+          }),
+        ]
+      );
 
       await db.query("DELETE FROM drawing_history WHERE drawing_id = ?", [
         drawingId,
@@ -532,13 +602,68 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
 
       return res.json({ success: true });
     }
+
+    // ------------------ CASE 2: Delete only ONE history row ------------------
+    const [rows] = await db.query(
+      "SELECT * FROM drawing_history WHERE id = ?",
+      [id]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ success: false });
+    }
+
+    const deletedRow = rows[0];
+    const drawingId = deletedRow.drawing_id;
+
+    // แปลงข้อมูลเก่า
+    let parsed = {};
+    try {
+      parsed = JSON.parse(deletedRow.data);
+    } catch {
+      parsed = {};
+    }
+
+    // 🔥 Mapping ให้เป็นรูปแบบเดียวกับ ADD / EDIT logs
+    const detail = {
+      customerName: parsed.customer_name || "",
+      drawingNo: parsed.drawing_no || "",
+      rev: parsed.rev || "",
+      customerPart: parsed.customer_part_no || "",
+      description: parsed.description || "",
+      materialMain: parsed.material_main || "",
+      price: parsed.price || "",
+      cost: parsed.cost || "",
+      CoolantHole: parsed.coolant_hole || "",
+      Flute: parsed.flute || "",
+      type: parsed.type || "",
+      file_url: parsed.file_url || "",
+    };
+
+    // บันทึกลง Logs ก่อนลบจริง
+    await db.query(
+      `INSERT INTO drawing_logs (drawing_id, action_type, action_by, action_detail)
+       VALUES (?, 'DELETE', ?, ?)`,
+      [
+        drawingId,
+        deletedBy,
+        JSON.stringify({
+          deleted_history_id: id,
+          data_before_delete: detail,
+          deleted_at: new Date(),
+        }),
+      ]
+    );
+
     await db.query("DELETE FROM drawing_history WHERE id = ?", [id]);
+
     res.json({ success: true });
   } catch (err) {
     console.error("Delete history error:", err);
     res.status(500).json({ success: false });
   }
 });
+
 
 app.get("/getDrawingHistory/:id", async (req, res) => {
   const drawingId = req.params.id;
@@ -547,6 +672,7 @@ app.get("/getDrawingHistory/:id", async (req, res) => {
       "SELECT *, NOW() AS modified_at FROM drawing_records WHERE id = ?",
       [drawingId]
     );
+
     const [historyRows] = await db.query(
       "SELECT * FROM drawing_history WHERE drawing_id = ? ORDER BY modified_at DESC",
       [drawingId]

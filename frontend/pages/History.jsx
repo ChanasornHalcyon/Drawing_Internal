@@ -44,8 +44,16 @@ const History = () => {
   };
   const handleDelete = async (deleteId, drawingId) => {
     try {
+      const username = localStorage.getItem("username") || "unknown";
+
       await axios.delete(
-        `http://localhost:4000/deleteDrawingHistory/${deleteId}?drawingId=${drawingId}`
+        `http://localhost:4000/deleteDrawingHistory/${deleteId}`,
+        {
+          params: {
+            drawingId,
+            deleted_by: username,
+          },
+        }
       );
       setHistory(history.filter((h) => h.id !== deleteId));
       setShowDelete(false);
@@ -53,6 +61,7 @@ const History = () => {
       console.error(err);
     }
   };
+
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
