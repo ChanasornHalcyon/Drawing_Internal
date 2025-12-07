@@ -27,6 +27,7 @@ const Homepage = () => {
   const cards = [];
   if (role === "Admin") {
     cards.push({ label: "Users_Management", path: "Users_Management" });
+    cards.push({ label: "Users_Logs", path: "Users_Logs" });
   } else {
     cards.push(
       { label: "Add_Drawing", path: "Add_Drawing" },

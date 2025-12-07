@@ -137,24 +137,25 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       CL2,
       TL,
       type,
+      username,
     } = req.body;
 
     let file_url = null;
+
     if (req.file) {
       const folder = customerName?.trim().replace(/\s+/g, "_") || "Unknown";
       file_url = `/uploads/${folder}/${req.file.originalname}`;
     }
 
-    const sql = `
-     INSERT INTO drawing_records 
-(customer_name, date, drawing_no, rev, customer_part_no, description,
- material_main, price, cost, coolant_hole, flute, coating, file_url,
- A1, A2, A3, D1, D2, D3, CL1, CL2, TL, type)
- VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-
+    const insertSQL = `
+      INSERT INTO drawing_records 
+      (customer_name, date, drawing_no, rev, customer_part_no, description,
+       material_main, price, cost, coolant_hole, flute, coating, file_url,
+       A1, A2, A3, D1, D2, D3, CL1, CL2, TL, type)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    await db.query(sql, [
+    const [result] = await db.query(insertSQL, [
       customerName,
       date,
       drawingNo,
@@ -180,12 +181,57 @@ app.post("/pushData", upload.single("file"), async (req, res) => {
       type,
     ]);
 
-    res.json({ success: true, message: "Drawing uploaded successfully!" });
+    const newId = result.insertId;
+    const logSQL = `
+      INSERT INTO drawing_logs (drawing_id, action_type, action_by, action_detail)
+      VALUES (?, 'ADD', ?, ?)
+    `;
+
+    const actionDetail = JSON.stringify({
+      customerName,
+      date,
+      drawingNo,
+      rev,
+      customerPart,
+      description,
+      materialMain,
+      price,
+      cost,
+      CoolantHole,
+      Flute,
+      Cloating,
+      file_url,
+      A1,
+      A2,
+      A3,
+      D1,
+      D2,
+      D3,
+      CL1,
+      CL2,
+      TL,
+      type,
+    });
+
+    await db.query(logSQL, [
+      newId,
+      username ,  
+      actionDetail,
+    ]);
+
+    res.json({
+      success: true,
+      message: "Drawing uploaded successfully!",
+      drawing_id: newId,
+    });
+
   } catch (err) {
     console.error("Upload error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+
 app.get("/checkDrawingNo", async (req, res) => {
   try {
     const { drawingNo } = req.query;

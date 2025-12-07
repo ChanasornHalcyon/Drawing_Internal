@@ -54,9 +54,15 @@ const Drill = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) =>
-        formData.append(key, value)
+
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      formData.append(
+        "username",
+        localStorage.getItem("username") || "Unknown"
       );
+
       const res = await axios.post("http://localhost:4000/pushData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -98,6 +104,7 @@ const Drill = () => {
       alert("Server Error!");
     }
   };
+
   const checkDrawingNo = async (value) => {
     try {
       if (!value.trim()) {
