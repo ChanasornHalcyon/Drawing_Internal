@@ -121,6 +121,7 @@ const Users_Logs = () => {
                         {new Date(log.created_at).toLocaleString("th-TH", {
                           dateStyle: "short",
                           timeStyle: "short",
+                          timeZone: "Asia/Bangkok",
                         })}
                       </td>
 
