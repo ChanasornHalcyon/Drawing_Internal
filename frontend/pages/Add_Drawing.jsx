@@ -2,36 +2,81 @@ import React from "react";
 import { useRouter } from "next/router";
 import Navbar from "./components/Navbar";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const add_drawing = () => {
   const router = useRouter();
-  const card = ["Drill"];
+
+  const card = [
+    "Drill",
+    "Reamer",
+    "EndMill",
+    "FaceMill",
+    "HollowTool",
+    "Insert",
+    "BoringBar",
+  ];
+
+  const cardImages = {
+    Drill: "/DRILL.png",
+    Reamer: "/Reamer.png",
+    EndMill: "/EndMill.png",
+    FaceMill: "/FaceMill.png",
+    HollowTool: "/HollowTool.png",
+    Insert: "/Insert.png",
+    BoringBar: "/BoringBar.png",
+  };
+
   const clickCard = (path) => {
     router.push(`/${path}`);
   };
+
   return (
-    <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
+    <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
-      <div className="py-40 md:py-32 flex justify-center">
-        {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-10 max-w-3xl mx-5 md:mx-auto "> */}
-        {card.map((item, index) => (
-          <motion.div
-            key={index}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => clickCard(item)}
-            className="h-44 w-72 flex items-center justify-center
-                     border border-gray-500 bg-gradient-to-br from-white to-blue-50 
-                     text-[#0B4EA2] font-semibold text-lg rounded-2xl shadow-md cursor-pointer
-                     hover:shadow-xl hover:from-[#E3F2FD] hover:to-white 
-                     transition-all duration-300"
-          >
-            {item}
-          </motion.div>
-        ))}
+
+      <div className="pt-40 md:pt-32 pb-10 flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+          {card.map((item, index) => {
+            const enabled = ["Drill"];
+            const isDisabled = !enabled.includes(item);
+            return (
+              <motion.div
+                key={index}
+                whileHover={isDisabled ? {} : { scale: 1.06, y: -2 }}
+                whileTap={isDisabled ? {} : { scale: 0.97 }}
+                transition={{ duration: 0.12, ease: "easeOut" }}
+                onClick={() => {
+                  if (!isDisabled) clickCard(item);
+                }}
+                className={`h-48 w-72 flex flex-col items-center justify-center
+                  bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+                  border transition-all duration-300 cursor-pointer
+                  ${
+                    isDisabled
+                      ? "border-gray-300 opacity-50 cursor-not-allowed"
+                      : "border-gray-200 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50"
+                  }`}
+              >
+                {cardImages[item] && (
+                  <Image
+                    src={cardImages[item]}
+                    alt={item}
+                    width={80}
+                    height={80}
+                    className="mb-6 object-contain max-h-25"
+                  />
+                )}
+
+                <span className="text-lg font-semibold text-[#0B4EA2] tracking-wide">
+                  {item}
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
-    // </div>
   );
 };
 
