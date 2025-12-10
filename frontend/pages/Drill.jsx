@@ -136,7 +136,7 @@ const Drill = () => {
         >
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-2xl  bg-white shadow-xl rounded-2xl p-14 mt-20 lg:ml-20"
+            className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-14 mt-20 lg:ml-20"
           >
             <h1 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
               Drill Drawing

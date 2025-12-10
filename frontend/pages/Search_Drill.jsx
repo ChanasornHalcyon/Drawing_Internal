@@ -96,10 +96,14 @@ const Search_Drill = () => {
     <div className="container mx-auto max-w-[1920px] h-dvh bg-white">
       <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
-        <div className="flex justify-center py-10 px-6">
+        <div
+          className={`flex py-10 px-4 
+    ${form.img ? "justify-center lg:justify-start" : "justify-center"}
+  `}
+        >
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-14 mt-20"
+            className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-14 mt-20 lg:ml-20"
           >
             <h1 className="text-3xl font-bold text-[#1C70D3] text-center mb-10">
               Search Drill Drawing
@@ -163,10 +167,21 @@ const Search_Drill = () => {
               </select>
 
               {form.img && (
-                <div className="flex justify-center mt-6">
+                <div className="mt-6 flex justify-center lg:hidden">
                   <img
                     src={`/${form.img}`}
-                    className="w-[600px] h-auto object-contain rounded-xl shadow-lg border"
+                    className="w-[400px] h-auto object-contain rounded-xl shadow-lg border bg-white p-2"
+                    alt="Drawing Preview"
+                  />
+                </div>
+              )}
+
+              {form.img && (
+                <div className="hidden lg:block fixed right-10 top-28 z-50">
+                  <img
+                    src={`/${form.img}`}
+                    className="w-[650px] h-auto object-contain rounded-xl shadow-lg border bg-white p-2"
+                    alt="Drawing Preview"
                   />
                 </div>
               )}
