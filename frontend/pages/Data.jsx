@@ -32,21 +32,36 @@ const Data = () => {
       setSubmitting(true);
       await axios.put(`http://localhost:4000/updateDrawing/${id}`, form);
       setShowModal(false);
-      fetchData();
+
+      const filters = localStorage.getItem("searchFilters");
+      if (filters) {
+        getFilter(JSON.parse(filters));
+      } else {
+        fetchData();
+      }
     } catch (err) {
-      console.error("Error updating:", err);
-      alert(" Update failed");
+      console.error(err);
+      alert("Update failed");
     } finally {
       setSubmitting(false);
     }
   };
+
+  const getFilter = async (filters) => {
+    const res = await axios.post(
+      "http://localhost:4000/searchDrawing",
+      filters
+    );
+    setData(res.data.data || []);
+  };
+
   useEffect(() => {
-    const storedResults = localStorage.getItem("searchResults");
     const userRole = localStorage.getItem("role");
-    console.log("role from localStorage:", userRole);
     setRole(userRole || "");
-    if (storedResults) {
-      setData(JSON.parse(storedResults));
+
+    const filters = localStorage.getItem("searchFilters");
+    if (filters) {
+      getFilter(JSON.parse(filters));
     } else {
       fetchData();
     }
@@ -130,16 +145,16 @@ const Data = () => {
                     <td className="px-4 py-2 text-gray-800 text-nowrap">
                       {item.date
                         ? new Date(item.date).toLocaleDateString("sv-SE", {
-                            timeZone: "Asia/Bangkok",
-                          })
+                          timeZone: "Asia/Bangkok",
+                        })
                         : "-"}
                     </td>
 
                     <td className="px-4 py-2 text-gray-800 text-nowrap">
                       {item.date_add
                         ? new Date(item.date_add).toLocaleDateString("sv-SE", {
-                            timeZone: "Asia/Bangkok",
-                          })
+                          timeZone: "Asia/Bangkok",
+                        })
                         : "-"}
                     </td>
 

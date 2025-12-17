@@ -65,7 +65,7 @@ const Search_Drill = () => {
       !form.type;
 
     if (isEmpty) {
-      localStorage.removeItem("searchResults");
+      localStorage.removeItem("searchFilters");
       router.push("/Data");
       return;
     }
@@ -82,7 +82,7 @@ const Search_Drill = () => {
         payload
       );
       if (res.data.success) {
-        localStorage.setItem("searchResults", JSON.stringify(res.data.data));
+        localStorage.setItem("searchFilters", JSON.stringify(payload));
         router.push("/Data");
       } else {
         alert("ไม่พบข้อมูลตามเงื่อนไข");
