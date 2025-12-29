@@ -32,8 +32,8 @@ const Homepage = () => {
     cards.push({ label: "Users_Logs", path: "Users_Logs" });
   } else {
     cards.push(
-      { label: "Add_Drawing", path: "Add_Drawing" },
-      { label: "Search_Drawing", path: "Search_Drawing" }
+      { label: "IT", path: "ITPage" },
+      { label: "Drawing", path: "Search_Drawing" }
     );
   }
 
@@ -43,11 +43,10 @@ const Homepage = () => {
 
       <div className="py-40 md:py-32 flex justify-center">
         <div
-          className={`grid gap-10 ${
-            cards.length === 1
-              ? "grid-cols-1 max-w-[350px]"
-              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-2 max-w-2xl"
-          }`}
+          className={`grid gap-10 ${cards.length === 1
+            ? "grid-cols-1 max-w-[350px]"
+            : "grid-cols-1 sm:grid-cols-2 md:grid-cols-2 max-w-2xl"
+            }`}
         >
           {cards.map((card) => (
             <motion.div

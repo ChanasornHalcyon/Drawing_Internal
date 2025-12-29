@@ -23,7 +23,7 @@ const ModalITForm = ({ onClose }) => {
     const handleSubmit = async () => {
         try {
             setSubmitting(true);
-            await axios.post("http://localhost:8000/ITForm", form);
+            await axios.post("http://localhost:4000/ITForm", form);
             alert("ส่งฟอร์มสำเร็จ");
             onClose();
         } catch (err) {

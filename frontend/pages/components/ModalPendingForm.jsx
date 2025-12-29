@@ -8,7 +8,7 @@ const ModalPendingForm = ({ onClose, data, onApprove }) => {
 
     const handleApprove = async () => {
         try {
-            await axios.post("http://localhost:8000/ITApproveForm", {
+            await axios.post("http://localhost:4000/ITApproveForm", {
                 id: data.id,
             });
             onApprove(data.id);
