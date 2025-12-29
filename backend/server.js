@@ -664,7 +664,6 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
   }
 });
 
-
 app.get("/getDrawingHistory/:id", async (req, res) => {
   const drawingId = req.params.id;
   try {
