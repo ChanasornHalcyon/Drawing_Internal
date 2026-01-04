@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
+import NavbarIT from "./components/NavbarIT";
 import { motion } from "framer-motion";
 import ModalITForm from "./components/ModalItForm";
 import ModalFixForm from "./components/ModalFixForm";
@@ -39,7 +39,7 @@ const ITPage = () => {
 
     return (
         <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-            <Navbar />
+            <NavbarIT />
             <div className="pt-28 md:pt-32 flex justify-center ">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 pb-5 ">
                     <motion.div

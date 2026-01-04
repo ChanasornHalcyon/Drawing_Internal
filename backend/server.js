@@ -553,11 +553,9 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
   const deletedBy = req.query.deleted_by || "unknown";
 
   try {
-    // ------------------ CASE 1: Delete ALL history + record ------------------
     if (id === 0) {
       const drawingId = req.query.drawingId;
 
-      // ดึงข้อมูลก่อนลบ เพื่อเก็บลง Logs ด้วย
       const [rows] = await db.query(
         "SELECT * FROM drawing_records WHERE id = ?",
         [drawingId]
@@ -603,7 +601,6 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
       return res.json({ success: true });
     }
 
-    // ------------------ CASE 2: Delete only ONE history row ------------------
     const [rows] = await db.query(
       "SELECT * FROM drawing_history WHERE id = ?",
       [id]
@@ -616,7 +613,6 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
     const deletedRow = rows[0];
     const drawingId = deletedRow.drawing_id;
 
-    // แปลงข้อมูลเก่า
     let parsed = {};
     try {
       parsed = JSON.parse(deletedRow.data);
@@ -624,7 +620,6 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
       parsed = {};
     }
 
-    // 🔥 Mapping ให้เป็นรูปแบบเดียวกับ ADD / EDIT logs
     const detail = {
       customerName: parsed.customer_name || "",
       drawingNo: parsed.drawing_no || "",
@@ -640,7 +635,6 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
       file_url: parsed.file_url || "",
     };
 
-    // บันทึกลง Logs ก่อนลบจริง
     await db.query(
       `INSERT INTO drawing_logs (drawing_id, action_type, action_by, action_detail)
        VALUES (?, 'DELETE', ?, ?)`,
@@ -697,6 +691,324 @@ app.get("/getDrawingHistory/:id", async (req, res) => {
   }
 });
 
+app.post("/ITForm", async (req, res) => {
+  try {
+    const {
+      purpose,
+      detail,
+      reason,
+      spec,
+      requester,
+      department,
+      request_date,
+      required_date,
+    } = req.body;
+
+    await db.query(
+      `INSERT INTO it_requests
+       (purpose, detail, reason, spec, requester, department, request_date, required_date, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
+      [
+        purpose,
+        detail,
+        reason,
+        spec,
+        requester,
+        department,
+        request_date,
+        required_date,
+      ]
+    );
+
+    const [approvers] = await db.query(`
+      SELECT department, email
+      FROM user
+      WHERE level >= 2
+        AND email IS NOT NULL
+    `);
+
+    const departmentMap = {};
+
+    approvers.forEach((user) => {
+      if (!departmentMap[user.department]) {
+        departmentMap[user.department] = [];
+      }
+      departmentMap[user.department].push(user.email);
+    });
+
+    const pendingUrl = "http://localhost:3000/Pending_Form";
+
+    for (const dept in departmentMap) {
+      const emailList = departmentMap[dept].join(",");
+
+      await transporter.sendMail({
+        from: `"IT System" <chanasornhockey@gmail.com>`,
+        to: emailList,
+        subject: `มีคำขอ IT ใหม่ (${department})`,
+        html: `
+          <h3>มีคำขอ IT ใหม่</h3>
+          <p><b>ผู้ร้องขอ:</b> ${requester}</p>
+          <p><b>แผนกผู้ร้องขอ:</b> ${department}</p>
+          <p><b>วัตถุประสงค์:</b> ${purpose}</p>
+          <p><b>รายละเอียด:</b> ${detail}</p>
+          <p><b>เหตุผล:</b> ${reason}</p>
+          <p><b>Spec:</b> ${spec}</p>
+          <p><b>วันที่ร้องขอ:</b> ${request_date}</p>
+          <hr />
+          <p>ส่งถึงผู้อนุมัติแผนก: <b>${dept}</b></p>
+          <a href="${pendingUrl}"
+             style="
+               display:inline-block;
+               padding:10px 18px;
+               background:#22c55e;
+               color:#fff;
+               text-decoration:none;
+               border-radius:6px;
+               font-weight:600;
+             ">
+            ไปที่หน้า Pending Form
+          </a>
+        `,
+      });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("ITForm Error:", err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get("/getITForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT *
+       FROM it_requests
+        ORDER BY created_at DESC`
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get("/getApproveForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT *
+       FROM it_requests WHERE status ="APPROVED"
+       ORDER BY request_date DESC`
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get("/getCompleteForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT *
+       FROM it_requests WHERE status ="COMPLETE"
+       ORDER BY request_date DESC`
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get("/getProblemForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT *
+       FROM it_requests WHERE status ="PROBLEM"
+       ORDER BY request_date DESC`
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.put("/updateStatus/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { status, username } = req.body;
+
+    await db.query(
+      `UPDATE it_requests 
+       SET status = ?, completed_by = ?, completed_at = NOW()
+       WHERE id = ?`,
+      [status, username, id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.post("/ITApproveForm", async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    await db.query(
+      `UPDATE it_requests
+       SET status = 'APPROVED'
+       WHERE id = ?`,
+      [id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.post("/ITFixForm", async (req, res) => {
+  try {
+    const {
+      purpose,
+      detail,
+      tools,
+      requester,
+      department,
+      request_date,
+      required_date,
+    } = req.body;
+
+    await db.query(
+      `INSERT INTO it_fixrequest
+   (purpose, detail,tools, requester, department, request_date, required_date)
+    VALUES (?, ?, ?, ?,?, ?, ?)`,
+      [
+        purpose,
+        detail,
+        tools,
+        requester,
+        department,
+        request_date,
+        required_date,
+      ]
+    );
+
+    const [users] = await db.query(
+      `SELECT email
+       FROM user
+       WHERE level >= 2
+         AND email IS NOT NULL`
+    );
+
+    const emailList = users.map((u) => u.email).join(",");
+    const pendingUrl = "http://localhost:3000/Pending_Form";
+
+    await transporter.sendMail({
+      from: `"IT System" <chanasornhockey@gmail.com>`,
+      to: emailList,
+      subject: " มีคำขอ IT เพื่อรอการอนุมัติ",
+      html: `
+        <h3>มีคำขอ IT ใหม่</h3>
+        <p><b>ผู้ร้องขอ:</b> ${requester}</p>
+        <p><b>แผนก:</b> ${department}</p>
+        <p><b>วัตถุประสงค์:</b> ${purpose}</p>
+        <p><b>เหตุผล:</b> ${detail}</p>
+        <p><b>วันที่ร้องขอ:</b> ${request_date}</p>
+        <hr />
+           <p>
+             กรุณาคลิกที่ปุ่มด้านล่างเพื่อพิจารณาอนุมัติ
+          </p>
+
+          <a href="${pendingUrl}"
+             style="
+               display:inline-block;
+               padding:10px 18px;
+               background:#22c55e;
+               color:#fff;
+               text-decoration:none;
+               border-radius:6px;
+               font-weight:600;
+             ">
+            ไปที่หน้าForm
+          </a>
+      `,
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("ITForm Error:", err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get("/ITDashboard", async (req, res) => {
+  try {
+    let { status, startDate, endDate } = req.query;
+
+    if (!["PENDING", "COMPLETE"].includes(status)) status = "PENDING";
+
+    const dateField = status === "COMPLETE" ? "completed_at" : "created_at";
+
+    let sql = `
+      SELECT 
+        DATE(${dateField}) AS date,
+        COUNT(*) AS total
+      FROM it_requests
+      WHERE status = ?
+        AND ${dateField} IS NOT NULL
+    `;
+    const params = [status];
+
+    if (startDate && endDate) {
+      sql += ` AND DATE(${dateField}) BETWEEN ? AND ?`;
+      params.push(startDate, endDate);
+    }
+
+    sql += `
+      GROUP BY DATE(${dateField})
+      ORDER BY DATE(${dateField})
+    `;
+
+    const [rows] = await db.query(sql, params);
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+app.post("/markProblem/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { problem_detail, problem_by } = req.body;
+
+    await db.query(
+      `UPDATE it_requests
+       SET 
+         status = "PROBLEM",
+         problem_detail = ?,
+         problem_by = ?,
+         problem_at = NOW()
+       WHERE id = ?`,
+      [problem_detail, problem_by, id]
+    );
+
+    res.json({ success: true, message: "Updated to PROBLEM" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
 const PORT = 4000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)

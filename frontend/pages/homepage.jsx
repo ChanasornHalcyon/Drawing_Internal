@@ -33,7 +33,7 @@ const Homepage = () => {
   } else {
     cards.push(
       { label: "IT", path: "ITPage" },
-      { label: "Drawing", path: "Search_Drawing" }
+      { label: "Drawing", path: "DrawingPage" }
     );
   }
 

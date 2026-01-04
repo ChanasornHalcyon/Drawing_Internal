@@ -51,7 +51,7 @@ const Navbar = () => {
             alt="HT"
           />
           <span className="text-black hidden lg:flex text-xl font-bold">
-            Drawing Database System
+            {/* Drawing Database System */}
           </span>
         </div>
 

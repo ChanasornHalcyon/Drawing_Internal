@@ -106,7 +106,7 @@ const Index = () => {
           </form>
 
           <p className="text-center text-xs text-gray-500 mt-6">
-            Drawing Database System © {new Date().getFullYear()}
+            Halcyon © {new Date().getFullYear()}
           </p>
         </div>
       </div>
