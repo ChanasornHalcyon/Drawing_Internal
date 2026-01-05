@@ -1017,11 +1017,10 @@ app.post("/markProblem/:id", async (req, res) => {
 app.post("/savePerMissions", async (req, res) => {
   const { username, permissions } = req.body;
   try {
-    const [[user]] = await db.query(
-      "SELECT id FROM user WHERE username = ?",
-      [username]
-    );
-    
+    const [[user]] = await db.query("SELECT id FROM user WHERE username = ?", [
+      username,
+    ]);
+
     const rows = [];
 
     for (const module in permissions) {
@@ -1051,6 +1050,30 @@ app.post("/savePerMissions", async (req, res) => {
   }
 });
 
+app.get("/userPermissions", async (req, res) => {
+  const { username } = req.query;
+
+  const [[user]] = await db.query("SELECT id FROM user WHERE username = ?", [
+    username,
+  ]);
+
+  const [rows] = await db.query(
+    `
+    SELECT module, enabled
+    FROM user_permissions
+    WHERE user_id = ?
+      AND permission = 'enabled'
+    `,
+    [user.id]
+  );
+
+  const result = {};
+  rows.forEach((r) => {
+    result[r.module] = r.enabled;
+  });
+
+  res.json(result);
+});
 
 const PORT = 4000;
 app.listen(PORT, () =>

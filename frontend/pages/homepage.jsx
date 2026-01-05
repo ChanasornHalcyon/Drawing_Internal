@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
-
+import axios from "axios";
 const Homepage = () => {
+
   const [role, setRole] = useState("");
   const router = useRouter();
+  const [modules, setModules] = useState({});
 
   const clickCard = (path) => {
     router.push({
@@ -14,8 +16,20 @@ const Homepage = () => {
     });
   };
 
+  const userPermissions = async () => {
+    const username = localStorage.getItem("username");
+    const res = await axios.get(
+      `http://localhost:4000/userPermissions?username=${username}`
+    );
+
+    setModules(res.data);
+    console.log(res.data)
+  };
+
+
   useEffect(() => {
     const userRole = localStorage.getItem("role");
+    userPermissions();
     setRole(userRole || "");
   }, []);
 
@@ -28,13 +42,18 @@ const Homepage = () => {
 
   const cards = [];
   if (role === "Admin") {
-    cards.push({ label: "Users_Management", path: "Users_Management" });
-    cards.push({ label: "Users_Logs", path: "Users_Logs" });
-  } else {
     cards.push(
-      { label: "IT", path: "ITPage" },
-      { label: "Drawing", path: "DrawingPage" }
+      { label: "Users_Management", path: "Users_Management" },
+      { label: "Users_Logs", path: "Users_Logs" }
     );
+  } else {
+    if (modules.IT === 1) {
+      cards.push({ label: "IT", path: "ITPage" });
+    }
+
+    if (modules.Drawing === 1) {
+      cards.push({ label: "Drawing", path: "DrawingPage" });
+    }
   }
 
   return (
