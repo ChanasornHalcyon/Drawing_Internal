@@ -65,11 +65,12 @@ app.post("/verifyUser", async (req, res) => {
 });
 
 app.post("/addUser", async (req, res) => {
-  const { email,nickname,firstname,lastname, username, password, role } = req.body;
+  const { email, nickname, firstname, lastname, username, password, role } =
+    req.body;
   try {
     await db.query(
       "INSERT INTO user (email,nickname,firstname,lastname, username, password, role) VALUES (?, ?, ?, ?,?,?,?)",
-      [email,nickname,firstname,lastname, username, password, role]
+      [email, nickname, firstname, lastname, username, password, role]
     );
     res.json({ success: true, message: "User added" });
   } catch (err) {
@@ -91,7 +92,9 @@ app.put("/updatePassword", async (req, res) => {
 
 app.get("/getUser", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT id,email, username, role,nickname,firstname,lastname,department,session FROM user");
+    const [rows] = await db.query(
+      "SELECT id,email, username, role,nickname,firstname,lastname,department,session FROM user"
+    );
     res.json({
       success: true,
       users: rows,
@@ -1011,6 +1014,44 @@ app.post("/markProblem/:id", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+app.post("/savePerMissions", async (req, res) => {
+  const { username, permissions } = req.body;
+  try {
+    const [[user]] = await db.query(
+      "SELECT id FROM user WHERE username = ?",
+      [username]
+    );
+    
+    const rows = [];
+
+    for (const module in permissions) {
+      for (const permission in permissions[module]) {
+        rows.push([
+          user.id,
+          module,
+          permission,
+          permissions[module][permission] ? 1 : 0,
+        ]);
+      }
+    }
+
+    await db.query(
+      `
+      INSERT INTO user_permissions (user_id, module, permission, enabled)
+      VALUES ?
+      ON DUPLICATE KEY UPDATE enabled = VALUES(enabled)
+      `,
+      [rows]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+
 const PORT = 4000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)

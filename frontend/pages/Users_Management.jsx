@@ -42,6 +42,7 @@ const Users_Management = () => {
     router.push({
       pathname: "/PermissionPage",
       query: {
+        userId: item.id,
         email: item.email,
         username: item.username,
         firstname: item.firstname,

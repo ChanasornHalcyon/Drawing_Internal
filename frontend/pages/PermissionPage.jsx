@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 
 const IOSToggle = ({ checked, onChange }) => (
@@ -22,15 +23,35 @@ const IOSToggle = ({ checked, onChange }) => (
     </label>
 );
 
-const PermissionItem = ({ title }) => (
+const PermissionItem = ({ title, checked, onChange }) => (
     <div className="flex items-center justify-between px-5 py-5 rounded-2xl border border-gray-200 bg-gray-50">
         <p className="text-lg font-semibold text-gray-800">{title}</p>
-        <IOSToggle />
+        <IOSToggle checked={checked} onChange={onChange} />
     </div>
 );
 
-const PermissionSection = ({ title, items }) => {
-    const [enabled, setEnabled] = useState(false);
+const PermissionSection = ({ title, items, permissions, setPermissions }) => {
+    const modulePerm = permissions[title];
+
+    const toggleModule = () => {
+        setPermissions((prev) => ({
+            ...prev,
+            [title]: {
+                ...prev[title],
+                enabled: !prev[title].enabled,
+            },
+        }));
+    };
+
+    const toggleItem = (item) => {
+        setPermissions((prev) => ({
+            ...prev,
+            [title]: {
+                ...prev[title],
+                [item]: !prev[title][item],
+            },
+        }));
+    };
 
     return (
         <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6">
@@ -39,22 +60,39 @@ const PermissionSection = ({ title, items }) => {
                     <div className="w-1.5 h-6 rounded-full bg-blue-600" />
                     <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
                 </div>
-                <IOSToggle checked={enabled} onChange={() => setEnabled(!enabled)} />
+
+                <IOSToggle checked={modulePerm.enabled} onChange={toggleModule} />
             </div>
 
-            <div className={`space-y-4 ${!enabled ? "opacity-40 pointer-events-none" : ""}`}>
+            <div
+                className={`space-y-4 ${!modulePerm.enabled ? "opacity-40 pointer-events-none" : ""
+                    }`}
+            >
                 {items.map((item) => (
-                    <PermissionItem key={item} title={item} />
+                    <PermissionItem
+                        key={item}
+                        title={item}
+                        checked={modulePerm[item]}
+                        onChange={() => toggleItem(item)}
+                    />
                 ))}
             </div>
         </div>
     );
 };
 
-const UserInfo = ({ email, firstname, lastname, username, role, department, session }) => (
+
+const UserInfo = ({
+    email,
+    firstname,
+    lastname,
+    username,
+    role,
+    department,
+    session,
+}) => (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-
             <div className="flex flex-col items-center">
                 <p className="text-xs uppercase text-black">Username</p>
                 <p className="text-lg font-semibold text-black">{username || "-"}</p>
@@ -91,7 +129,31 @@ const UserInfo = ({ email, firstname, lastname, username, role, department, sess
 
 const PermissionPage = () => {
     const router = useRouter();
-    const { email, firstname, lastname, username, role, department, session } = router.query;
+    const { email, firstname, lastname, username, role, department, session } =
+        router.query;
+
+    const [permissions, setPermissions] = useState({
+        IT: {
+            enabled: false,
+            "ฟอร์มร้องขอ": false,
+            "ฟอร์มแจ้งซ่อม": false,
+            Approve: false,
+        },
+        Drawing: {
+            enabled: false,
+            Marketing: false,
+            Sales: false,
+            Engineers: false,
+        },
+    });
+
+    const handleSave = async () => {
+        await axios.post("http://localhost:4000/savePerMissions", {
+            username,
+            permissions,
+        });
+        alert("Saved");
+    };
 
     return (
         <div className="min-h-screen bg-[#F4F7FF]">
@@ -99,22 +161,34 @@ const PermissionPage = () => {
 
             <div className="max-w-5xl mx-auto pt-28 px-4 pb-20">
                 <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-bold text-gray-800">User Permission</h1>
-
+                    <h1 className="text-3xl font-bold text-gray-800">
+                        User Permission
+                    </h1>
                 </div>
 
-                <UserInfo firstname={firstname} email={email} lastname={lastname}
-                    username={username} department={department} session={session} role={role} />
+                <UserInfo
+                    email={email}
+                    firstname={firstname}
+                    lastname={lastname}
+                    username={username}
+                    role={role}
+                    department={department}
+                    session={session}
+                />
 
                 <PermissionSection
                     title="IT"
                     items={["ฟอร์มร้องขอ", "ฟอร์มแจ้งซ่อม", "Approve"]}
+                    permissions={permissions}
+                    setPermissions={setPermissions}
                 />
 
                 <div className="mt-6">
                     <PermissionSection
                         title="Drawing"
                         items={["Marketing", "Sales", "Engineers"]}
+                        permissions={permissions}
+                        setPermissions={setPermissions}
                     />
                 </div>
 
@@ -126,6 +200,7 @@ const PermissionPage = () => {
                         Back
                     </button>
                     <button
+                        onClick={handleSave}
                         className="px-8 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition font-semibold shadow cursor-pointer"
                     >
                         Save Permission
