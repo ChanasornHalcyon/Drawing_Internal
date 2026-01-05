@@ -15,7 +15,7 @@ const Users_Management = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [form, setForm] = useState({
     id: "",
-    name: "",
+    nickname: "",
     username: "",
     password: "",
     role: "",
@@ -42,7 +42,7 @@ const Users_Management = () => {
       pathname: "/PermissionPage",
       query: {
         username: item.username,
-        name: item.name,
+        nickname: item.nickname,
         role: item.role,
       },
     });
@@ -64,7 +64,7 @@ const Users_Management = () => {
             onClick={() => {
               setForm({
                 id: "",
-                name: "",
+                nickname: "",
                 username: "",
                 password: "",
                 role: "",
@@ -84,7 +84,13 @@ const Users_Management = () => {
             <thead className="bg-gradient-to-br from-[#1C70D3] to-[#155BB5] text-white shadow">
               <tr>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
-                  Name
+                  Nickname
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
+                  Firstname
+                </th>
+                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
+                  Lastname
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Username
@@ -108,7 +114,13 @@ const Users_Management = () => {
                   className="odd:bg-white even:bg-gray-50 hover:bg-blue-50/60 transition-all duration-150 border-b border-gray-200"
                 >
                   <td className="px-4 py-2 text-nowrap font-semibold">
-                    {item.name || "-"}
+                    {item.nickname }
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold">
+                    {item.firstname }
+                  </td>
+                   <td className="px-4 py-2 text-nowrap font-semibold">
+                    {item.lastname }
                   </td>
                   <td className="px-4 py-2 text-nowrap font-semibold">
                     {item.username}

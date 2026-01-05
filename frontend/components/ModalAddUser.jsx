@@ -17,10 +17,8 @@ const ModalAddUser = ({
 
   const handleSubmitClick = async () => {
     setSubmitting(true);
-
     try {
       const res = await axios.post("http://localhost:4000/adduser", form);
-
       if (res.data.success) {
         alert("User added successfully");
         refreshData?.();
@@ -34,93 +32,180 @@ const ModalAddUser = ({
       setSubmitting(false);
     }
   };
+
+  const inputClass =
+    "w-full px-4 py-2.5 rounded-xl border border-gray-300 text-black bg-white " +
+    "focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 " +
+    "transition placeholder:text-gray-400";
+
+  const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+
   return (
     <>
       <motion.div
-        className="fixed inset-0 z-50 flex justify-center items-start mt-10"
-        initial={{ opacity: 0, y: -50 }}
+        className="fixed inset-0 z-50 flex justify-center items-start pt-12"
+        initial={{ opacity: 0, y: -32 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -50 }}
-        transition={{ duration: 0.3 }}
+        exit={{ opacity: 0, y: -32 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
       >
-        <div className="bg-white rounded-2xl shadow-xl w-[360px] sm:w-[420px] md:w-[520px] max-h-[90vh] overflow-y-auto">
-          <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
-            <h5 className="text-2xl font-semibold text-black">Add User</h5>
+        <div className="bg-white rounded-3xl shadow-2xl w-[380px] sm:w-[440px] md:w-[540px] overflow-hidden">
+
+
+          <div className="flex items-center justify-between px-6 py-4 border-b bg-white">
+            <div>
+              <h5 className="text-xl font-semibold text-gray-900">
+                Add New User
+              </h5>
+
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
+              className="text-gray-400 hover:text-gray-700 text-4xl leading-none cursor-pointer"
             >
-              ✕
+              ×
             </button>
           </div>
 
-          <div className="p-5 space-y-4">
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
-              />
+
+          <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+
+            <div className="space-y-4">
+              <div>
+                <label className={labelClass}>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Nickname</label>
+                <input
+                  type="text"
+                  name="nickname"
+                  value={form.nickname || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>First Name</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  value={form.firstname || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Last Name</label>
+                <input
+                  type="text"
+                  name="lastname"
+                  value={form.lastname || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+
+            <div className="space-y-4">
+              <div>
+                <label className={labelClass}>Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  value={form.username || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={form.password || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Role</label>
+                <select
+                  name="role"
+                  value={form.role || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                >
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="User">User</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Department</label>
+                <select
+                  name="department"
+                  value={form.department || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                >
+                  <option value="">Select Department</option>
+                  <option value="IT">IT</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Management">Management</option>
+                </select>
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Username
-              </label>
-              <input
-                type="text"
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">Role</label>
+              <label className={labelClass}>Session</label>
               <select
-                name="role"
-                value={form.role}
+                name="session"
+                value={form.session || ""}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+                className={inputClass}
               >
-                <option value="">-- Select Role --</option>
-                <option value="Admin">Admin</option>
-                <option value="Engineer">Engineers</option>
-                <option value="Sale">Sale</option>
+                <option value="">Select Session</option>
+                <option value="IT">IT</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Sales">Sales</option>
                 <option value="Management">Management</option>
               </select>
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 p-4 border-t bg-white sticky bottom-0">
+
+          <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50">
             <button
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 rounded-lg bg-gray-200 text-black cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmitClick}
               disabled={submitting}
-              className="px-4 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white transition cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-semibold transition shadow cursor-pointer"
             >
               {submitting ? "Saving..." : "Submit"}
             </button>
@@ -129,8 +214,8 @@ const ModalAddUser = ({
       </motion.div>
 
       <motion.div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
-        animate={{ opacity: 0.5 }}
+        className="fixed inset-0 bg-black/50 z-40"
+        animate={{ opacity: 1 }}
         onClick={onClose}
       />
     </>

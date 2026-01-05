@@ -65,11 +65,11 @@ app.post("/verifyUser", async (req, res) => {
 });
 
 app.post("/addUser", async (req, res) => {
-  const { name, username, password, role } = req.body;
+  const { nickname,firstname,lastname, username, password, role } = req.body;
   try {
     await db.query(
-      "INSERT INTO user (name, username, password, role) VALUES (?, ?, ?, ?)",
-      [name, username, password, role]
+      "INSERT INTO user (nickname,firstname,lastname, username, password, role) VALUES (?, ?, ?, ?,?,?)",
+      [nickname,firstname,lastname, username, password, role]
     );
     res.json({ success: true, message: "User added" });
   } catch (err) {
@@ -77,6 +77,7 @@ app.post("/addUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 app.put("/updatePassword", async (req, res) => {
   const { id, password } = req.body;
   try {
@@ -90,7 +91,7 @@ app.put("/updatePassword", async (req, res) => {
 
 app.get("/getUser", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT id, username, role,name FROM user");
+    const [rows] = await db.query("SELECT id, username, role,nickname,firstname,lastname FROM user");
     res.json({
       success: true,
       users: rows,
@@ -100,6 +101,7 @@ app.get("/getUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 app.delete("/deleteUser/:id", async (req, res) => {
   const { id } = req.params;
 
