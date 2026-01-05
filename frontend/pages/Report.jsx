@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
+import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
 import {

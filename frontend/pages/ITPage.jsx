@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import NavbarIT from "./components/NavbarIT";
+import NavbarIT from "../components/NavbarIT";
 import { motion } from "framer-motion";
-import ModalITForm from "./components/ModalItForm";
-import ModalFixForm from "./components/ModalFixForm";
+import ModalITForm from "../components/ModalITForm";
+import ModalFixForm from "../components/ModalFixForm";
 import { useRouter } from "next/router";
 const ITPage = () => {
     const router = useRouter();

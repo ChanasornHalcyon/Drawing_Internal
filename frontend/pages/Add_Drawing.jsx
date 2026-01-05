@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import Navbar from "./components/Navbar";
+import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import Image from "next/image";
 

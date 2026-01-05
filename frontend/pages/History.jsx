@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "./components/Navbar";
+import Navbar from "../components/Navbar";
 import { useRouter } from "next/router";
-import ModalDeleteFile from "./components/ModalDelete";
+import ModalDeleteFile from "../components/ModalDelete";
 import { FaFilePdf } from "react-icons/fa6";
 
 const History = () => {

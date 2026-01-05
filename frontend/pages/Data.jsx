@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "./components/Navbar";
-import ModalEditFile from "./components/ModalEditFile";
+import Navbar from "../components/Navbar";
+import ModalEditFile from "../components/ModalEditFile";
 import { FaFilePdf } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
 import { useRouter } from "next/router";

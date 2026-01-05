@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "./components/Navbar";
-import ModalCompleteForm from "./components/ModalCompleteForm";
-import ModalProblemForm from "./components/ModalProblemForm";
+import Navbar from "../components/Navbar";
+import ModalCompleteForm from "../components/ModalCompleteForm";
+import ModalProblemForm from "../components/ModalProblemForm";
 const Approve_Form = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);

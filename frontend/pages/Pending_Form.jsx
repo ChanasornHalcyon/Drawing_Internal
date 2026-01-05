@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "./components/Navbar";
-import ModalPendingForm from "./components/ModalPendingForm";
+import Navbar from "../components/Navbar";
+import ModalPendingForm from "../components/ModalPendingForm";
 const Pending_Form = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);

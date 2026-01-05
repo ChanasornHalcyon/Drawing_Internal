@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "./components/Navbar";
+import Navbar from "../components/Navbar";
 
 const Problem_Form = () => {
     const [data, setData] = useState([]);

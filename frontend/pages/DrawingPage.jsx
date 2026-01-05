@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import NavbarDrawing from "./components/NavbarDrawing";
+import NavbarDrawing from "../components/NavbarDrawing";
 import { motion } from "framer-motion";
 
 const DrawingPage = () => {

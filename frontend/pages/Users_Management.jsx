@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "./components/Navbar";
-import ModalAddUser from "./components/ModalAddUser";
-import ModalResetPassword from "./components/ModalResetPassword";
-import ModalDeleteUser from "./components/ModalDeleteUser";
+import Navbar from "../components/Navbar";
+import ModalAddUser from "../components/ModalAddUser";
+import ModalResetPassword from "../components/ModalResetPassword";
+import ModalDeleteUser from "../components/ModalDeleteUser";
+import { useRouter } from "next/router";
 const Users_Management = () => {
+  const router = useRouter();
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -34,6 +36,18 @@ const Users_Management = () => {
     setSelectedUser(user);
     setShowDeleteModal(true);
   };
+
+  const goPermissionPage = (item) => {
+    router.push({
+      pathname: "/PermissionPage",
+      query: {
+        username: item.username,
+        name: item.name,
+        role: item.role,
+      },
+    });
+  };
+
 
   useEffect(() => {
     getUser();
@@ -114,13 +128,23 @@ const Users_Management = () => {
                     </button>
                   </td>
                   <td className="px-4 py-2 text-nowrap">
-                    <button
-                      onClick={() => handleOpenDelete(item)}
-                      className="cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => goPermissionPage(item)}
+                        className="cursor-pointer px-3 py-1 rounded-lg bg-orange-100 text-orange-600 hover:bg-orange-600 hover:text-white transition shadow-sm border border-red-200"
+                      >
+                        Permission
+                      </button>
+
+                      <button
+                        onClick={() => handleOpenDelete(item)}
+                        className="cursor-pointer px-3 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm border border-red-200"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
