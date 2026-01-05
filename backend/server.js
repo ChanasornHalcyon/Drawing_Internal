@@ -65,11 +65,11 @@ app.post("/verifyUser", async (req, res) => {
 });
 
 app.post("/addUser", async (req, res) => {
-  const { nickname,firstname,lastname, username, password, role } = req.body;
+  const { email,nickname,firstname,lastname, username, password, role } = req.body;
   try {
     await db.query(
-      "INSERT INTO user (nickname,firstname,lastname, username, password, role) VALUES (?, ?, ?, ?,?,?)",
-      [nickname,firstname,lastname, username, password, role]
+      "INSERT INTO user (email,nickname,firstname,lastname, username, password, role) VALUES (?, ?, ?, ?,?,?,?)",
+      [email,nickname,firstname,lastname, username, password, role]
     );
     res.json({ success: true, message: "User added" });
   } catch (err) {
@@ -91,7 +91,7 @@ app.put("/updatePassword", async (req, res) => {
 
 app.get("/getUser", async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT id, username, role,nickname,firstname,lastname FROM user");
+    const [rows] = await db.query("SELECT id,email, username, role,nickname,firstname,lastname,department,session FROM user");
     res.json({
       success: true,
       users: rows,

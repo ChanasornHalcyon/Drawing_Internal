@@ -84,19 +84,28 @@ const Users_Management = () => {
             <thead className="bg-gradient-to-br from-[#1C70D3] to-[#155BB5] text-white shadow">
               <tr>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
-                  Nickname
+                  Username
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
+                  Email
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Firstname
                 </th>
-                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Lastname
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
-                  Username
+                  Nickname
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Role
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
+                  Department
+                </th>
+                <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
+                  Session
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Password
@@ -113,20 +122,29 @@ const Users_Management = () => {
                   key={index}
                   className="odd:bg-white even:bg-gray-50 hover:bg-blue-50/60 transition-all duration-150 border-b border-gray-200"
                 >
-                  <td className="px-4 py-2 text-nowrap font-semibold">
-                    {item.nickname }
-                  </td>
-                  <td className="px-4 py-2 text-nowrap font-semibold">
-                    {item.firstname }
-                  </td>
-                   <td className="px-4 py-2 text-nowrap font-semibold">
-                    {item.lastname }
-                  </td>
-                  <td className="px-4 py-2 text-nowrap font-semibold">
+                  <td className="px-4 py-2 text-nowrap font-semibold  text-black">
                     {item.username}
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold  text-blue-600">
+                    {item.email}
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold  text-black">
+                    {item.firstname}
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold  text-black">
+                    {item.lastname}
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold  text-black">
+                    {item.nickname}
                   </td>
                   <td className="px-4 py-2 text-nowrap font-semibold text-blue-600">
                     {item.role}
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold text-blue-600">
+                    {item.department}
+                  </td>
+                  <td className="px-4 py-2 text-nowrap font-semibold text-blue-600">
+                    {item.session}
                   </td>
                   <td className="px-4 py-2 text-nowrap">
                     <button
