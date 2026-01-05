@@ -51,16 +51,33 @@ const PermissionSection = ({ title, items }) => {
     );
 };
 
-const UserInfo = ({ name, username, role }) => (
+const UserInfo = ({ email, firstname, lastname, username, role, department, session }) => (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="flex flex-col items-center">
-                <p className="text-xs uppercase text-black">Name</p>
-                <p className="text-lg font-semibold text-black">{name || "-"}</p>
-            </div>
+
             <div className="flex flex-col items-center">
                 <p className="text-xs uppercase text-black">Username</p>
                 <p className="text-lg font-semibold text-black">{username || "-"}</p>
+            </div>
+            <div className="flex flex-col items-center">
+                <p className="text-xs uppercase text-black">Email</p>
+                <p className="text-lg font-semibold text-black">{email || "-"}</p>
+            </div>
+            <div className="flex flex-col items-center">
+                <p className="text-xs uppercase text-black">Firstname</p>
+                <p className="text-lg font-semibold text-black">{firstname || "-"}</p>
+            </div>
+            <div className="flex flex-col items-center">
+                <p className="text-xs uppercase text-black">Lastname</p>
+                <p className="text-lg font-semibold text-black">{lastname || "-"}</p>
+            </div>
+            <div className="flex flex-col items-center">
+                <p className="text-xs uppercase text-black">Department</p>
+                <p className="text-lg font-semibold text-black">{department || "-"}</p>
+            </div>
+            <div className="flex flex-col items-center">
+                <p className="text-xs uppercase text-black">Session</p>
+                <p className="text-lg font-semibold text-black">{session || "-"}</p>
             </div>
             <div className="flex flex-col items-center">
                 <p className="text-xs uppercase text-black">Role</p>
@@ -74,7 +91,7 @@ const UserInfo = ({ name, username, role }) => (
 
 const PermissionPage = () => {
     const router = useRouter();
-    const { username, name, role } = router.query;
+    const { email, firstname, lastname, username, role, department, session } = router.query;
 
     return (
         <div className="min-h-screen bg-[#F4F7FF]">
@@ -83,12 +100,11 @@ const PermissionPage = () => {
             <div className="max-w-5xl mx-auto pt-28 px-4 pb-20">
                 <div className="mb-8 text-center">
                     <h1 className="text-3xl font-bold text-gray-800">User Permission</h1>
-                    <p className="text-sm text-gray-500">
-                        Control access and permission for each module
-                    </p>
+
                 </div>
 
-                <UserInfo name={name} username={username} role={role} />
+                <UserInfo firstname={firstname} email={email} lastname={lastname}
+                    username={username} department={department} session={session} role={role} />
 
                 <PermissionSection
                     title="IT"
@@ -105,12 +121,12 @@ const PermissionPage = () => {
                 <div className="mt-10 flex justify-center gap-4">
                     <button
                         onClick={() => router.back()}
-                        className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition font-semibold"
+                        className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition font-semibold cursor-pointer"
                     >
                         Back
                     </button>
                     <button
-                        className="px-8 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition font-semibold shadow"
+                        className="px-8 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition font-semibold shadow cursor-pointer"
                     >
                         Save Permission
                     </button>

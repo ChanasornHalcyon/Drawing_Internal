@@ -38,16 +38,21 @@ const Users_Management = () => {
   };
 
   const goPermissionPage = (item) => {
+    console.log(item);
     router.push({
       pathname: "/PermissionPage",
       query: {
+        email: item.email,
         username: item.username,
+        firstname: item.firstname,
+        lastname: item.lastname,
         nickname: item.nickname,
         role: item.role,
+        department: item.department,
+        session: item.session
       },
     });
   };
-
 
   useEffect(() => {
     getUser();
