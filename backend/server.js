@@ -4,6 +4,7 @@ const mysql = require("mysql2/promise");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const app = express();
@@ -49,7 +50,18 @@ const initMySQL = async () => {
   });
 };
 initMySQL();
-
+const transporter = nodemailer.createTransport({
+  host: "mail.halcyon.local",
+  port: 587,
+  secure: false, 
+  auth: {
+    user: "itservice@halcyon.local",   
+    pass: "Itser@2026",            
+  },
+  tls: {
+    rejectUnauthorized: false, 
+  },
+});
 app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   const [rows] = await db.query(
@@ -747,7 +759,7 @@ app.post("/ITForm", async (req, res) => {
       const emailList = departmentMap[dept].join(",");
 
       await transporter.sendMail({
-        from: `"IT System" <chanasornhockey@gmail.com>`,
+        from: `"IT System" <itservice@halcyon.local>`,
         to: emailList,
         subject: `มีคำขอ IT ใหม่ (${department})`,
         html: `
@@ -1056,10 +1068,7 @@ app.get("/userPermissions", async (req, res) => {
     username,
   ]);
 
-  if (!user) {
-    return res.status(404).json({ message: "user not found" });
-  }
-
+  
   const [rows] = await db.query(
     `
     SELECT module, permission, enabled

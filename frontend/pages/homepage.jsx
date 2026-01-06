@@ -16,20 +16,20 @@ const Homepage = () => {
     });
   };
 
-  const userPermissions = async () => {
-    const username = localStorage.getItem("username");
-    const res = await axios.get(
-      `http://localhost:4000/userPermissions?username=${username}`
-    );
+  // const userPermissions = async () => {
+  //   const username = localStorage.getItem("username");
+  //   const res = await axios.get(
+  //     `http://localhost:4000/userPermissions?username=${username}`
+  //   );
 
-    setModules(res.data);
-    console.log(res.data)
-  };
+  //   setModules(res.data);
+  //   console.log(res.data)
+  // };
 
 
   useEffect(() => {
     const userRole = localStorage.getItem("role");
-    userPermissions();
+    // userPermissions();
     setRole(userRole || "");
   }, []);
 
@@ -40,20 +40,15 @@ const Homepage = () => {
      border-gray-300 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] \
      hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
 
-  const cards = [];
+   const cards = [];
   if (role === "Admin") {
-    cards.push(
-      { label: "Users_Management", path: "Users_Management" },
-      { label: "Users_Logs", path: "Users_Logs" }
-    );
+    cards.push({ label: "Users_Management", path: "Users_Management" });
+    cards.push({ label: "Users_Logs", path: "Users_Logs" });
   } else {
-    if (modules.IT === 1) {
-      cards.push({ label: "IT", path: "ITPage" });
-    }
-
-    if (modules.Drawing === 1) {
-      cards.push({ label: "Drawing", path: "DrawingPage" });
-    }
+    cards.push(
+      { label: "IT", path: "ITPage" },
+      { label: "Drawing", path: "DrawingPage" }
+    );
   }
 
   return (
