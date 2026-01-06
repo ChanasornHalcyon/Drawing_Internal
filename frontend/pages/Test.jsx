@@ -1,8 +1,13 @@
-import React from 'react';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
+
 const Test = () => {
-    const [form, setForm] = useState();
+    const [form, setForm] = useState({
+        to: "",
+        subject: "",
+        message: "",
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -10,24 +15,50 @@ const Test = () => {
 
     const handleSubmit = async () => {
         try {
-            const res = await axios.post("http://localhost:4000/ITForm",);
-            console.log(res.data)
+            const res = await axios.post(
+                "http://localhost:4000/sendMailTest",
+                form
+            );
+            console.log(res.data);
+            alert("ส่งเมลแล้ว");
         } catch (err) {
             console.error(err);
+            alert("ส่งเมลไม่สำเร็จ");
         }
     };
+
     return (
-        <div className='w-full bg-white h-dvh'>
+        <div className="w-full bg-white h-dvh p-6 space-y-3">
             <input
-                type="text"
+                name="to"
+                placeholder="to (email)"
                 onChange={handleChange}
-                className="w-full mt-1 p-2 border rounded-lg text-black"
+                className="w-full p-2 border rounded text-black"
             />
-            <button className='bg-black w-20' onClick={handleSubmit}>
-                save
+
+            <input
+                name="subject"
+                placeholder="subject"
+                onChange={handleChange}
+                className="w-full p-2 border rounded text-black"
+            />
+
+            <textarea
+                name="message"
+                placeholder="message"
+                rows={5}
+                onChange={handleChange}
+                className="w-full p-2 border rounded text-black"
+            />
+
+            <button
+                className="bg-black text-white px-4 py-2 rounded"
+                onClick={handleSubmit}
+            >
+                Send Mail
             </button>
         </div>
-    )
-}
+    );
+};
 
-export default Test
+export default Test;

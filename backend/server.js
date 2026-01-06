@@ -1080,6 +1080,29 @@ app.get("/userPermissions", async (req, res) => {
 
   res.json(rows);
 });
+app.post("/sendMailTest", async (req, res) => {
+  try {
+    const { to, subject, message } = req.body;
+
+    if (!to || !subject || !message) {
+      return res.status(400).json({ message: "missing fields" });
+    }
+
+    const info = await transporter.sendMail({
+      from: `"Mail Test" <itservice@halcyon.local>`,
+      to,
+      subject,
+      text: message,
+    });
+
+    console.log("MAIL:", info.accepted, info.rejected);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Mail error:", err);
+    res.status(500).json({ success: false });
+  }
+});
 
 const PORT = 4000;
 app.listen(PORT, () =>
