@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
@@ -154,6 +154,49 @@ const PermissionPage = () => {
         });
         alert("Saved");
     };
+
+    const loadPermissions = async () => {
+
+        const res = await axios.get(
+            `http://localhost:4000/userPermissions?username=${username}`
+        );
+
+        const base = {
+            IT: {
+                enabled: false,
+                "ฟอร์มร้องขอ": false,
+                "ฟอร์มแจ้งซ่อม": false,
+                Approve: false,
+            },
+            Drawing: {
+                enabled: false,
+                Marketing: false,
+                Sales: false,
+                Engineers: false,
+            },
+        };
+
+        const rows = Array.isArray(res.data)
+            ? res.data
+            : res.data.data || [];
+
+        for (const row of rows) {
+            if (base[row.module]) {
+                base[row.module][row.permission] = row.enabled === 1;
+
+                if (row.enabled === 1) {
+                    base[row.module].enabled = true;
+                }
+            }
+        }
+
+        setPermissions(base);
+    };
+
+   useEffect(() => {
+  loadPermissions();
+}, [username]);
+
 
     return (
         <div className="min-h-screen bg-[#F4F7FF]">

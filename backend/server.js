@@ -1049,7 +1049,6 @@ app.post("/savePerMissions", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
-
 app.get("/userPermissions", async (req, res) => {
   const { username } = req.query;
 
@@ -1057,22 +1056,20 @@ app.get("/userPermissions", async (req, res) => {
     username,
   ]);
 
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+
   const [rows] = await db.query(
     `
-    SELECT module, enabled
+    SELECT module, permission, enabled
     FROM user_permissions
     WHERE user_id = ?
-      AND permission = 'enabled'
     `,
     [user.id]
   );
 
-  const result = {};
-  rows.forEach((r) => {
-    result[r.module] = r.enabled;
-  });
-
-  res.json(result);
+  res.json(rows);
 });
 
 const PORT = 4000;
