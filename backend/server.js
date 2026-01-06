@@ -51,7 +51,7 @@ const initMySQL = async () => {
 };
 initMySQL();
 const transporter = nodemailer.createTransport({
-  host: "mail.halcyon.local",
+  host: "192.168.23.8",
   port: 587,
   secure: false, 
   auth: {
