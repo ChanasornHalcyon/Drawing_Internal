@@ -11,7 +11,7 @@ const ADMIN_CARDS = [
 
 const CARD_MAP = {
   IT: { label: "IT", path: "ITPage" },
-  DRAWING: { label: "Drawing", path: "DrawingPage" },
+  Drawing: { label: "Drawing", path: "DrawingPage" },
 };
 
 const Homepage = () => {
