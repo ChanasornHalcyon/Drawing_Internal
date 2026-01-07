@@ -3,53 +3,63 @@ import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import axios from "axios";
-const Homepage = () => {
 
-  const [role, setRole] = useState("");
+const ADMIN_CARDS = [
+  { label: "Users_Management", path: "Users_Management" },
+  { label: "Users_Logs", path: "Users_Logs" },
+];
+
+const CARD_MAP = {
+  IT: { label: "IT", path: "ITPage" },
+  DRAWING: { label: "Drawing", path: "DrawingPage" },
+};
+
+const Homepage = () => {
   const router = useRouter();
-  const [modules, setModules] = useState({});
+  const [cards, setCards] = useState([]);
 
   const clickCard = (path) => {
-    router.push({
-      pathname: `/${path}`,
-      query: { role },
-    });
+    router.push(`/${path}`);
   };
 
-  // const userPermissions = async () => {
-  //   const username = localStorage.getItem("username");
-  //   const res = await axios.get(
-  //     `http://localhost:4000/userPermissions?username=${username}`
-  //   );
+  const fetchPermissions = async () => {
+    try {
+      const username = localStorage.getItem("username");
+      const role = localStorage.getItem("role");
 
-  //   setModules(res.data);
-  //   console.log(res.data)
-  // };
+      let resultCards = [];
 
+      if (role === "Admin") {
+        resultCards = [...ADMIN_CARDS];
+      }
+
+      const res = await axios.get(
+        `http://localhost:4000/userPermissions?username=${username}`
+      );
+
+      const permissionCards = res.data
+        .filter((p) => p.enabled)
+        .map((p) => CARD_MAP[p.module])
+        .filter(Boolean);
+
+      resultCards = [...resultCards, ...permissionCards];
+
+      setCards(resultCards);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const userRole = localStorage.getItem("role");
-    // userPermissions();
-    setRole(userRole || "");
+    fetchPermissions();
   }, []);
 
   const cardClass =
-    "h-48 w-72 flex flex-col items-center justify-center \
-     bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] \
-     border transition-all duration-150 cursor-pointer \
-     border-gray-300 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] \
-     hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
-
-   const cards = [];
-  if (role === "Admin") {
-    cards.push({ label: "Users_Management", path: "Users_Management" });
-    cards.push({ label: "Users_Logs", path: "Users_Logs" });
-  } else {
-    cards.push(
-      { label: "IT", path: "ITPage" },
-      { label: "Drawing", path: "DrawingPage" }
-    );
-  }
+    "h-48 w-72 flex flex-col items-center justify-center " +
+    "bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] " +
+    "border transition-all duration-150 cursor-pointer " +
+    "border-gray-300 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] " +
+    "hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
 
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
