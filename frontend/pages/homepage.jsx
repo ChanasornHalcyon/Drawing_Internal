@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
+import SuccessPopup from "..//components/SuccessPopup";
 import axios from "axios";
 
 const ADMIN_CARDS = [
@@ -17,7 +18,7 @@ const CARD_MAP = {
 const Homepage = () => {
   const router = useRouter();
   const [cards, setCards] = useState([]);
-
+  const [showPopup, setShowPopup] = useState(false);
   const clickCard = (path) => {
     router.push(`/${path}`);
   };
@@ -51,15 +52,22 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    fetchPermissions();
-  }, []);
+  fetchPermissions();
+  if (sessionStorage.getItem("loginSuccess") === "1") {
+    setShowPopup(true);
+    sessionStorage.removeItem("loginSuccess"); 
+  }
+}, []);
 
   const cardClass =
-    "h-48 w-72 flex flex-col items-center justify-center " +
-    "bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] " +
-    "border transition-all duration-150 cursor-pointer " +
-    "border-gray-300 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] " +
-    "hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
+    "h-44 w-80 flex flex-col items-center justify-center gap-1 " +
+    "bg-white rounded-2xl border border-gray-200 cursor-pointer " +
+    "shadow-[0_8px_25px_rgba(0,0,0,0.08)] " +
+    "transition-all duration-200 " +
+    "hover:-translate-y-2 hover:border-[#1C70D3] " +
+    "hover:shadow-[0_20px_45px_rgba(28,112,211,0.25)] " +
+    "hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
+
 
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
@@ -88,6 +96,11 @@ const Homepage = () => {
           ))}
         </div>
       </div>
+      <SuccessPopup
+        showPopup={showPopup}
+        message="เข้าสู่ระบบสำเร็จ"
+        onClose={() => setShowPopup(false)}
+      />
     </div>
   );
 };

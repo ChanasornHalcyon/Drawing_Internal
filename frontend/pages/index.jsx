@@ -20,7 +20,7 @@ const Index = () => {
         localStorage.setItem("userId", res.data.user.id);
         localStorage.setItem("username", res.data.user.username);
         localStorage.setItem("role", res.data.user.role);
-
+        sessionStorage.setItem("loginSuccess", "1");
         router.push("/homepage");
       } else {
         setError(" Username หรือ Password ไม่ถูกต้อง");
@@ -43,7 +43,7 @@ const Index = () => {
 
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-400/10 to-purple-400/10 blur-2xl -z-10" />
 
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-3">
             <img
               src="ht-logo.png"
               alt="logo"
@@ -58,7 +58,7 @@ const Index = () => {
 
           <form className="flex flex-col gap-5" onSubmit={login}>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 mt-3">
               <label className="text-sm font-medium text-gray-700">
                 Username
               </label>
