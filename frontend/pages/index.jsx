@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Navbar from "../components/Navbar";
 import axios from "axios";
 
 const Index = () => {
@@ -32,20 +31,17 @@ const Index = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#e8f0ff] via-[#f2f7ff] to-white">
-      <Navbar />
-
+    <div className="relative min-h-screen bg-gradient-to-br from-[#EEF2FF] via-[#F5F7FF] to-[#E0E7FF]">
       <div className="flex justify-center items-center min-h-screen px-4 bg-gradient-to-br from-[#EEF2FF] via-[#F8F8FF] to-[#E0E7FF]">
         <div
           className="relative bg-white/80 backdrop-blur-xl 
                border border-blue-200/60 
                shadow-[0_20px_60px_rgba(37,99,235,0.25)] 
                rounded-3xl p-8 md:p-10 w-[350px] md:w-[420px]
-               animate-fadeIn"
+               animate-fadeIn mb-32"
         >
 
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-400/10 to-purple-400/10 blur-2xl -z-10" />
-
 
           <div className="flex justify-center mb-6">
             <img
@@ -56,7 +52,7 @@ const Index = () => {
           </div>
 
 
-          <h1 className="text-center text-xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-center text-xl font-semibold text-gray-800 mb-2">
             Halcyon System
           </h1>
 
