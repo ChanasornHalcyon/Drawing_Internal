@@ -36,8 +36,9 @@ const ModalAddUser = ({
 
   const inputClass =
     "w-full px-4 py-2.5 rounded-xl border border-gray-300 text-black bg-white " +
-    "focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition";
+    "focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition ";
 
+  const inputClassRequired = inputClass + " border-l-4 border-l-red-500";
   const labelClass = "block text-sm font-medium text-gray-700 mb-1";
 
   return (
@@ -73,7 +74,7 @@ const ModalAddUser = ({
                     name="firstname"
                     value={form.firstname || ""}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={inputClassRequired}
                     required
                   />
                 </div>
@@ -84,7 +85,7 @@ const ModalAddUser = ({
                     name="lastname"
                     value={form.lastname || ""}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={inputClassRequired}
                     required
                   />
                 </div>
@@ -108,7 +109,7 @@ const ModalAddUser = ({
                   name="username"
                   value={form.username || ""}
                   onChange={handleChange}
-                  className={inputClass}
+                  className={inputClassRequired}
                   required
                 />
               </div>
@@ -120,7 +121,7 @@ const ModalAddUser = ({
                   name="password"
                   value={form.password || ""}
                   onChange={handleChange}
-                  className={inputClass}
+                  className={inputClassRequired}
                   required
                 />
               </div>
@@ -132,7 +133,7 @@ const ModalAddUser = ({
                   name="email"
                   value={form.email || ""}
                   onChange={handleChange}
-                  className={inputClass}
+                  className={inputClassRequired}
                   required
                 />
               </div>
@@ -144,7 +145,7 @@ const ModalAddUser = ({
                     name="department"
                     value={form.department || ""}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={inputClassRequired}
                     required
                   >
                     <option value="">Select Department</option>
@@ -160,7 +161,7 @@ const ModalAddUser = ({
                     name="section"
                     value={form.section || ""}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={inputClassRequired}
                     required
                   >
                     <option value="">Select Section</option>
@@ -178,7 +179,7 @@ const ModalAddUser = ({
                   name="role"
                   value={form.role || ""}
                   onChange={handleChange}
-                  className={inputClass}
+                  className={inputClassRequired}
                   required
                 >
                   <option value="">Select Role</option>
