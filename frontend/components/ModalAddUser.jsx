@@ -15,7 +15,8 @@ const ModalAddUser = ({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitClick = async () => {
+  const handleSubmitClick = async (e) => {
+    e.preventDefault();
     setSubmitting(true);
     try {
       const res = await axios.post("http://localhost:4000/adduser", form);
@@ -35,8 +36,7 @@ const ModalAddUser = ({
 
   const inputClass =
     "w-full px-4 py-2.5 rounded-xl border border-gray-300 text-black bg-white " +
-    "focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 " +
-    "transition placeholder:text-gray-400";
+    "focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition";
 
   const labelClass = "block text-sm font-medium text-gray-700 mb-1";
 
@@ -47,39 +47,47 @@ const ModalAddUser = ({
         initial={{ opacity: 0, y: -32 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -32 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
+        transition={{ duration: 0.25 }}
       >
-        <div className="bg-white rounded-3xl shadow-2xl w-[380px] sm:w-[440px] md:w-[540px] overflow-hidden">
-
-
-          <div className="flex items-center justify-between px-6 py-4 border-b bg-white">
-            <div>
+        <form onSubmit={handleSubmitClick}>
+          <div className="bg-white rounded-3xl shadow-2xl w-[380px] sm:w-[440px] md:w-[500px] overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
               <h5 className="text-xl font-semibold text-gray-900">
                 Add New User
               </h5>
-
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-700 text-4xl leading-none cursor-pointer"
+              >
+                ×
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-700 text-4xl leading-none cursor-pointer"
-            >
-              ×
-            </button>
-          </div>
 
-
-          <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
-
-            <div className="space-y-4">
-              <div>
-                <label className={labelClass}>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email || ""}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+            <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>First Name</label>
+                  <input
+                    type="text"
+                    name="firstname"
+                    value={form.firstname || ""}
+                    onChange={handleChange}
+                    className={inputClass}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Last Name</label>
+                  <input
+                    type="text"
+                    name="lastname"
+                    value={form.lastname || ""}
+                    onChange={handleChange}
+                    className={inputClass}
+                    required
+                  />
+                </div>
               </div>
 
               <div>
@@ -92,34 +100,7 @@ const ModalAddUser = ({
                   className={inputClass}
                 />
               </div>
-            </div>
 
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClass}>First Name</label>
-                <input
-                  type="text"
-                  name="firstname"
-                  value={form.firstname || ""}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Last Name</label>
-                <input
-                  type="text"
-                  name="lastname"
-                  value={form.lastname || ""}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
-              </div>
-            </div>
-
-
-            <div className="space-y-4">
               <div>
                 <label className={labelClass}>Username</label>
                 <input
@@ -128,6 +109,7 @@ const ModalAddUser = ({
                   value={form.username || ""}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 />
               </div>
 
@@ -139,12 +121,57 @@ const ModalAddUser = ({
                   value={form.password || ""}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 />
               </div>
-            </div>
 
+              <div>
+                <label className={labelClass}>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email || ""}
+                  onChange={handleChange}
+                  className={inputClass}
+                  required
+                />
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Department</label>
+                  <select
+                    name="department"
+                    value={form.department || ""}
+                    onChange={handleChange}
+                    className={inputClass}
+                    required
+                  >
+                    <option value="">Select Department</option>
+                    <option value="IT">IT</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Management">Management</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={labelClass}>Section</label>
+                  <select
+                    name="section"
+                    value={form.section || ""}
+                    onChange={handleChange}
+                    className={inputClass}
+                    required
+                  >
+                    <option value="">Select Section</option>
+                    <option value="IT">IT</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Management">Management</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className={labelClass}>Role</label>
                 <select
@@ -152,65 +179,34 @@ const ModalAddUser = ({
                   value={form.role || ""}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 >
                   <option value="">Select Role</option>
                   <option value="Admin">Admin</option>
                   <option value="User">User</option>
                 </select>
               </div>
-
-              <div>
-                <label className={labelClass}>Department</label>
-                <select
-                  name="department"
-                  value={form.department || ""}
-                  onChange={handleChange}
-                  className={inputClass}
-                >
-                  <option value="">Select Department</option>
-                  <option value="IT">IT</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Management">Management</option>
-                </select>
-              </div>
             </div>
 
-            <div>
-              <label className={labelClass}>Session</label>
-              <select
-                name="session"
-                value={form.session || ""}
-                onChange={handleChange}
-                className={inputClass}
+            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={submitting}
+                className="px-5 py-2.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 cursor-pointer"
               >
-                <option value="">Select Session</option>
-                <option value="IT">IT</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Sales">Sales</option>
-                <option value="Management">Management</option>
-              </select>
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="px-6 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-semibold cursor-pointer"
+              >
+                {submitting ? "Saving..." : "Submit"}
+              </button>
             </div>
           </div>
-
-
-          <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50">
-            <button
-              onClick={onClose}
-              disabled={submitting}
-              className="px-5 py-2.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 transition cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmitClick}
-              disabled={submitting}
-              className="px-6 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-semibold transition shadow cursor-pointer"
-            >
-              {submitting ? "Saving..." : "Submit"}
-            </button>
-          </div>
-        </div>
+        </form>
       </motion.div>
 
       <motion.div

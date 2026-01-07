@@ -77,12 +77,12 @@ app.post("/verifyUser", async (req, res) => {
 });
 
 app.post("/addUser", async (req, res) => {
-  const { email, nickname, firstname, lastname, username, password, role } =
+  const { email, nickname, firstname, lastname, username, password, role,department,session } =
     req.body;
   try {
     await db.query(
-      "INSERT INTO user (email,nickname,firstname,lastname, username, password, role) VALUES (?, ?, ?, ?,?,?,?)",
-      [email, nickname, firstname, lastname, username, password, role]
+      "INSERT INTO user (email,nickname,firstname,lastname, username, password, role,department,session) VALUES (?, ?, ?, ?,?,?,?,?,?)",
+      [email, nickname, firstname, lastname, username, password, role,department,session]
     );
     res.json({ success: true, message: "User added" });
   } catch (err) {
