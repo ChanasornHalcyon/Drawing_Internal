@@ -35,81 +35,91 @@ const Index = () => {
     <div className="relative min-h-screen bg-gradient-to-br from-[#e8f0ff] via-[#f2f7ff] to-white">
       <Navbar />
 
-      <div className="flex justify-center items-center pt-36 pb-10 px-4">
+      <div className="flex justify-center items-center min-h-screen px-4 bg-gradient-to-br from-[#EEF2FF] via-[#F8F8FF] to-[#E0E7FF]">
         <div
-          className="bg-white/90 backdrop-blur-md border border-gray-200 shadow-xl 
-                        rounded-2xl p-8 w-[350px] md:w-[400px] animate-fadeIn"
+          className="relative bg-white/80 backdrop-blur-xl 
+               border border-blue-200/60 
+               shadow-[0_20px_60px_rgba(37,99,235,0.25)] 
+               rounded-3xl p-8 md:p-10 w-[350px] md:w-[420px]
+               animate-fadeIn"
         >
+
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-400/10 to-purple-400/10 blur-2xl -z-10" />
+
+
           <div className="flex justify-center mb-6">
             <img
               src="ht-logo.png"
               alt="logo"
-              className="w-20 h-20 opacity-90"
+              className="w-20 h-20 opacity-90 drop-shadow-md"
             />
           </div>
 
+
+          <h1 className="text-center text-xl font-semibold text-gray-800 mb-1">
+            Halcyon System
+          </h1>
+
           <form className="flex flex-col gap-5" onSubmit={login}>
+
             <div className="flex flex-col gap-1">
-              <label
-                htmlFor="username"
-                className="font-medium text-gray-700 text-sm"
-              >
+              <label className="text-sm font-medium text-gray-700">
                 Username
               </label>
               <input
                 type="text"
-                id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                           focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 
-                           text-gray-900 transition"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-300 
+                     bg-white/70 text-gray-900
+                     focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500
+                     transition"
                 placeholder="Enter username"
               />
             </div>
 
+
             <div className="flex flex-col gap-1">
-              <label
-                htmlFor="password"
-                className="font-medium text-gray-700 text-sm"
-              >
+              <label className="text-sm font-medium text-gray-700">
                 Password
               </label>
               <input
                 type="password"
-                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                           focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 
-                           text-gray-900 transition"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-300 
+                     bg-white/70 text-gray-900
+                     focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500
+                     transition"
                 placeholder="Enter password"
               />
             </div>
 
+
             {error && (
-              <div className="text-red-500 text-sm text-center mt-1 font-medium ">
+              <div className="text-red-500 text-sm text-center font-medium animate-shake">
                 {error}
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 
-                         text-white py-2 rounded-lg font-medium 
-                         hover:from-blue-700 hover:to-blue-800 
-                         shadow-md transition transform hover:-translate-y-0.5 active:scale-95 
-                         cursor-pointer"
+              className="w-full py-2.5 rounded-xl font-semibold text-white mt-4
+                   bg-gradient-to-r from-blue-600 to-blue-700
+                   hover:from-blue-700 hover:to-blue-800
+                   shadow-[0_8px_25px_rgba(37,99,235,0.35)]
+                   transition-all duration-200
+                   hover:-translate-y-0.5 active:scale-95 cursor-pointer"
             >
               Login
             </button>
           </form>
-
           <p className="text-center text-xs text-gray-500 mt-6">
             Halcyon © {new Date().getFullYear()}
           </p>
         </div>
       </div>
+
     </div>
   );
 };
