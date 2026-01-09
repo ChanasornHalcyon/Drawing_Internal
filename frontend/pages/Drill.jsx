@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
+import NavbarDrawing from "../components/NavbarDrawing";
 import { FaFilePdf } from "react-icons/fa6";
 const Drill = () => {
   const [form, setForm] = useState({
@@ -127,7 +127,7 @@ const Drill = () => {
 
   return (
     <>
-      <Navbar />
+      <NavbarDrawing />
       <div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-100 flex flex-col">
         <div
           className={`flex py-10 px-4 

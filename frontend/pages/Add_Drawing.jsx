@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import Navbar from "../components/Navbar";
+import NavbarDrawing from "../components/NavbarDrawing";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -33,7 +33,7 @@ const add_drawing = () => {
 
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-      <Navbar />
+      <NavbarDrawing />
 
       <div className="pt-40 md:pt-32 pb-10 flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
@@ -52,10 +52,9 @@ const add_drawing = () => {
                 className={`h-48 w-72 flex flex-col items-center justify-center
                   bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)]
                   border transition-all duration-300 cursor-pointer
-                  ${
-                    isDisabled
-                      ? "border-gray-300 opacity-50 cursor-not-allowed"
-                      : "border-gray-200 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50"
+                  ${isDisabled
+                    ? "border-gray-300 opacity-50 cursor-not-allowed"
+                    : "border-gray-200 hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:border-[#1C70D3] hover:bg-gradient-to-br hover:from-white hover:to-blue-50"
                   }`}
               >
                 {cardImages[item] && (

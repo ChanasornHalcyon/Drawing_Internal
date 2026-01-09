@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
+import NavbarDrawing from "../components/NavbarDrawing";
 import ModalEditFile from "../components/ModalEditFile";
 import { FaFilePdf } from "react-icons/fa6";
 import { MdHistory } from "react-icons/md";
@@ -69,7 +69,7 @@ const Data = () => {
 
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-      <Navbar />
+      <NavbarDrawing />
       <div className="container mx-auto max-w-[1450px] pt-32">
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
           <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden  ">

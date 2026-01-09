@@ -4,7 +4,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { RiLockPasswordFill } from "react-icons/ri";
 import ModalResetPassword from "./ModalResetPassword";
-import { MdComputer } from "react-icons/md";
+
 const NavbarIT = () => {
     const router = useRouter();
     const [username, setUsername] = useState("");
@@ -39,37 +39,54 @@ const NavbarIT = () => {
     return (
         <>
             <nav
-                className="fixed top-0 left-0 w-full z-50 
-             bg-gradient-to-r from-[#FF1493]  to-[#7DDCFB]
-             backdrop-blur-md
-             p-5 flex justify-between items-center shadow-lg border-b border-white/20"
+                className="fixed top-0 left-0 w-full z-50
+             bg-white/80 backdrop-blur-xl
+             border-b border-blue-600/60
+             shadow-[0_10px_30px_rgba(30,64,175,0.18)]
+             px-6 py-4 flex justify-between items-center"
             >
-                <div className="flex items-center gap-3">
+
+                <div className="flex items-center gap-3 ml-5">
                     <img
                         onClick={goHomePage}
-                        className="w-14 cursor-pointer ml-4"
+                        className="w-11 cursor-pointer hover:scale-105 transition"
                         src="ht-logo.png"
                         alt="HT"
                     />
-
+                    <span className="hidden lg:block text-lg font-semibold text-[#0B4EA2] tracking-wide">
+                        IT Form
+                    </span>
                 </div>
 
+
                 {username && (
-                    <div className="relative inline-block text-left text-red-500 ">
+                    <div className="relative">
                         <button
                             onClick={() => setIsDropdownOpen((prev) => !prev)}
-                            className="font-medium flex items-center gap-2 mr-2 hover:text-gray-700 transition cursor-pointer text-white"
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl
+                   hover:bg-blue-100/60 transition cursor-pointer"
                         >
-                            <FaUserCircle className="text-2xl text-black" />
-                            <span className="text-black text-xl">{username}</span>
+                            <FaUserCircle className="text-2xl text-[#0B4EA2]" />
+                            <span className="text-[#0B4EA2] font-medium text-base cursor-pointer">
+                                {username}
+                            </span>
                         </button>
 
                         {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-xl z-50 border border-gray-200">
+                            <div
+                                className="absolute right-0 mt-3 w-44
+                     bg-white/90 backdrop-blur-lg
+                     rounded-2xl
+                     shadow-[0_20px_40px_rgba(30,64,175,0.25)]
+                     border border-blue-200/60
+                     overflow-hidden "
+                            >
                                 {role !== "Admin" && (
                                     <button
                                         onClick={() => setShowResetModal(true)}
-                                        className="text-nowrap cursor-pointer w-full px-4 py-2 text-left text-sm text-gray-700 hover:text-blue-600 transition flex items-center gap-2"
+                                        className="w-full px-4 py-3 text-sm text-gray-700
+                         hover:bg-blue-50 hover:text-blue-600
+                         transition flex items-center gap-2 cursor-pointer"
                                     >
                                         <RiLockPasswordFill className="text-base" />
                                         เปลี่ยนรหัสผ่าน
@@ -78,7 +95,9 @@ const NavbarIT = () => {
 
                                 <button
                                     onClick={handleLogout}
-                                    className="cursor-pointer w-full px-4 py-2 text-left text-sm text-gray-700 hover:text-red-500 transition rounded-b-xl flex items-center gap-2"
+                                    className="w-full px-4 py-3 text-sm text-gray-700
+                       hover:bg-red-50 hover:text-red-600
+                       transition flex items-center gap-2 cursor-pointer"
                                 >
                                     <FiLogOut className="text-base" />
                                     ออกจากระบบ
@@ -88,6 +107,7 @@ const NavbarIT = () => {
                     </div>
                 )}
             </nav>
+
 
             {showResetModal && (
                 <ModalResetPassword

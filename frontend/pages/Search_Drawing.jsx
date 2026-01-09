@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import Navbar from "../components/Navbar";
+import NavbarDrawing from "../components/NavbarDrawing";
 import { motion } from "framer-motion";
 
 const Search_Drawing = () => {
@@ -11,7 +11,7 @@ const Search_Drawing = () => {
   };
   return (
     <div className="container mx-auto max-w-[1920px] h-dvh bg-[#F8F8FF] relative">
-      <Navbar />
+      <NavbarDrawing />
       <div className="py-40 md:py-32 flex justify-center">
         {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-10 max-w-3xl mx-5 md:mx-auto "> */}
         {card.map((item, index) => (
