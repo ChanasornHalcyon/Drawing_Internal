@@ -52,12 +52,12 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-  fetchPermissions();
-  if (sessionStorage.getItem("loginSuccess") === "1") {
-    setShowPopup(true);
-    sessionStorage.removeItem("loginSuccess"); 
-  }
-}, []);
+    fetchPermissions();
+    if (sessionStorage.getItem("loginSuccess") === "1") {
+      setShowPopup(true);
+      sessionStorage.removeItem("loginSuccess");
+    }
+  }, []);
 
   const cardClass =
     "h-44 w-80 flex flex-col items-center justify-center gap-1 " +
