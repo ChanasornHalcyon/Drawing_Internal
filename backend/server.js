@@ -56,7 +56,7 @@ const transporter = nodemailer.createTransport({
   secure: false, 
   auth: {
     user: "itservice@halcyon.local",   
-    pass: "Itser@2026",            
+    pass: "H@lcyon2026",            
   },
   tls: {
     rejectUnauthorized: false, 
