@@ -40,9 +40,8 @@ const Navbar = () => {
     <>
       <nav
         className="fixed top-0 left-0 w-full z-50
-             bg-white/80 backdrop-blur-xl
-             border-b border-blue-600/60
-             shadow-[0_10px_30px_rgba(30,64,175,0.18)]
+             bg-[#F0F8FF] backdrop-blur-xl
+            shadow-[0_12px_35px_rgba(11,78,162,0.25)]
              px-6 py-4 flex justify-between items-center"
       >
 

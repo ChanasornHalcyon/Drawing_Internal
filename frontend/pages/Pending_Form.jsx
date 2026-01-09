@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
+import NavbarIT from "../components/NavbarIT";
 import ModalPendingForm from "../components/ModalPendingForm";
 const Pending_Form = () => {
     const [data, setData] = useState([]);
@@ -37,7 +37,7 @@ const Pending_Form = () => {
 
     return (
         <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-            <Navbar />
+            <NavbarIT />
 
             <div className="container mx-auto max-w-[1450px] pt-32">
                 <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">

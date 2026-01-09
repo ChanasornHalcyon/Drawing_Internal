@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
+import NavbarIT from "../components/NavbarIT";
 
 const Problem_Form = () => {
     const [data, setData] = useState([]);
@@ -25,7 +25,7 @@ const Problem_Form = () => {
 
     return (
         <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-            <Navbar />
+            <NavbarIT />
 
             <div className="container mx-auto max-w-[1450px] pt-32">
                 <h1 className="text-2xl font-bold text-red-600 mb-6 text-center">รายการที่มีปัญหา</h1>

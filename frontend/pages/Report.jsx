@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
+import NavbarIT from "../components/NavbarIT";
 import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
 import {
@@ -118,7 +118,7 @@ const Report = () => {
 
     return (
         <div className="container mx-auto max-w-[1600px] min-h-screen bg-[#F8F8FF]">
-            <Navbar />
+            <NavbarIT />
 
             <div className="pt-24 flex justify-center px-4">
                 <div className="w-full max-w-4xl space-y-6">
