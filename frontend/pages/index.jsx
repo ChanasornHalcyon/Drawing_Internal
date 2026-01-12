@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
 const Index = () => {
   const router = useRouter();
+  const [ready, setReady] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,14 +22,30 @@ const Index = () => {
         localStorage.setItem("username", res.data.user.username);
         localStorage.setItem("role", res.data.user.role);
         sessionStorage.setItem("loginSuccess", "1");
-        router.push("/homepage");
+        router.replace("/homepage");
       } else {
-        setError(" Username หรือ Password ไม่ถูกต้อง");
+        setError("Username หรือ Password ไม่ถูกต้อง");
       }
-    } catch (err) {
-      setError(" Username หรือ Password ไม่ถูกต้อง");
+    } catch {
+      setError("Username หรือ Password ไม่ถูกต้อง");
     }
   };
+
+  useEffect(() => {
+
+    const userId = localStorage.getItem("userId");
+    const storedUsername = localStorage.getItem("username");
+
+    if (userId && storedUsername) {
+      router.replace("/homepage");
+    } else {
+      setReady(true);
+    }
+  }, []);
+
+  if (!ready) {
+    return null;
+  }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#EEF2FF] via-[#F5F7FF] to-[#E0E7FF]">
