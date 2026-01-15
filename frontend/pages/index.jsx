@@ -20,9 +20,11 @@ const Index = () => {
       if (res.data.success) {
         localStorage.setItem("userId", res.data.user.id);
         localStorage.setItem("username", res.data.user.username);
-        localStorage.setItem("role", res.data.user.role);
+        localStorage.setItem("role", res.data.user.role)
+       localStorage.setItem("department", res.data.user.department);
         sessionStorage.setItem("loginSuccess", "1");
         router.replace("/homepage");
+        console.log(res.data)
       } else {
         setError("Username หรือ Password ไม่ถูกต้อง");
       }

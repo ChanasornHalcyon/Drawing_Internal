@@ -53,19 +53,19 @@ initMySQL();
 const transporter = nodemailer.createTransport({
   host: "mail.halcyon.local",
   port: 587,
-  secure: false, 
+  secure: false,
   auth: {
-    user: "itservice@halcyon.local",   
-    pass: "H@lcyon2026",            
+    user: "itservice@halcyon.local",
+    pass: "H@lcyon2026",
   },
   tls: {
-    rejectUnauthorized: false, 
+    rejectUnauthorized: false,
   },
 });
 app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   const [rows] = await db.query(
-    "SELECT id, username, role FROM user WHERE username=? AND password=?",
+    "SELECT id, username, role,department FROM user WHERE username=? AND password=?",
     [username, password]
   );
 
@@ -77,12 +77,31 @@ app.post("/verifyUser", async (req, res) => {
 });
 
 app.post("/addUser", async (req, res) => {
-  const { email, nickname, firstname, lastname, username, password, role,department,session } =
-    req.body;
+  const {
+    email,
+    nickname,
+    firstname,
+    lastname,
+    username,
+    password,
+    role,
+    department,
+    session,
+  } = req.body;
   try {
     await db.query(
       "INSERT INTO user (email,nickname,firstname,lastname, username, password, role,department,session) VALUES (?, ?, ?, ?,?,?,?,?,?)",
-      [email, nickname, firstname, lastname, username, password, role,department,session]
+      [
+        email,
+        nickname,
+        firstname,
+        lastname,
+        username,
+        password,
+        role,
+        department,
+        session,
+      ]
     );
     res.json({ success: true, message: "User added" });
   } catch (err) {
@@ -922,9 +941,9 @@ app.post("/ITFixForm", async (req, res) => {
 
     const [users] = await db.query(
       `SELECT email
-       FROM user
-       WHERE level >= 2
-         AND email IS NOT NULL`
+   FROM user
+   WHERE role = 'Admin'
+     AND email IS NOT NULL`
     );
 
     const emailList = users.map((u) => u.email).join(",");
@@ -1068,7 +1087,6 @@ app.get("/userPermissions", async (req, res) => {
     username,
   ]);
 
-  
   const [rows] = await db.query(
     `
     SELECT module, permission, enabled
