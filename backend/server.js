@@ -952,7 +952,7 @@ app.post("/ITFixForm", async (req, res) => {
     await transporter.sendMail({
       from: `"IT System" <chanasornhockey@gmail.com>`,
       to: emailList,
-      subject: " มีคำขอ IT เพื่อรอการอนุมัติ",
+      subject: " มีคำขอ IT เพื่อแจ้งซ่อม",
       html: `
         <h3>มีคำขอ IT ใหม่</h3>
         <p><b>ผู้ร้องขอ:</b> ${requester}</p>
