@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-
+import { FaUser } from "react-icons/fa";
+import { RiLockPasswordLine } from "react-icons/ri";
 const Index = () => {
   const router = useRouter();
   const [ready, setReady] = useState(false);
@@ -21,7 +22,7 @@ const Index = () => {
         localStorage.setItem("userId", res.data.user.id);
         localStorage.setItem("username", res.data.user.username);
         localStorage.setItem("role", res.data.user.role)
-       localStorage.setItem("department", res.data.user.department);
+        localStorage.setItem("department", res.data.user.department);
         sessionStorage.setItem("loginSuccess", "1");
         router.replace("/homepage");
         console.log(res.data)
@@ -81,34 +82,52 @@ const Index = () => {
               <label className="text-sm font-medium text-gray-700">
                 Username
               </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-300 
-                     bg-white/70 text-gray-900
-                     focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500
-                     transition"
-                placeholder="Enter username"
-              />
+
+              <div className="relative">
+                <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="
+        w-full pl-11 pr-4 py-2.5 rounded-xl
+        border border-gray-300
+        bg-white/70 text-gray-900
+        focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500
+        transition
+      "
+                  placeholder=" username"
+                />
+              </div>
             </div>
+
 
 
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-300 
-                     bg-white/70 text-gray-900
-                     focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500
-                     transition"
-                placeholder="Enter password"
-              />
+
+              <div className="relative">
+                <RiLockPasswordLine className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="
+        w-full pl-11 pr-4 py-2.5 rounded-xl
+        border border-gray-300
+        bg-white/70 text-gray-900
+        focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500
+        transition
+      "
+                  placeholder=" password"
+                />
+              </div>
             </div>
+
 
 
             {error && (
