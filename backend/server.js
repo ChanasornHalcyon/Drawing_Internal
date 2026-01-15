@@ -832,11 +832,12 @@ app.get("/getITForm", async (req, res) => {
 
 app.get("/getApproveForm", async (req, res) => {
   try {
-    const [rows] = await db.query(
-      `SELECT *
-       FROM it_requests WHERE status ="APPROVED"
-       ORDER BY request_date DESC`
-    );
+    const [rows] = await db.query(`
+      SELECT *
+      FROM it_requests
+      WHERE status IN ("APPROVED", "IN_PROGRESS")
+      ORDER BY request_date DESC
+    `);
 
     res.json({ success: true, data: rows });
   } catch (err) {
@@ -844,6 +845,7 @@ app.get("/getApproveForm", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
 
 app.get("/getCompleteForm", async (req, res) => {
   try {
@@ -877,22 +879,57 @@ app.get("/getProblemForm", async (req, res) => {
 
 app.put("/updateStatus/:id", async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const { status, username } = req.body;
 
-    await db.query(
-      `UPDATE it_requests 
-       SET status = ?, completed_by = ?, completed_at = NOW()
-       WHERE id = ?`,
-      [status, username, id]
-    );
+    let sql = "";
+    let params = [];
+
+    if (status === "IN_PROGRESS") {
+      sql = `
+        UPDATE it_requests
+        SET status = ?, started_by = ?, started_at = NOW()
+        WHERE id = ?
+      `;
+      params = [status, username, id];
+    }
+
+    else if (status === "COMPLETE") {
+      sql = `
+        UPDATE it_requests
+        SET status = ?, completed_by = ?, completed_at = NOW()
+        WHERE id = ?
+      `;
+      params = [status, username, id];
+    }
+
+    else if (status === "PROBLEM") {
+      sql = `
+        UPDATE it_requests
+        SET status = ?, problem_by = ?, problem_at = NOW()
+        WHERE id = ?
+      `;
+      params = [status, username, id];
+    }
+
+    else {
+      sql = `
+        UPDATE it_requests
+        SET status = ?
+        WHERE id = ?
+      `;
+      params = [status, id];
+    }
+
+    await db.query(sql, params);
 
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("updateStatus error:", err);
     res.status(500).json({ success: false });
   }
 });
+
 
 app.post("/ITApproveForm", async (req, res) => {
   try {

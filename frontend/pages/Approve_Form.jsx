@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import NavbarIT from "../components/NavbarIT";
-import ModalCompleteForm from "../components/ModalCompleteForm";
+import ModalStartWork from "../components/ModalStartWork";
 import ModalProblemForm from "../components/ModalProblemForm";
+import ModalCompleteForm from "../components/ModalCompleteForm";
 const Approve_Form = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,6 +11,8 @@ const Approve_Form = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [showProblemModal, setShowProblemModal] = useState(false);
     const [selectedProblemItem, setSelectedProblemItem] = useState(null);
+    const [showCompleteModal, setShowCompleteModal] = useState(false);
+    const [selectedCompleteItem, setSelectedCompleteItem] = useState(null);
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -21,6 +24,10 @@ const Approve_Form = () => {
         setShowProblemModal(true);
     };
 
+    const openCompleteModal = (item) => {
+        setSelectedCompleteItem(item);
+        setShowCompleteModal(true);
+    };
     const getData = async () => {
         try {
             const res = await axios.get("http://localhost:4000/getApproveForm");
@@ -46,6 +53,7 @@ const Approve_Form = () => {
             console.error(err);
         }
     };
+
     const markProblem = async (id, problem_detail) => {
         try {
             const username = localStorage.getItem("username") || "";
@@ -126,26 +134,36 @@ const Approve_Form = () => {
                                         <td className="px-4 py-2">{item.spec}</td>
                                         <td className="px-4 py-2 flex items-center gap-2">
 
-                                            {item.status === "COMPLETE" ? (
-                                                <span className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg">
-                                                    Completed
-                                                </span>
-                                            ) : (
-
+                                            {item.status === "APPROVED" && (
                                                 <button
                                                     onClick={() => openModal(item)}
                                                     className="px-3 py-1 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
                                                 >
-                                                    Complete
+                                                    เริ่มงาน
                                                 </button>
-
-
                                             )}
+
+                                            {item.status === "IN_PROGRESS" && (
+                                                <button
+                                                    onClick={() => openCompleteModal(item)}
+                                                    className="px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 cursor-pointer"
+                                                >
+                                                    เสร็จงาน
+                                                </button>
+                                            )}
+
+
+                                            {item.status === "COMPLETE" && (
+                                                <span className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg">
+                                                    Completed
+                                                </span>
+                                            )}
+
                                             <button
                                                 onClick={() => openProblemModal(item)}
                                                 className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
                                             >
-                                                Problem
+                                                ติดปัญหา
                                             </button>
                                         </td>
 
@@ -163,11 +181,15 @@ const Approve_Form = () => {
                 </div>
             </div>
             {showModal && (
-                <ModalCompleteForm
+                <ModalStartWork
                     item={selectedItem}
                     onClose={() => setShowModal(false)}
                     onConfirm={() => {
-                        updateStatus(selectedItem.id, "COMPLETE", localStorage.getItem("username"));
+                        updateStatus(
+                            selectedItem.id,
+                            "IN_PROGRESS",
+                            localStorage.getItem("username")
+                        );
                         setShowModal(false);
                     }}
                 />
@@ -178,6 +200,20 @@ const Approve_Form = () => {
                     onClose={() => setShowProblemModal(false)}
                     onSubmitProblem={markProblem}
                     refreshData={getData}
+                />
+            )}
+            {showCompleteModal && (
+                <ModalCompleteForm
+                    item={selectedCompleteItem}
+                    onClose={() => setShowCompleteModal(false)}
+                    onConfirm={() => {
+                        updateStatus(
+                            selectedCompleteItem.id,
+                            "COMPLETE",
+                            localStorage.getItem("username")
+                        );
+                        setShowCompleteModal(false);
+                    }}
                 />
             )}
         </div>

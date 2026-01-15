@@ -1,31 +1,30 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { CheckCircle } from "lucide-react";
 
-const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
+const ModalStartWork = ({ item, onClose, onConfirm }) => {
     if (!item) return null;
 
     return (
         <>
             <motion.div
-                className="fixed inset-0 z-50 flex justify-center items-start mt-20 px-4"
-                initial={{ opacity: 0, y: -40, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                className="fixed inset-0 z-50 flex justify-center items-start mt-16 px-4"
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
             >
-                <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+                <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border">
 
 
-                    <div className="p-6 border-b flex items-center justify-between ">
-                        <div className="flex items-center gap-3">
-                            <CheckCircle className="text-green-600" size={26} />
+                    <div className="p-5 border-b flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+
                             <h2 className="text-xl font-semibold text-gray-800">
-                                ยืนยันการเสร็จงาน
+                                ยืนยันการเริ่มงาน
                             </h2>
                         </div>
                         <button
                             onClick={onClose}
-                            className="text-gray-400 hover:text-gray-600 transition text-xl cursor-pointer"
+                            className="text-xl text-gray-400 hover:text-gray-600 transition cursor-pointer"
                         >
                             ✕
                         </button>
@@ -35,7 +34,7 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
                     <div className="p-6 space-y-4 text-sm text-gray-700">
 
 
-                        <div className="bg-green-50 border border-green-100 rounded-2xl p-4 space-y-3">
+                        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 space-y-2">
                             <Info label="ผู้ร้องขอ" value={item.requester} />
                             <Info label="แผนก" value={item.department} />
                             <Info label="วัตถุประสงค์" value={item.purpose} />
@@ -44,10 +43,10 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
                     </div>
 
 
-                    <div className="p-5 border-t flex justify-end gap-3 bg-gray-50">
+                    <div className="p-5 border-t flex justify-end gap-3">
                         <button
                             onClick={onClose}
-                            className="px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+                            className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition cursor-pointer"
                         >
                             ยกเลิก
                         </button>
@@ -55,14 +54,14 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
                         <button
                             onClick={onConfirm}
                             className="
-                px-5 py-2 rounded-xl
-                bg-green-600 text-white font-medium
-                hover:bg-green-700
+                px-5 py-2 rounded-lg
+                bg-blue-600 text-white font-medium
+                hover:bg-blue-700
                 shadow-md hover:shadow-lg
                 transition cursor-pointer
               "
                         >
-                            ยืนยันเสร็จงาน
+                            เริ่มงาน
                         </button>
                     </div>
                 </div>
@@ -78,12 +77,10 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
 };
 
 const Info = ({ label, value }) => (
-    <div className="flex items-start gap-3">
+    <div className="flex">
         <div className="w-28 text-gray-500">{label}</div>
-        <div className="font-medium text-gray-800 break-words">
-            {value || "-"}
-        </div>
+        <div className="font-medium text-gray-800">{value || "-"}</div>
     </div>
 );
 
-export default ModalCompleteForm;
+export default ModalStartWork;
