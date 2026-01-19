@@ -832,7 +832,7 @@ app.get("/getITForm", async (req, res) => {
   }
 });
 
-app.get("/getApproveForm", async (req, res) => {
+app.get("/getApproveITForm", async (req, res) => {
   try {
     const [rows] = await db.query(`
       SELECT *
@@ -847,6 +847,24 @@ app.get("/getApproveForm", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+app.get("/getApproveFixForm", async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT *
+            FROM it_fixrequest
+            WHERE status IN ('IN_PROGRESS', 'PENDING') 
+            ORDER BY created_at DESC
+        `);
+
+        res.json({ success: true, data: rows });
+
+    } catch (err) {
+        console.error(err);
+        res.json({ success: false });
+    }
+});
+
+
 
 app.get("/getCompleteForm", async (req, res) => {
   try {

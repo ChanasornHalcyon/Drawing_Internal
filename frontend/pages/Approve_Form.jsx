@@ -30,7 +30,7 @@ const Approve_Form = () => {
     };
     const getData = async () => {
         try {
-            const res = await axios.get("http://localhost:4000/getApproveForm");
+            const res = await axios.get("http://localhost:4000/getApproveITForm");
             if (res.data.success) {
                 setData(res.data.data);
             }
