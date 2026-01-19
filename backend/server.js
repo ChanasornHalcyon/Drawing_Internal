@@ -1079,6 +1079,7 @@ app.post("/markProblem/:id", async (req, res) => {
 
 app.post("/savePerMissions", async (req, res) => {
   const { username, permissions } = req.body;
+
   try {
     const [[user]] = await db.query("SELECT id FROM user WHERE username = ?", [
       username,
@@ -1088,6 +1089,13 @@ app.post("/savePerMissions", async (req, res) => {
 
     for (const module in permissions) {
       for (const permission in permissions[module]) {
+        if (
+          typeof permission !== "string" ||
+          permission === "undefined" ||
+          permission.trim() === ""
+        ) {
+          continue;
+        }
         rows.push([
           user.id,
           module,
@@ -1095,6 +1103,10 @@ app.post("/savePerMissions", async (req, res) => {
           permissions[module][permission] ? 1 : 0,
         ]);
       }
+    }
+
+    if (rows.length === 0) {
+      return res.json({ success: true });
     }
 
     await db.query(
@@ -1122,28 +1134,23 @@ app.get("/userPermissions", async (req, res) => {
       [username]
     );
 
-    if (!user) {
-      return res.json([]);
-    }
+    if (!user) return res.json([]);
 
     const [rows] = await db.query(
       `
-      SELECT module, enabled
+      SELECT module, permission, enabled
       FROM user_permissions
       WHERE user_id = ?
-      AND permission = 'enabled'
       `,
       [user.id]
     );
 
     res.json(rows);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });
   }
 });
-
 
 app.post("/sendMailTest", async (req, res) => {
   try {
