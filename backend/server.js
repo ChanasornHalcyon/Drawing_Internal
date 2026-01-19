@@ -1076,6 +1076,7 @@ app.post("/markProblem/:id", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
 app.post("/savePerMissions", async (req, res) => {
   const { username, permissions } = req.body;
   try {
@@ -1111,6 +1112,7 @@ app.post("/savePerMissions", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
 app.get("/userPermissions", async (req, res) => {
   try {
     const { username } = req.query;
@@ -1126,19 +1128,22 @@ app.get("/userPermissions", async (req, res) => {
 
     const [rows] = await db.query(
       `
-      SELECT module, permission, enabled
+      SELECT module, enabled
       FROM user_permissions
       WHERE user_id = ?
+      AND permission = 'enabled'
       `,
       [user.id]
     );
 
     res.json(rows);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });
   }
 });
+
 
 app.post("/sendMailTest", async (req, res) => {
   try {
