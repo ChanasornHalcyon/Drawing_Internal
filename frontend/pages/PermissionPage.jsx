@@ -142,7 +142,7 @@ const PermissionPage = () => {
         Drawing: {
             enabled: false,
             Marketing: false,
-            Management: false,
+            Sales: false,
             Engineers: false,
         },
     });
@@ -171,7 +171,7 @@ const PermissionPage = () => {
             Drawing: {
                 enabled: false,
                 Marketing: false,
-                Management: false,
+                Sales: false,
                 Engineers: false,
             },
         };
@@ -193,9 +193,9 @@ const PermissionPage = () => {
         setPermissions(base);
     };
 
-    useEffect(() => {
-        loadPermissions();
-    }, [username]);
+   useEffect(() => {
+  loadPermissions();
+}, [username]);
 
 
     return (
@@ -229,7 +229,7 @@ const PermissionPage = () => {
                 <div className="mt-6">
                     <PermissionSection
                         title="Drawing"
-                        items={["Marketing", "Management", "Engineers"]}
+                        items={["Marketing", "Sales", "Engineers"]}
                         permissions={permissions}
                         setPermissions={setPermissions}
                     />

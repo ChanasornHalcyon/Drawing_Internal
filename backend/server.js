@@ -1112,23 +1112,34 @@ app.post("/savePerMissions", async (req, res) => {
   }
 });
 app.get("/userPermissions", async (req, res) => {
-  const { username } = req.query;
+  try {
+    const { username } = req.query;
 
-  const [[user]] = await db.query("SELECT id FROM user WHERE username = ?", [
-    username,
-  ]);
+    const [[user]] = await db.query(
+      "SELECT id FROM user WHERE username = ? LIMIT 1",
+      [username]
+    );
 
-  const [rows] = await db.query(
-    `
-    SELECT module, permission, enabled
-    FROM user_permissions
-    WHERE user_id = ?
-    `,
-    [user.id]
-  );
+    if (!user) {
+      return res.json([]);
+    }
 
-  res.json(rows);
+    const [rows] = await db.query(
+      `
+      SELECT module, permission, enabled
+      FROM user_permissions
+      WHERE user_id = ?
+      `,
+      [user.id]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server error" });
+  }
 });
+
 app.post("/sendMailTest", async (req, res) => {
   try {
     const { to, subject, message } = req.body;
