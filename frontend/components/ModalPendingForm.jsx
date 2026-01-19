@@ -93,7 +93,7 @@ const ModalPendingForm = ({ onClose, data, onApprove }) => {
                                         active:scale-95 cursor-pointer
                                         "
                         >
-                            Approve
+                            อนุมัติ
                         </button>
 
                     </div>
