@@ -2,21 +2,54 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import NavbarIT from "../components/NavbarIT";
 import ModalPendingForm from "../components/ModalPendingForm";
+import ModalRejectForm from "../components/ModalRejectForm";
+
 const Pending_Form = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
+    const [showModalApprove, setShowModalApprove] = useState(false);
+    const [showModalReject, setShowModalReject] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
     const handleApproveSuccess = (id) => {
         setData((prev) =>
             prev.map((item) =>
-                item.id === id
-                    ? { ...item, status: "APPROVED" }
-                    : item
+                item.id === id ? { ...item, status: "APPROVED" } : item
             )
         );
     };
+
+    const onSubmitReject = async (id, reason) => {
+        try {
+            const res = await axios.post("http://localhost:4000/rejectITForm", {
+                id,
+                reason,
+                username: localStorage.getItem("username")
+            });
+
+            if (res.data.success) {
+                setData(prev =>
+                    prev.map(item =>
+                        item.id === id
+                            ? {
+                                ...item,
+                                status: "REJECTED",
+                                problem_detail: reason,
+                                problem_by: localStorage.getItem("username"),
+                                problem_at: new Date().toISOString()
+                            }
+                            : item
+                    )
+                );
+            }
+
+            return res.data;
+        } catch (err) {
+            console.error(err);
+            return { success: false };
+        }
+    };
+
 
     const getData = async () => {
         try {
@@ -45,7 +78,7 @@ const Pending_Form = () => {
                         <thead className="bg-black text-white">
                             <tr>
                                 <th className="px-4 py-3 text-start">วันที่ร้องขอ</th>
-                                <th className="px-4 py-3 text-start text-nowrap">วันที่ต้องการ</th>
+                                <th className="px-4 py-3 text-start">วันที่ต้องการ</th>
                                 <th className="px-4 py-3 text-start">ผู้ร้องขอ</th>
                                 <th className="px-4 py-3 text-start">แผนก</th>
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
@@ -53,7 +86,6 @@ const Pending_Form = () => {
                                 <th className="px-4 py-3 text-start">เหตุผล</th>
                                 <th className="px-4 py-3 text-start">Spec</th>
                                 <th className="px-4 py-3 text-start">Action</th>
-
                             </tr>
                         </thead>
 
@@ -66,11 +98,8 @@ const Pending_Form = () => {
                                 </tr>
                             ) : data.length > 0 ? (
                                 data.map((item) => (
-                                    <tr
-                                        key={item.id}
-                                        className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
-                                    >
-                                        <td className="px-4 py-2 text-nowrap">
+                                    <tr key={item.id} className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition">
+                                        <td className="px-4 py-2">
                                             {item.created_at
                                                 ? new Date(item.created_at).toLocaleString("th-TH", {
                                                     day: "2-digit",
@@ -82,8 +111,6 @@ const Pending_Form = () => {
                                                 })
                                                 : "-"}
                                         </td>
-
-
                                         <td className="px-4 py-2">
                                             {item.required_date
                                                 ? new Date(item.required_date).toLocaleDateString("th-TH")
@@ -95,25 +122,40 @@ const Pending_Form = () => {
                                         <td className="px-4 py-2">{item.detail}</td>
                                         <td className="px-4 py-2">{item.reason}</td>
                                         <td className="px-4 py-2">{item.spec}</td>
+
                                         <td className="px-4 py-2">
                                             {item.status === "APPROVED" ? (
-                                                <span className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg">
+                                                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg">
                                                     อนุมัติ
                                                 </span>
+                                            ) : item.status === "REJECTED" ? (
+                                                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-lg">
+                                                    ไม่อนุมัติ
+                                                </span>
                                             ) : (
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedItem(item);
-                                                        setShowModal(true);
-                                                    }}
-                                                    className="px-3 py-1 text-sm bg-pink-500 text-white rounded-lg hover:bg-pink-600 cursor-pointer"
-                                                >
-                                                    รออนุมัติ
-                                                </button>
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedItem(item);
+                                                            setShowModalApprove(true);
+                                                        }}
+                                                        className="px-3 py-1 bg-pink-500 text-white rounded-lg cursor-pointer"
+                                                    >
+                                                        รออนุมัติ
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedItem(item);
+                                                            setShowModalReject(true);
+                                                        }}
+                                                        className="px-3 py-1 bg-gray-600 text-white rounded-lg cursor-pointer"
+                                                    >
+                                                        ไม่อนุมัติ
+                                                    </button>
+                                                </div>
                                             )}
                                         </td>
-
-
                                     </tr>
                                 ))
                             ) : (
@@ -127,14 +169,26 @@ const Pending_Form = () => {
                     </table>
                 </div>
             </div>
-            {showModal && (
+
+            {showModalApprove && (
                 <ModalPendingForm
                     data={selectedItem}
                     onApprove={handleApproveSuccess}
                     onClose={() => {
-                        setShowModal(false);
+                        setShowModalApprove(false);
                         setSelectedItem(null);
                     }}
+                />
+            )}
+
+            {showModalReject && (
+                <ModalRejectForm
+                    item={selectedItem}
+                    onClose={() => {
+                        setShowModalReject(false);
+                        setSelectedItem(null);
+                    }}
+                    onSubmitReject={onSubmitReject}
                 />
             )}
         </div>

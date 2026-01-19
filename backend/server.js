@@ -66,7 +66,7 @@ app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   const [rows] = await db.query(
     "SELECT id, username, role,department FROM user WHERE username=? AND password=?",
-    [username, password]
+    [username, password],
   );
 
   if (rows.length > 0) {
@@ -103,7 +103,7 @@ app.post("/addUser", async (req, res) => {
         department,
         section,
         level,
-      ]
+      ],
     );
     res.json({ success: true, message: "User added" });
   } catch (err) {
@@ -126,7 +126,7 @@ app.put("/updatePassword", async (req, res) => {
 app.get("/getUser", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT id,email, username, role,nickname,firstname,lastname,department,section FROM user"
+      "SELECT id,email, username, role,nickname,firstname,lastname,department,section FROM user",
     );
     res.json({
       success: true,
@@ -297,7 +297,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("/getAllData", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT * FROM drawing_records ORDER BY id DESC"
+      "SELECT * FROM drawing_records ORDER BY id DESC",
     );
     res.json({ success: true, data: rows });
   } catch (err) {
@@ -469,7 +469,7 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
 
     const [oldRows] = await db.query(
       "SELECT * FROM drawing_records WHERE id = ?",
-      [drawingId]
+      [drawingId],
     );
 
     if (!oldRows.length) {
@@ -482,7 +482,7 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
     await db.query(
       `INSERT INTO drawing_history (drawing_id, modified_by, data)
        VALUES (?, ?, ?)`,
-      [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldData)]
+      [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldData)],
     );
 
     let fileUrl = oldData.file_url;
@@ -555,7 +555,7 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
         updatedData.TL,
         fileUrl,
         drawingId,
-      ]
+      ],
     );
 
     // LOG (ข้อมูลก่อนแก้ไข)
@@ -577,7 +577,11 @@ app.put("/updateDrawing/:id", upload.single("file"), async (req, res) => {
     await db.query(
       `INSERT INTO drawing_logs (drawing_id, action_type, action_by, action_detail)
        VALUES (?, 'EDIT', ?, ?)`,
-      [drawingId, updatedData.updated_by || "unknown", JSON.stringify(oldDatas)]
+      [
+        drawingId,
+        updatedData.updated_by || "unknown",
+        JSON.stringify(oldDatas),
+      ],
     );
 
     res.json({ success: true });
@@ -596,7 +600,7 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
 
       const [rows] = await db.query(
         "SELECT * FROM drawing_records WHERE id = ?",
-        [drawingId]
+        [drawingId],
       );
 
       let detail = {};
@@ -628,7 +632,7 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
             reason: "Delete all history + record",
             data_before_delete: detail,
           }),
-        ]
+        ],
       );
 
       await db.query("DELETE FROM drawing_history WHERE drawing_id = ?", [
@@ -641,7 +645,7 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
 
     const [rows] = await db.query(
       "SELECT * FROM drawing_history WHERE id = ?",
-      [id]
+      [id],
     );
 
     if (!rows.length) {
@@ -684,7 +688,7 @@ app.delete("/deleteDrawingHistory/:id", async (req, res) => {
           data_before_delete: detail,
           deleted_at: new Date(),
         }),
-      ]
+      ],
     );
 
     await db.query("DELETE FROM drawing_history WHERE id = ?", [id]);
@@ -701,12 +705,12 @@ app.get("/getDrawingHistory/:id", async (req, res) => {
   try {
     const [currentRows] = await db.query(
       "SELECT *, NOW() AS modified_at FROM drawing_records WHERE id = ?",
-      [drawingId]
+      [drawingId],
     );
 
     const [historyRows] = await db.query(
       "SELECT * FROM drawing_history WHERE drawing_id = ? ORDER BY modified_at DESC",
-      [drawingId]
+      [drawingId],
     );
 
     const result = [];
@@ -755,7 +759,7 @@ app.post("/ITForm", async (req, res) => {
         department,
         request_date,
         required_date,
-      ]
+      ],
     );
 
     const [approvers] = await db.query(`
@@ -822,7 +826,7 @@ app.get("/getITForm", async (req, res) => {
     const [rows] = await db.query(
       `SELECT *
        FROM it_requests
-        ORDER BY created_at DESC`
+        ORDER BY created_at DESC`,
     );
 
     res.json({ success: true, data: rows });
@@ -853,7 +857,7 @@ app.get("/getCompleteForm", async (req, res) => {
     const [rows] = await db.query(
       `SELECT *
        FROM it_requests WHERE status ="COMPLETE"
-       ORDER BY request_date DESC`
+       ORDER BY request_date DESC`,
     );
 
     res.json({ success: true, data: rows });
@@ -867,8 +871,10 @@ app.get("/getProblemForm", async (req, res) => {
   try {
     const [rows] = await db.query(
       `SELECT *
-       FROM it_requests WHERE status ="PROBLEM"
-       ORDER BY  created_at DESC`
+FROM it_requests
+WHERE status IN ("PROBLEM", "REJECTED")
+ORDER BY created_at DESC;
+`,
     );
 
     res.json({ success: true, data: rows });
@@ -883,7 +889,7 @@ app.get("/getProblemFixForm", async (req, res) => {
     const [rows] = await db.query(
       `SELECT *
        FROM it_fixrequest WHERE status ="PROBLEM"
-       ORDER BY  created_at DESC`
+       ORDER BY  created_at DESC`,
     );
 
     res.json({ success: true, data: rows });
@@ -909,7 +915,6 @@ app.put("/updateStatus/:id", async (req, res) => {
         WHERE id = ?
       `;
       params = [status, username, id];
-
     } else if (status === "COMPLETE") {
       sql = `
         UPDATE ${table}
@@ -917,7 +922,6 @@ app.put("/updateStatus/:id", async (req, res) => {
         WHERE id = ?
       `;
       params = [status, username, id];
-
     } else if (status === "PROBLEM") {
       sql = `
         UPDATE ${table}
@@ -925,7 +929,6 @@ app.put("/updateStatus/:id", async (req, res) => {
         WHERE id = ?
       `;
       params = [status, problem_detail, username, id];
-
     } else {
       sql = `
         UPDATE ${table}
@@ -944,7 +947,6 @@ app.put("/updateStatus/:id", async (req, res) => {
   }
 });
 
-
 app.post("/ITApproveForm", async (req, res) => {
   try {
     const { id } = req.body;
@@ -953,7 +955,7 @@ app.post("/ITApproveForm", async (req, res) => {
       `UPDATE it_requests
        SET status = 'APPROVED'
        WHERE id = ?`,
-      [id]
+      [id],
     );
 
     res.json({ success: true });
@@ -975,13 +977,11 @@ app.get("/getApproveFixForm", async (req, res) => {
     `);
 
     res.json({ success: true, data: rows });
-
   } catch (err) {
     console.error("FixForm ERROR:", err);
     res.json({ success: false, message: err.message });
   }
 });
-
 
 app.post("/ITFixForm", async (req, res) => {
   try {
@@ -1010,14 +1010,14 @@ app.post("/ITFixForm", async (req, res) => {
         department,
         request_date,
         safe_required_date,
-      ]
+      ],
     );
 
     const [users] = await db.query(
       `SELECT email
        FROM user
        WHERE role = 'Admin'
-         AND email IS NOT NULL`
+         AND email IS NOT NULL`,
     );
 
     const emailList = users.map((u) => u.email).join(",");
@@ -1108,7 +1108,7 @@ app.post("/markProblem/:id", async (req, res) => {
          problem_by = ?,
          problem_at = NOW()
        WHERE id = ?`,
-      [problem_detail, problem_by, id]
+      [problem_detail, problem_by, id],
     );
 
     res.json({ success: true, message: "Updated to PROBLEM" });
@@ -1155,7 +1155,7 @@ app.post("/savePerMissions", async (req, res) => {
       VALUES ?
       ON DUPLICATE KEY UPDATE enabled = VALUES(enabled)
       `,
-      [rows]
+      [rows],
     );
 
     res.json({ success: true });
@@ -1171,7 +1171,7 @@ app.get("/userPermissions", async (req, res) => {
 
     const [[user]] = await db.query(
       "SELECT id FROM user WHERE username = ? LIMIT 1",
-      [username]
+      [username],
     );
 
     if (!user) return res.json([]);
@@ -1182,7 +1182,7 @@ app.get("/userPermissions", async (req, res) => {
       FROM user_permissions
       WHERE user_id = ?
       `,
-      [user.id]
+      [user.id],
     );
 
     res.json(rows);
@@ -1192,31 +1192,36 @@ app.get("/userPermissions", async (req, res) => {
   }
 });
 
-app.post("/sendMailTest", async (req, res) => {
+app.post("/rejectITForm", async (req, res) => {
+  const { id, reason, username } = req.body;
+
   try {
-    const { to, subject, message } = req.body;
+    const [result] = await db.query(
+      `
+      UPDATE it_requests
+      SET 
+        status = 'REJECTED',
+        problem_detail = ?,
+        problem_by = ?,
+        problem_at = NOW()
+      WHERE id = ?
+      `,
+      [reason, username, id]
+    );
 
-    if (!to || !subject || !message) {
-      return res.status(400).json({ message: "missing fields" });
+    if (result.affectedRows === 0) {
+      return res.json({ success: false, message: "Form not found" });
     }
-
-    const info = await transporter.sendMail({
-      from: `"Mail Test" <itservice@halcyon.local>`,
-      to,
-      subject,
-      text: message,
-    });
-
-    console.log("MAIL:", info.accepted, info.rejected);
 
     res.json({ success: true });
   } catch (err) {
-    console.error("Mail error:", err);
+    console.error(err);
     res.status(500).json({ success: false });
   }
 });
 
+
 const PORT = 4000;
 app.listen(PORT, () =>
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
+  console.log(`🚀 Server running at http://localhost:${PORT}`),
 );
