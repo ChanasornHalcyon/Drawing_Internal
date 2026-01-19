@@ -4,6 +4,7 @@ import NavbarIT from "../components/NavbarIT";
 import ModalStartWork from "../components/ModalStartWork";
 import ModalProblemForm from "../components/ModalProblemForm";
 import ModalCompleteForm from "../components/ModalCompleteForm";
+
 const Approve_Form = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,12 +29,32 @@ const Approve_Form = () => {
         setSelectedCompleteItem(item);
         setShowCompleteModal(true);
     };
+
     const getData = async () => {
         try {
-            const res = await axios.get("http://localhost:4000/getApproveITForm");
-            if (res.data.success) {
-                setData(res.data.data);
-            }
+            const itRes = await axios.get("http://localhost:4000/getApproveITForm");
+            const fixRes = await axios.get("http://localhost:4000/getApproveFixForm");
+
+            const itData = itRes.data.success ? itRes.data.data : [];
+            const fixData = fixRes.data.success ? fixRes.data.data : [];
+
+            const itList = itData.map((item) => ({
+                ...item,
+                form_type: "IT",
+            }));
+
+            const fixList = fixData.map((item) => ({
+                ...item,
+                form_type: "FIX",
+            }));
+
+            const merged = [...itList, ...fixList].sort(
+                (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            );
+
+            setData(merged);
+
+            console.log("FIX:", fixList);
         } catch (err) {
             console.error(err);
         } finally {
@@ -41,34 +62,32 @@ const Approve_Form = () => {
         }
     };
 
-    const updateStatus = async (id, newStatus, username) => {
-        try {
-            await axios.put(`http://localhost:4000/updateStatus/${id}`, {
-                status: newStatus,
-                username: username,
-            });
-
-            getData();
-        } catch (err) {
-            console.error(err);
-        }
+    const updateStatus = async (id, newStatus, username, form_type) => {
+        await axios.put(`http://localhost:4000/updateStatus/${id}`, {
+            status: newStatus,
+            username,
+            form_type,
+        });
+        getData();
     };
 
-    const markProblem = async (id, problem_detail) => {
+    const markProblem = async (id, problem_detail, form_type) => {
         try {
             const username = localStorage.getItem("username") || "";
 
-            await axios.post(`http://localhost:4000/markProblem/${id}`, {
+            await axios.put(`http://localhost:4000/updateStatus/${id}`, {
+                status: "PROBLEM",
+                username,
+                form_type,
                 problem_detail,
-                problem_by: username,
             });
-
             return { success: true };
         } catch (err) {
             console.error(err);
             return { success: false };
         }
     };
+
 
     useEffect(() => {
         getData();
@@ -77,6 +96,7 @@ const Approve_Form = () => {
     return (
         <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
             <NavbarIT />
+
             <div className="container mx-auto max-w-[1450px] pt-32">
                 <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -91,7 +111,6 @@ const Approve_Form = () => {
                                 <th className="px-4 py-3 text-start">เหตุผล</th>
                                 <th className="px-4 py-3 text-start">Spec</th>
                                 <th className="px-4 py-3 text-start">Action</th>
-
                             </tr>
                         </thead>
 
@@ -105,7 +124,7 @@ const Approve_Form = () => {
                             ) : data.length > 0 ? (
                                 data.map((item) => (
                                     <tr
-                                        key={item.id}
+                                        key={`${item.form_type}-${item.id}`}
                                         className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
                                     >
                                         <td className="px-4 py-2">
@@ -126,14 +145,17 @@ const Approve_Form = () => {
                                                 ? new Date(item.required_date).toLocaleDateString("th-TH")
                                                 : "-"}
                                         </td>
+
                                         <td className="px-4 py-2">{item.requester}</td>
                                         <td className="px-4 py-2">{item.department}</td>
                                         <td className="px-4 py-2">{item.purpose}</td>
                                         <td className="px-4 py-2">{item.detail}</td>
-                                        <td className="px-4 py-2">{item.reason}</td>
+                                        <td className="px-4 py-2">
+                                            {item.form_type === "IT" ? item.reason : item.tools}
+                                        </td>
                                         <td className="px-4 py-2">{item.spec}</td>
-                                        <td className="px-4 py-2 flex items-center gap-2">
 
+                                        <td className="px-4 py-2 flex items-center gap-2">
                                             {item.status === "APPROVED" && (
                                                 <button
                                                     onClick={() => openModal(item)}
@@ -152,7 +174,6 @@ const Approve_Form = () => {
                                                 </button>
                                             )}
 
-
                                             {item.status === "COMPLETE" && (
                                                 <span className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg">
                                                     Completed
@@ -160,13 +181,12 @@ const Approve_Form = () => {
                                             )}
 
                                             <button
-                                                onClick={() => openProblemModal(item)}
+                                                onClick={() => openProblemModal({ ...item })}
                                                 className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
                                             >
                                                 ติดปัญหา
                                             </button>
                                         </td>
-
                                     </tr>
                                 ))
                             ) : (
@@ -180,6 +200,7 @@ const Approve_Form = () => {
                     </table>
                 </div>
             </div>
+
             {showModal && (
                 <ModalStartWork
                     item={selectedItem}
@@ -188,20 +209,27 @@ const Approve_Form = () => {
                         updateStatus(
                             selectedItem.id,
                             "IN_PROGRESS",
-                            localStorage.getItem("username")
+                            localStorage.getItem("username"),
+                            selectedItem.form_type
                         );
                         setShowModal(false);
                     }}
                 />
             )}
+
             {showProblemModal && (
                 <ModalProblemForm
                     item={selectedProblemItem}
-                    onClose={() => setShowProblemModal(false)}
-                    onSubmitProblem={markProblem}
-                    refreshData={getData}
+                    onClose={() => {
+                        setShowProblemModal(false);
+                        getData();
+                    }}
+                    onSubmitProblem={(detail) =>
+                        markProblem(selectedProblemItem.id, detail, selectedProblemItem.form_type)
+                    }
                 />
             )}
+
             {showCompleteModal && (
                 <ModalCompleteForm
                     item={selectedCompleteItem}
@@ -210,7 +238,8 @@ const Approve_Form = () => {
                         updateStatus(
                             selectedCompleteItem.id,
                             "COMPLETE",
-                            localStorage.getItem("username")
+                            localStorage.getItem("username"),
+                            selectedCompleteItem.form_type
                         );
                         setShowCompleteModal(false);
                     }}

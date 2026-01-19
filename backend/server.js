@@ -847,21 +847,6 @@ app.get("/getApproveITForm", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
-app.get("/getApproveFixForm", async (req, res) => {
-  try {
-    const [rows] = await db.query(`
-            SELECT *
-            FROM it_fixrequest
-            WHERE status IN ('IN_PROGRESS', 'PENDING') 
-            ORDER BY created_at DESC
-        `);
-
-    res.json({ success: true, data: rows });
-  } catch (err) {
-    console.error(err);
-    res.json({ success: false });
-  }
-});
 
 app.get("/getCompleteForm", async (req, res) => {
   try {
@@ -896,35 +881,37 @@ app.get("/getProblemForm", async (req, res) => {
 app.put("/updateStatus/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, username } = req.body;
+    const { status, username, form_type } = req.body;
+
+    const table = form_type === "FIX" ? "it_fixrequest" : "it_requests";
 
     let sql = "";
     let params = [];
 
     if (status === "IN_PROGRESS") {
       sql = `
-        UPDATE it_requests
+        UPDATE ${table}
         SET status = ?, started_by = ?, started_at = NOW()
         WHERE id = ?
       `;
       params = [status, username, id];
     } else if (status === "COMPLETE") {
       sql = `
-        UPDATE it_requests
+        UPDATE ${table}
         SET status = ?, completed_by = ?, completed_at = NOW()
         WHERE id = ?
       `;
       params = [status, username, id];
     } else if (status === "PROBLEM") {
       sql = `
-        UPDATE it_requests
+        UPDATE ${table}
         SET status = ?, problem_by = ?, problem_at = NOW()
         WHERE id = ?
       `;
       params = [status, username, id];
     } else {
       sql = `
-        UPDATE it_requests
+        UPDATE ${table}
         SET status = ?
         WHERE id = ?
       `;
@@ -958,6 +945,24 @@ app.post("/ITApproveForm", async (req, res) => {
   }
 });
 
+app.get("/getApproveFixForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        *,
+        'FIX_FORM' AS form_type
+      FROM it_fixrequest
+      WHERE status IN ('APPROVED', 'IN_PROGRESS')
+      ORDER BY created_at DESC
+    `);
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false });
+  }
+});
+
 app.post("/ITFixForm", async (req, res) => {
   try {
     const {
@@ -970,10 +975,13 @@ app.post("/ITFixForm", async (req, res) => {
       required_date,
     } = req.body;
 
+    const safe_required_date =
+      required_date && required_date.trim() !== "" ? required_date : null;
+
     await db.query(
       `INSERT INTO it_fixrequest
-   (purpose, detail,tools, requester, department, request_date, required_date)
-    VALUES (?, ?, ?, ?,?, ?, ?)`,
+      (purpose, detail, tools, requester, department, request_date, required_date)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         purpose,
         detail,
@@ -981,15 +989,15 @@ app.post("/ITFixForm", async (req, res) => {
         requester,
         department,
         request_date,
-        required_date,
+        safe_required_date,
       ]
     );
 
     const [users] = await db.query(
       `SELECT email
-   FROM user
-   WHERE role = 'Admin'
-     AND email IS NOT NULL`
+       FROM user
+       WHERE role = 'Admin'
+         AND email IS NOT NULL`
     );
 
     const emailList = users.map((u) => u.email).join(",");
@@ -1007,24 +1015,22 @@ app.post("/ITFixForm", async (req, res) => {
         <p><b>เหตุผล:</b> ${detail}</p>
         <p><b>วันที่ร้องขอ:</b> ${request_date}</p>
         <hr />
-           <p>
-             กรุณาคลิกที่ปุ่มด้านล่างเพื่อพิจารณาอนุมัติ
-          </p>
-
-          <a href="${pendingUrl}"
-             style="
-               display:inline-block;
-               padding:10px 18px;
-               background:#22c55e;
-               color:#fff;
-               text-decoration:none;
-               border-radius:6px;
-               font-weight:600;
-             ">
-            ไปที่หน้าForm
-          </a>
+        <p>กรุณาคลิกที่ปุ่มด้านล่างเพื่อพิจารณาอนุมัติ</p>
+        <a href="${pendingUrl}"
+           style="
+             display:inline-block;
+             padding:10px 18px;
+             background:#22c55e;
+             color:#fff;
+             text-decoration:none;
+             border-radius:6px;
+             font-weight:600;
+           ">
+          ไปที่หน้าForm
+        </a>
       `,
     });
+
     res.json({ success: true });
   } catch (err) {
     console.error("ITForm Error:", err);
