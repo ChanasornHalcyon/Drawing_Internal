@@ -1,250 +1,51 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import NavbarIT from "../components/NavbarIT";
-import ModalStartWork from "../components/ModalStartWork";
-import ModalProblemForm from "../components/ModalProblemForm";
-import ModalCompleteForm from "../components/ModalCompleteForm";
+
+import React from "react";
+import { useRouter } from "next/router";
+import Navbar from "../components/Navbar";
+import { motion } from "framer-motion";
+
+const CARD_MAP = {
+    ITForm: { label: "รอดำเนินการร้องขอ IT", path: "ApproveITFormPage" },
+    FixITForm: { label: "รอดำเนินการแจ้งซ่อม", path: "ApproveFixITFormPage" },
+};
 
 const Approve_Form = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [showProblemModal, setShowProblemModal] = useState(false);
-    const [selectedProblemItem, setSelectedProblemItem] = useState(null);
-    const [showCompleteModal, setShowCompleteModal] = useState(false);
-    const [selectedCompleteItem, setSelectedCompleteItem] = useState(null);
+    const router = useRouter();
 
-    const openModal = (item) => {
-        setSelectedItem(item);
-        setShowModal(true);
+    const clickCard = (path) => {
+        router.push(`/${path}`);
     };
 
-    const openProblemModal = (item) => {
-        setSelectedProblemItem(item);
-        setShowProblemModal(true);
-    };
-
-    const openCompleteModal = (item) => {
-        setSelectedCompleteItem(item);
-        setShowCompleteModal(true);
-    };
-
-    const getData = async () => {
-        try {
-            const itRes = await axios.get("http://localhost:4000/getApproveITForm");
-            const fixRes = await axios.get("http://localhost:4000/getApproveFixForm");
-
-            const itData = itRes.data.success ? itRes.data.data : [];
-            const fixData = fixRes.data.success ? fixRes.data.data : [];
-
-            const itList = itData.map((item) => ({
-                ...item,
-                form_type: "IT",
-            }));
-
-            const fixList = fixData.map((item) => ({
-                ...item,
-                form_type: "FIX",
-            }));
-
-            const merged = [...itList, ...fixList].sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
-
-            setData(merged);
-
-            console.log("FIX:", fixList);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const updateStatus = async (id, newStatus, username, form_type) => {
-        await axios.put(`http://localhost:4000/updateStatus/${id}`, {
-            status: newStatus,
-            username,
-            form_type,
-        });
-        getData();
-    };
-
-    const markProblem = async (id, problem_detail, form_type) => {
-        try {
-            const username = localStorage.getItem("username") || "";
-
-            await axios.put(`http://localhost:4000/updateStatus/${id}`, {
-                status: "PROBLEM",
-                username,
-                form_type,
-                problem_detail,
-            });
-            return { success: true };
-        } catch (err) {
-            console.error(err);
-            return { success: false };
-        }
-    };
-
-
-    useEffect(() => {
-        getData();
-    }, []);
+    const cardClass =
+        "h-44 w-80 flex flex-col items-center justify-center gap-1 " +
+        "bg-white rounded-2xl border border-gray-200 cursor-pointer " +
+        "shadow-[0_8px_25px_rgba(0,0,0,0.08)] transition-all duration-200 " +
+        "hover:-translate-y-2 hover:border-[#1C70D3] " +
+        "hover:shadow-[0_20px_45px_rgba(28,112,211,0.25)] " +
+        "hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
 
     return (
         <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-            <NavbarIT />
+            <Navbar />
 
-            <div className="container mx-auto max-w-[1450px] pt-32">
-                <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
-                    <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                        <thead className="bg-black text-white">
-                            <tr>
-                                <th className="px-4 py-3 text-start">วันที่ร้องขอ</th>
-                                <th className="px-4 py-3 text-start">วันที่ต้องการ</th>
-                                <th className="px-4 py-3 text-start">ผู้ร้องขอ</th>
-                                <th className="px-4 py-3 text-start">แผนก</th>
-                                <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
-                                <th className="px-4 py-3 text-start">รายละเอียด</th>
-                                <th className="px-4 py-3 text-start">เหตุผล</th>
-                                <th className="px-4 py-3 text-start">Spec</th>
-                                <th className="px-4 py-3 text-start">Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="9" className="text-center py-6 text-gray-500">
-                                        กำลังโหลดข้อมูล...
-                                    </td>
-                                </tr>
-                            ) : data.length > 0 ? (
-                                data.map((item) => (
-                                    <tr
-                                        key={`${item.form_type}-${item.id}`}
-                                        className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
-                                    >
-                                        <td className="px-4 py-2">
-                                            {item.created_at
-                                                ? new Date(item.created_at).toLocaleString("th-TH", {
-                                                    day: "2-digit",
-                                                    month: "2-digit",
-                                                    year: "numeric",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    hour12: false,
-                                                })
-                                                : "-"}
-                                        </td>
-
-                                        <td className="px-4 py-2">
-                                            {item.required_date
-                                                ? new Date(item.required_date).toLocaleDateString("th-TH")
-                                                : "-"}
-                                        </td>
-
-                                        <td className="px-4 py-2">{item.requester}</td>
-                                        <td className="px-4 py-2">{item.department}</td>
-                                        <td className="px-4 py-2">{item.purpose}</td>
-                                        <td className="px-4 py-2">{item.detail}</td>
-                                        <td className="px-4 py-2">
-                                            {item.form_type === "IT" ? item.reason : item.tools}
-                                        </td>
-                                        <td className="px-4 py-2">{item.spec}</td>
-
-                                        <td className="px-4 py-2 flex items-center gap-2">
-                                            {item.status === "APPROVED" && (
-                                                <button
-                                                    onClick={() => openModal(item)}
-                                                    className="px-3 py-1 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
-                                                >
-                                                    เริ่มงาน
-                                                </button>
-                                            )}
-
-                                            {item.status === "IN_PROGRESS" && (
-                                                <button
-                                                    onClick={() => openCompleteModal(item)}
-                                                    className="px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 cursor-pointer"
-                                                >
-                                                    เสร็จงาน
-                                                </button>
-                                            )}
-
-                                            {item.status === "COMPLETE" && (
-                                                <span className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-lg">
-                                                    Completed
-                                                </span>
-                                            )}
-
-                                            <button
-                                                onClick={() => openProblemModal({ ...item })}
-                                                className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
-                                            >
-                                                ติดปัญหา
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="9" className="text-center py-6 text-gray-500">
-                                        ไม่มีข้อมูลในระบบ
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+            <div className="pt-32 flex justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                    {Object.values(CARD_MAP).map((card) => (
+                        <motion.div
+                            key={card.path}
+                            whileHover={{ scale: 1.06, y: -2 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => clickCard(card.path)}
+                            transition={{ duration: 0.12, ease: "easeOut" }}
+                            className={cardClass}
+                        >
+                            <span className="text-lg font-semibold text-[#0B4EA2] tracking-wide text-center">
+                                {card.label}
+                            </span>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
-
-            {showModal && (
-                <ModalStartWork
-                    item={selectedItem}
-                    onClose={() => setShowModal(false)}
-                    onConfirm={() => {
-                        updateStatus(
-                            selectedItem.id,
-                            "IN_PROGRESS",
-                            localStorage.getItem("username"),
-                            selectedItem.form_type
-                        );
-                        setShowModal(false);
-                    }}
-                />
-            )}
-
-            {showProblemModal && (
-                <ModalProblemForm
-                    item={selectedProblemItem}
-                    onClose={() => {
-                        setShowProblemModal(false);
-                        getData();
-                    }}
-                    onSubmitProblem={(detail) =>
-                        markProblem(selectedProblemItem.id, detail, selectedProblemItem.form_type)
-                    }
-                />
-            )}
-
-            {showCompleteModal && (
-                <ModalCompleteForm
-                    item={selectedCompleteItem}
-                    onClose={() => setShowCompleteModal(false)}
-                    onConfirm={() => {
-                        updateStatus(
-                            selectedCompleteItem.id,
-                            "COMPLETE",
-                            localStorage.getItem("username"),
-                            selectedCompleteItem.form_type
-                        );
-                        setShowCompleteModal(false);
-                    }}
-                />
-            )}
         </div>
     );
 };

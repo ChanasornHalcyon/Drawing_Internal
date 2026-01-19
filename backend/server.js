@@ -868,7 +868,7 @@ app.get("/getProblemForm", async (req, res) => {
     const [rows] = await db.query(
       `SELECT *
        FROM it_requests WHERE status ="PROBLEM"
-       ORDER BY request_date DESC`
+       ORDER BY  created_at DESC`
     );
 
     res.json({ success: true, data: rows });
@@ -878,10 +878,24 @@ app.get("/getProblemForm", async (req, res) => {
   }
 });
 
+app.get("/getProblemFixForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT *
+       FROM it_fixrequest WHERE status ="PROBLEM"
+       ORDER BY  created_at DESC`
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
 app.put("/updateStatus/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, username, form_type } = req.body;
+    const { status, username, form_type, problem_detail } = req.body;
 
     const table = form_type === "FIX" ? "it_fixrequest" : "it_requests";
 
@@ -895,6 +909,7 @@ app.put("/updateStatus/:id", async (req, res) => {
         WHERE id = ?
       `;
       params = [status, username, id];
+
     } else if (status === "COMPLETE") {
       sql = `
         UPDATE ${table}
@@ -902,13 +917,15 @@ app.put("/updateStatus/:id", async (req, res) => {
         WHERE id = ?
       `;
       params = [status, username, id];
+
     } else if (status === "PROBLEM") {
       sql = `
         UPDATE ${table}
-        SET status = ?, problem_by = ?, problem_at = NOW()
+        SET status = ?, problem_detail = ?, problem_by = ?, problem_at = NOW()
         WHERE id = ?
       `;
-      params = [status, username, id];
+      params = [status, problem_detail, username, id];
+
     } else {
       sql = `
         UPDATE ${table}
@@ -926,6 +943,7 @@ app.put("/updateStatus/:id", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
 
 app.post("/ITApproveForm", async (req, res) => {
   try {
@@ -950,18 +968,20 @@ app.get("/getApproveFixForm", async (req, res) => {
     const [rows] = await db.query(`
       SELECT 
         *,
-        'FIX_FORM' AS form_type
+        'FIX' AS form_type
       FROM it_fixrequest
       WHERE status IN ('APPROVED', 'IN_PROGRESS')
-      ORDER BY created_at DESC
+      ORDER BY request_date DESC
     `);
 
     res.json({ success: true, data: rows });
+
   } catch (err) {
-    console.error(err);
-    res.json({ success: false });
+    console.error("FixForm ERROR:", err);
+    res.json({ success: false, message: err.message });
   }
 });
+
 
 app.post("/ITFixForm", async (req, res) => {
   try {

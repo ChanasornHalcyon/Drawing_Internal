@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const ModalProblemForm = ({ item, onClose, onSubmitProblem, refreshData }) => {
-    if (!item) return null;
+const ModalRejectForm = ({ item, onClose, onSubmitReject }) => {
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
         if (!text.trim()) {
-            alert("กรุณากรอกปัญหา");
+            alert("กรุณาระบุเหตุผลที่ไม่สามารถอนุมัติ");
             return;
         }
         setLoading(true);
-        const result = await onSubmitProblem(text);
+
+        const result = await onSubmitReject(item.id, text);
+
         setLoading(false);
 
-        if (result?.success) {
-            alert("บันทึกปัญหาเรียบร้อย");
-            if (refreshData) refreshData();
+        if (result.success) {
+            alert("บันทึกเหตุผลเรียบร้อย");
             onClose();
         } else {
             alert("บันทึกไม่สำเร็จ");
@@ -35,50 +35,46 @@ const ModalProblemForm = ({ item, onClose, onSubmitProblem, refreshData }) => {
                 <div className="bg-white w-[350px] sm:w-[480px] rounded-2xl shadow-xl">
                     <div className="p-5 border-b flex justify-between items-center">
                         <h2 className="text-xl font-semibold text-red-600">
-                            แจ้งปัญหา / แก้ไขไม่ได้
+                            ไม่สามารถอนุมัติ
                         </h2>
-                        <button onClick={onClose} className="text-2xl text-gray-500">✕</button>
+                        <button onClick={onClose} className="text-2xl text-gray-500 cursor-pointer">✕</button>
                     </div>
 
                     <div className="p-5 space-y-4">
                         <p className="text-gray-700">
-                            คุณต้องการแจ้งว่า <b>{item.purpose}</b>{" "}
-                            <span className="text-red-600 font-semibold">
-                                มีปัญหา / ไม่สามารถแก้ไขได้
-                            </span>
+                            กรุณาระบุเหตุผลที่รายการ <b>{item.purpose}</b>{" "}
+                            ไม่สามารถอนุมัติได้
                         </p>
 
                         <textarea
-                            value={text}
                             onChange={(e) => setText(e.target.value)}
                             className="w-full p-3 border rounded-lg text-gray-800"
                             rows="4"
-                            placeholder="กรุณาระบุปัญหา..."
-                        />
+                            placeholder="กรุณาระบุเหตุผล..."
+                        ></textarea>
                     </div>
 
                     <div className="p-5 border-t flex justify-end gap-3">
                         <button
                             onClick={onClose}
-                            className="px-4 py-2 bg-gray-200 text-black rounded-lg cursor-pointer"
+                            className="px-4 py-2 text-black bg-gray-200 rounded-lg cursor-pointer"
                         >
                             ยกเลิก
                         </button>
 
                         <button
                             onClick={handleSubmit}
-                            disabled={loading}
                             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
                         >
-                            บันทึกปัญหา
+                            บันทึกเหตุผล
                         </button>
                     </div>
                 </div>
             </motion.div>
 
-            <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose} />
+            <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose}></div>
         </>
     );
 };
 
-export default ModalProblemForm;
+export default ModalRejectForm;

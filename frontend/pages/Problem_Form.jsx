@@ -1,108 +1,49 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import NavbarIT from "../components/NavbarIT";
+
+import React from "react";
+import { useRouter } from "next/router";
+import Navbar from "../components/Navbar";
+import { motion } from "framer-motion";
+
+const CARD_MAP = {
+    ITFormProblem: { label: "รายการร้องขอที่ติดปัญหา", path: "ITProblemPage" },
+    FixITFormProblem: { label: "รายการแจ้งซ่อมที่ติดปัญหา", path: "FixITProblemPage" },
+};
 
 const Problem_Form = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
-    const getData = async () => {
-        try {
-            const res = await axios.get("http://localhost:4000/getProblemForm");
-            if (res.data.success) {
-                setData(res.data.data);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
+    const clickCard = (path) => {
+        router.push(`/${path}`);
     };
 
-    useEffect(() => {
-        getData();
-    }, []);
+    const cardClass =
+        "h-44 w-80 flex flex-col items-center justify-center gap-1 " +
+        "bg-white rounded-2xl border border-gray-200 cursor-pointer " +
+        "shadow-[0_8px_25px_rgba(0,0,0,0.08)] transition-all duration-200 " +
+        "hover:-translate-y-2 hover:border-[#1C70D3] " +
+        "hover:shadow-[0_20px_45px_rgba(28,112,211,0.25)] " +
+        "hover:bg-gradient-to-br hover:from-white hover:to-blue-50";
 
     return (
         <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
-            <NavbarIT />
+            <Navbar />
 
-            <div className="container mx-auto max-w-[1450px] pt-32">
-                <h1 className="text-2xl font-bold text-red-600 mb-6 text-center">รายการที่มีปัญหา</h1>
-
-                <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
-                    <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                        <thead className="bg-black text-white">
-                            <tr>
-                                <th className="px-4 py-3 text-start">วันที่ร้องขอ</th>
-                                <th className="px-4 py-3 text-start">ผู้ร้องขอ</th>
-                                <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
-                                <th className="px-4 py-3 text-start">ปัญหา</th>
-                                <th className="px-4 py-3 text-start">แจ้งโดย</th>
-                                <th className="px-4 py-3 text-start">เวลาแจ้งปัญหา</th>
-
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="6" className="text-center py-6 text-gray-500">
-                                        กำลังโหลดข้อมูล...
-                                    </td>
-                                </tr>
-                            ) : data.length > 0 ? (
-                                data.map((item) => (
-                                    <tr
-                                        key={item.id}
-                                        className="odd:bg-white even:bg-gray-50 hover:bg-red-50 transition"
-                                    >
-                                        <td className="px-4 py-2">
-                                            {item.created_at
-                                                ? new Date(item.created_at).toLocaleString("th-TH", {
-                                                    day: "2-digit",
-                                                    month: "2-digit",
-                                                    year: "numeric",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    hour12: false,
-                                                })
-                                                : "-"}
-                                        </td>
-
-                                        <td className="px-4 py-2">{item.requester}</td>
-                                        <td className="px-4 py-2">{item.purpose}</td>
-                                        <td className="px-4 py-2 text-red-600 font-medium">
-                                            {item.problem_detail || "-"}
-                                        </td>
-
-                                        <td className="px-4 py-2">
-                                            {item.problem_by || "-"}
-                                        </td>
-
-                                        <td className="px-4 py-2">
-                                            {item.problem_at
-                                                ? new Date(item.problem_at).toLocaleString("th-TH", {
-                                                    day: "2-digit",
-                                                    month: "2-digit",
-                                                    year: "numeric",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                    hour12: false,
-                                                })
-                                                : "-"}
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="6" className="text-center py-6 text-gray-500">
-                                        ไม่มีรายการที่มีปัญหา
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+            <div className="pt-32 flex justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                    {Object.values(CARD_MAP).map((card) => (
+                        <motion.div
+                            key={card.path}
+                            whileHover={{ scale: 1.06, y: -2 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => clickCard(card.path)}
+                            transition={{ duration: 0.12, ease: "easeOut" }}
+                            className={cardClass}
+                        >
+                            <span className="text-lg font-semibold text-[#0B4EA2] tracking-wide text-center">
+                                {card.label}
+                            </span>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </div>
