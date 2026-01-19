@@ -1097,7 +1097,6 @@ app.post("/markProblem/:id", async (req, res) => {
 
 app.post("/savePerMissions", async (req, res) => {
   const { username, permissions } = req.body;
-
   try {
     const [[user]] = await db.query("SELECT id FROM user WHERE username = ?", [
       username,

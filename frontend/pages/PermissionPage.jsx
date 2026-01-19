@@ -34,13 +34,26 @@ const PermissionSection = ({ title, items, permissions, setPermissions }) => {
     const modulePerm = permissions[title];
 
     const toggleModule = () => {
-        setPermissions((prev) => ({
-            ...prev,
-            [title]: {
-                ...prev[title],
-                enabled: !prev[title].enabled,
-            },
-        }));
+        setPermissions((prev) => {
+            const isEnabled = prev[title].enabled;
+            const next = !isEnabled;
+
+            if (!next) {
+                const updated = { enabled: false };
+                for (const key in prev[title]) {
+                    if (key !== "enabled") updated[key] = false;
+                }
+                return { ...prev, [title]: updated };
+            }
+
+            return {
+                ...prev,
+                [title]: {
+                    ...prev[title],
+                    enabled: true,
+                },
+            };
+        });
     };
 
     const toggleItem = (item) => {
