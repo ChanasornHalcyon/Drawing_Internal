@@ -86,11 +86,12 @@ app.post("/addUser", async (req, res) => {
     password,
     role,
     department,
-    session,
+    section,
+    level,
   } = req.body;
   try {
     await db.query(
-      "INSERT INTO user (email,nickname,firstname,lastname, username, password, role,department,session) VALUES (?, ?, ?, ?,?,?,?,?,?)",
+      "INSERT INTO user (email,nickname,firstname,lastname, username, password, role,department,section,level) VALUES (?, ?, ?, ?,?,?,?,?,?,?)",
       [
         email,
         nickname,
@@ -100,7 +101,8 @@ app.post("/addUser", async (req, res) => {
         password,
         role,
         department,
-        session,
+        section,
+        level,
       ]
     );
     res.json({ success: true, message: "User added" });
@@ -124,7 +126,7 @@ app.put("/updatePassword", async (req, res) => {
 app.get("/getUser", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT id,email, username, role,nickname,firstname,lastname,department,session FROM user"
+      "SELECT id,email, username, role,nickname,firstname,lastname,department,section FROM user"
     );
     res.json({
       success: true,
@@ -846,7 +848,6 @@ app.get("/getApproveForm", async (req, res) => {
   }
 });
 
-
 app.get("/getCompleteForm", async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -892,27 +893,21 @@ app.put("/updateStatus/:id", async (req, res) => {
         WHERE id = ?
       `;
       params = [status, username, id];
-    }
-
-    else if (status === "COMPLETE") {
+    } else if (status === "COMPLETE") {
       sql = `
         UPDATE it_requests
         SET status = ?, completed_by = ?, completed_at = NOW()
         WHERE id = ?
       `;
       params = [status, username, id];
-    }
-
-    else if (status === "PROBLEM") {
+    } else if (status === "PROBLEM") {
       sql = `
         UPDATE it_requests
         SET status = ?, problem_by = ?, problem_at = NOW()
         WHERE id = ?
       `;
       params = [status, username, id];
-    }
-
-    else {
+    } else {
       sql = `
         UPDATE it_requests
         SET status = ?
@@ -929,7 +924,6 @@ app.put("/updateStatus/:id", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
-
 
 app.post("/ITApproveForm", async (req, res) => {
   try {

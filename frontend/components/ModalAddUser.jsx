@@ -172,20 +172,35 @@ const ModalAddUser = ({
                   </select>
                 </div>
               </div>
-
-              <div>
-                <label className={labelClass}>Role</label>
-                <select
-                  name="role"
-                  value={form.role || ""}
-                  onChange={handleChange}
-                  className={inputClassRequired}
-                  required
-                >
-                  <option value="">Select Role</option>
-                  <option value="Admin">Admin</option>
-                  <option value="User">User</option>
-                </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Role</label>
+                  <select
+                    name="role"
+                    value={form.role || ""}
+                    onChange={handleChange}
+                    className={inputClassRequired}
+                    required
+                  >
+                    <option value="">Select Role</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={labelClass}>Level</label>
+                  <select
+                    name="level"
+                    value={form.level || ""}
+                    onChange={handleChange}
+                    className={inputClassRequired}
+                    required
+                  >
+                    <option value="">Select Level</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </div>
               </div>
             </div>
 

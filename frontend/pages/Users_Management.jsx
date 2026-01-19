@@ -111,7 +111,7 @@ const Users_Management = () => {
                   Department
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
-                  Session
+                  Section
                 </th>
                 <th className="px-4 py-3 border-r border-blue-300/30 text-nowrap font-semibold tracking-wide text-left">
                   Password
@@ -150,7 +150,7 @@ const Users_Management = () => {
                     {item.department}
                   </td>
                   <td className="px-4 py-2 text-nowrap font-semibold text-blue-600">
-                    {item.session}
+                    {item.section}
                   </td>
                   <td className="px-4 py-2 text-nowrap">
                     <button
