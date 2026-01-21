@@ -70,13 +70,20 @@ const Users_Management = () => {
             onClick={() => {
               setForm({
                 id: "",
+                firstname: "",
+                lastname: "",
                 nickname: "",
                 username: "",
                 password: "",
-                role: "",
+                email: "",
+                department: "",
+                section: "",
+                role: "User",
+                level: "1",
               });
               setShowModal(true);
             }}
+
             className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 
              text-white text-sm font-semibold rounded-full shadow-md cursor-pointer 
              hover:bg-pink-600 hover:shadow-lg transition duration-200"
