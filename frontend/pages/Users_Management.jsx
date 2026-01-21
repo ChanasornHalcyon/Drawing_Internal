@@ -6,8 +6,10 @@ import ModalResetPassword from "../components/ModalResetPassword";
 import ModalDeleteUser from "../components/ModalDeleteUser";
 import { useRouter } from "next/router";
 import ModalEditUser from "../components/ModalEditUser";
+import Searchbar from "../components/Searchbar";
 const Users_Management = () => {
   const router = useRouter();
+  const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -15,6 +17,7 @@ const Users_Management = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setshowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
   const [form, setForm] = useState({
     id: "",
     nickname: "",
@@ -71,43 +74,81 @@ const Users_Management = () => {
       },
     });
   };
+ const handleSearch = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:4000/searchUser?keyword=${search}`
+      );
+      setData(res.data.users);
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  };
 
-  useEffect(() => {
-    getUser();
-    const userRole = localStorage.getItem("role");
-    setRole(userRole || "");
-  }, []);
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      if (search.trim() === "") {
+        await getUser();
+      } else {
+        await handleSearch();
+      }
+      const userRole = localStorage.getItem("role");
+      setRole(userRole || "");
+
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+  fetchData();
+}, [search]);
 
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-24">
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={() => {
-              setForm({
-                id: "",
-                firstname: "",
-                lastname: "",
-                nickname: "",
-                username: "",
-                password: "",
-                email: "",
-                department: "",
-                section: "",
-                role: "User",
-                level: "1",
-              });
-              setShowModal(true);
-            }}
+        <div className="flex items-center justify-between mb-5">
 
-            className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 
-             text-white text-sm font-semibold rounded-full shadow-md cursor-pointer 
-             hover:bg-pink-600 hover:shadow-lg transition duration-200"
-          >
-            Add User
-          </button>
+
+          <div className="w-1/3" />
+
+
+          <div className="w-1/3 flex justify-center">
+             <Searchbar
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search username, email..."
+            />
+          </div>
+
+          <div className="w-1/3 flex justify-end">
+            <button
+              onClick={() => {
+                setForm({
+                  id: "",
+                  firstname: "",
+                  lastname: "",
+                  nickname: "",
+                  username: "",
+                  password: "",
+                  email: "",
+                  department: "",
+                  section: "",
+                  role: "User",
+                  level: "1",
+                });
+                setShowModal(true);
+              }}
+              className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 
+      text-white text-sm font-semibold rounded-full shadow-md cursor-pointer 
+      hover:bg-pink-600 hover:shadow-lg transition duration-200"
+            >
+              Add User
+            </button>
+          </div>
+
         </div>
+
 
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
           <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">

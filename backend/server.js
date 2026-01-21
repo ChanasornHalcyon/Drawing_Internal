@@ -127,7 +127,6 @@ app.post("/editUser", async (req, res) => {
   } = req.body;
 
   try {
-
     let query = `
       UPDATE user
       SET email=?, nickname=?, firstname=?, lastname=?, 
@@ -187,6 +186,45 @@ app.get("/getUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+app.get("/searchUser", async (req, res) => {
+  const { keyword } = req.query;
+  try {
+    const search = `%${keyword}%`;
+
+    const [rows] = await db.query(
+      `
+      SELECT 
+        id,
+        username,
+        email,
+        firstname,
+        lastname,
+        nickname,
+        role,
+        department,
+        section,
+        level
+      FROM user
+      WHERE 
+        username LIKE ? OR
+        email LIKE ? OR
+        firstname LIKE ? OR
+        lastname LIKE ? OR
+        nickname LIKE ?
+      ORDER BY id DESC
+      `,
+      [search, search, search, search, search]
+    );
+
+    res.json({ success: true, users: rows });
+  } catch (err) {
+    console.error("Search user error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
 
 app.delete("/deleteUser/:id", async (req, res) => {
   const { id } = req.params;
