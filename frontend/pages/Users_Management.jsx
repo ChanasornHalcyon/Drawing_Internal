@@ -5,6 +5,7 @@ import ModalAddUser from "../components/ModalAddUser";
 import ModalResetPassword from "../components/ModalResetPassword";
 import ModalDeleteUser from "../components/ModalDeleteUser";
 import { useRouter } from "next/router";
+import ModalEditUser from "../components/ModalEditUser";
 const Users_Management = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
@@ -12,6 +13,7 @@ const Users_Management = () => {
   const [showModal, setShowModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setshowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [form, setForm] = useState({
     id: "",
@@ -37,6 +39,21 @@ const Users_Management = () => {
     setShowDeleteModal(true);
   };
 
+  const FormForEdit = (item) => {
+    setForm({
+      id: item.id,
+      firstname: item.firstname,
+      lastname: item.lastname,
+      nickname: item.nickname,
+      username: item.username,
+      password: "",
+      email: item.email,
+      department: item.department,
+      section: item.section,
+      role: item.role,
+      level: item.level,
+    });
+  };
   const goPermissionPage = (item) => {
     console.log(item);
     router.push({
@@ -174,9 +191,18 @@ const Users_Management = () => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => goPermissionPage(item)}
-                        className="cursor-pointer px-3 py-1 rounded-lg bg-orange-100 text-orange-600 hover:bg-orange-600 hover:text-white transition shadow-sm border border-red-200"
+                        className="cursor-pointer px-3 py-1 rounded-lg bg-orange-100 text-orange-600 hover:bg-orange-600 hover:text-white transition shadow-sm border border-orange-200"
                       >
                         Permission
+                      </button>
+                      <button
+                        onClick={() => {
+                          FormForEdit(item);
+                          setshowEditModal(true);
+                        }}
+                        className="cursor-pointer px-3 py-1 rounded-lg bg-purple-100 text-purple-600 hover:bg-purple-600 hover:text-white transition shadow-sm border border-purple-200"
+                      >
+                        Edit
                       </button>
 
                       <button
@@ -194,9 +220,21 @@ const Users_Management = () => {
           </table>
         </div>
 
+
         {showModal && (
           <ModalAddUser
             onClose={() => setShowModal(false)}
+            submitting={submitting}
+            setSubmitting={setSubmitting}
+            refreshData={getUser}
+            form={form}
+            setForm={setForm}
+          />
+        )}
+
+        {showEditModal && (
+          <ModalEditUser
+            onClose={() => setshowEditModal(false)}
             submitting={submitting}
             setSubmitting={setSubmitting}
             refreshData={getUser}

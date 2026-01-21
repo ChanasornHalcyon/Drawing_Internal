@@ -111,6 +111,56 @@ app.post("/addUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+app.post("/editUser", async (req, res) => {
+  const {
+    id,
+    email,
+    nickname,
+    firstname,
+    lastname,
+    username,
+    password,
+    role,
+    department,
+    section,
+    level,
+  } = req.body;
+
+  try {
+
+    let query = `
+      UPDATE user
+      SET email=?, nickname=?, firstname=?, lastname=?, 
+          username=?, role=?, department=?, section=?, level=?`;
+
+    const params = [
+      email,
+      nickname,
+      firstname,
+      lastname,
+      username,
+      role,
+      department,
+      section,
+      level,
+    ];
+
+    if (password && password.trim() !== "") {
+      query += `, password=?`;
+      params.push(password);
+    }
+
+    query += ` WHERE id=?`;
+    params.push(id);
+
+    await db.query(query, params);
+
+    res.json({ success: true, message: "User updated" });
+  } catch (err) {
+    console.error("Edit user error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 app.put("/updatePassword", async (req, res) => {
   const { id, password } = req.body;
@@ -126,7 +176,7 @@ app.put("/updatePassword", async (req, res) => {
 app.get("/getUser", async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT id,email, username, role,nickname,firstname,lastname,department,section FROM user",
+      "SELECT id,email, username, role,nickname,firstname,lastname,department,section,level FROM user",
     );
     res.json({
       success: true,
