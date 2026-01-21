@@ -20,6 +20,8 @@ const Index = () => {
 
       if (res.data.success) {
         localStorage.setItem("userId", res.data.user.id);
+        localStorage.setItem("fname", res.data.user.firstname);
+        localStorage.setItem("lname", res.data.user.lastname);
         localStorage.setItem("username", res.data.user.username);
         localStorage.setItem("role", res.data.user.role)
         localStorage.setItem("department", res.data.user.department);
@@ -35,16 +37,17 @@ const Index = () => {
   };
 
   useEffect(() => {
-
     const userId = localStorage.getItem("userId");
-    const storedUsername = localStorage.getItem("username");
+    const fname = localStorage.getItem("fname");
+    const lname = localStorage.getItem("lname");
 
-    if (userId && storedUsername) {
+    if (userId && (fname || lname)) {
       router.replace("/homepage");
     } else {
       setReady(true);
     }
   }, []);
+
 
   if (!ready) {
     return null;

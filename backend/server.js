@@ -65,7 +65,7 @@ const transporter = nodemailer.createTransport({
 app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   const [rows] = await db.query(
-    "SELECT id, username, role,department FROM user WHERE username=? AND password=?",
+    "SELECT id, username, role,department,firstname,lastname FROM user WHERE username=? AND password=?",
     [username, password],
   );
 
@@ -1206,7 +1206,7 @@ app.post("/rejectITForm", async (req, res) => {
         problem_at = NOW()
       WHERE id = ?
       `,
-      [reason, username, id]
+      [reason, username, id],
     );
 
     if (result.affectedRows === 0) {
@@ -1219,7 +1219,6 @@ app.post("/rejectITForm", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
-
 
 const PORT = 4000;
 app.listen(PORT, () =>
