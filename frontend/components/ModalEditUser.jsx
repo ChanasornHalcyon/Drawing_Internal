@@ -161,8 +161,8 @@ const ModalEditUser = ({
                                         name="section"
                                         value={form.section || ""}
                                         onChange={handleChange}
-                                        className={inputClassRequired}
-                                        required
+                                        className={inputClass}
+
                                     >
                                         <option value="">Select Section</option>
                                         <option value="IT">IT</option>

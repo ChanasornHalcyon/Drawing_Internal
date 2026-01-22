@@ -191,7 +191,6 @@ app.get("/searchUser", async (req, res) => {
   const { keyword } = req.query;
   try {
     const search = `%${keyword}%`;
-
     const [rows] = await db.query(
       `
       SELECT 

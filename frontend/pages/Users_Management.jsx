@@ -74,7 +74,7 @@ const Users_Management = () => {
       },
     });
   };
- const handleSearch = async () => {
+  const handleSearch = async () => {
     try {
       const res = await axios.get(
         `http://localhost:4000/searchUser?keyword=${search}`
@@ -85,36 +85,32 @@ const Users_Management = () => {
     }
   };
 
- useEffect(() => {
-  const fetchData = async () => {
-    try {
-      if (search.trim() === "") {
-        await getUser();
-      } else {
-        await handleSearch();
-      }
-      const userRole = localStorage.getItem("role");
-      setRole(userRole || "");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (search.trim() === "") {
+          await getUser();
+        } else {
+          await handleSearch();
+        }
+        const userRole = localStorage.getItem("role");
+        setRole(userRole || "");
 
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
-  fetchData();
-}, [search]);
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    };
+    fetchData();
+  }, [search]);
 
   return (
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-24">
-        <div className="flex items-center justify-between mb-5">
-
-
+        <div className="flex items-center justify-between mb-14 ">
           <div className="w-1/3" />
-
-
           <div className="w-1/3 flex justify-center">
-             <Searchbar
+            <Searchbar
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search username, email..."

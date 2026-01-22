@@ -123,13 +123,32 @@ const ModalFixForm = ({ onClose }) => {
                             </div>
                         )}
 
-                        <div className="flex flex-col gap-1">
-                            <label className="font-semibold text-black">อาการเบื้องต้น</label>
-                            <input
-                                type="text"
+                        <div className="flex flex-col gap-1 w-full">
+                            <label className="font-semibold text-black">
+                                อาการเบื้องต้น
+                            </label>
+
+                            <textarea
                                 name="detail"
+                                rows={3}
                                 onChange={handleChange}
-                                className="p-2 border rounded-lg text-black"
+                                className=" w-full 
+                                            p-3 
+                                            text-base
+                                            border border-gray-300 
+                                            rounded-xl 
+                                            shadow-sm
+                                            bg-white 
+                                            text-black 
+                                            placeholder-gray-400
+                                            focus:border-blue-500 
+                                            focus:ring-2 
+                                            focus:ring-blue-200 
+                                            transition-all duration-200
+                                            resize-none
+                                        "
+
+                                placeholder="อาการเบื้องต้น..."
                             />
                         </div>
 
