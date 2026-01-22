@@ -177,7 +177,7 @@ const Approve_Form = () => {
                     </table>
                 </div>
 
-
+                <div className="my-12 border-t border-gray-800 border-dashed"></div>
 
                 <h2 className="text-2xl font-semibold text-blue-700 mb-4 text-center">
                     รอดำเนินการแจ้งซ่อม IT
@@ -187,7 +187,7 @@ const Approve_Form = () => {
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                         <thead className="bg-black text-white">
                             <tr>
-                                <th className="px-4 py-3 text-start">วันที่ร้องขอ</th>
+                                <th className="px-4 py-3 text-start ">วันที่ร้องขอ</th>
                                 <th className="px-4 py-3 text-start">ผู้ร้องขอ</th>
                                 <th className="px-4 py-3 text-start">แผนก</th>
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
@@ -205,7 +205,7 @@ const Approve_Form = () => {
                             ) : (
                                 fixData.map((item) => (
                                     <tr key={item.id} className="odd:bg-white even:bg-gray-50 hover:bg-blue-50">
-                                        <td className="px-4 py-2">{new Date(item.created_at).toLocaleString("th-TH")}</td>
+                                        <td className="px-4 py-2 ">{new Date(item.created_at).toLocaleString("th-TH")}</td>
                                         <td className="px-4 py-2">{item.requester}</td>
                                         <td className="px-4 py-2">{item.department}</td>
                                         <td className="px-4 py-2">{item.purpose}</td>
