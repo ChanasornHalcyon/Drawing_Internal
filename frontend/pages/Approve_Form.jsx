@@ -79,6 +79,26 @@ const Approve_Form = () => {
         }
     };
 
+    const completeWithImages = async (id, formData, formType) => {
+        try {
+            const res = await axios.put(
+                `http://localhost:4000/upLoadPicture/${id}`,
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            loadIT();
+            loadFix();
+
+            return { success: true };
+        } catch (err) {
+            console.error(err);
+            return { success: false };
+        }
+    };
+
     useEffect(() => {
         loadIT();
         loadFix();
@@ -286,10 +306,9 @@ const Approve_Form = () => {
                 <ModalCompleteForm
                     item={selectedItem}
                     onClose={() => setShowCompleteModal(false)}
-                    onConfirm={() => {
-                        updateStatus(selectedItem.id, "COMPLETE");
-                        setShowCompleteModal(false);
-                    }}
+                    onConfirm={(formData) =>
+                        completeWithImages(selectedItem.id, formData, selectedFormType)
+                    }
                 />
             )}
         </div>

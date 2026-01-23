@@ -40,6 +40,56 @@ const upload = multer({
   },
 });
 
+// ====== UPLOAD FOR IT (uploads/it) ======
+const itDir = path.join(__dirname, "uploads/it");
+if (!fs.existsSync(itDir)) fs.mkdirSync(itDir, { recursive: true });
+
+const storageIT = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, itDir); // เก็บทั้งหมดใน uploads/it
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path.basename(file.originalname, ext).replace(/[^\w\-]/g, "_");
+    cb(null, `${Date.now()}_${base}${ext}`);
+  },
+});
+
+const uploadITImages = multer({
+  storage: storageIT,
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/jpg"];
+    allowed.includes(file.mimetype)
+      ? cb(null, true)
+      : cb(new Error("Only JPG/PNG allowed"));
+  },
+});
+
+// ====== UPLOAD FOR FIX (uploads/fix) ======
+const fixDir = path.join(__dirname, "uploads/fix");
+if (!fs.existsSync(fixDir)) fs.mkdirSync(fixDir, { recursive: true });
+
+const storageFIX = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, fixDir); // เก็บทั้งหมดใน uploads/fix
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path.basename(file.originalname, ext).replace(/[^\w\-]/g, "_");
+    cb(null, `${Date.now()}_${base}${ext}`);
+  },
+});
+
+const uploadFIXImages = multer({
+  storage: storageFIX,
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/jpg"];
+    allowed.includes(file.mimetype)
+      ? cb(null, true)
+      : cb(new Error("Only JPG/PNG allowed"));
+  },
+});
+
 let db;
 const initMySQL = async () => {
   db = await mysql.createConnection({
@@ -213,7 +263,7 @@ app.get("/searchUser", async (req, res) => {
         nickname LIKE ?
       ORDER BY id DESC
       `,
-      [search, search, search, search, search]
+      [search, search, search, search, search],
     );
 
     res.json({ success: true, users: rows });
@@ -222,8 +272,6 @@ app.get("/searchUser", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
-
 
 app.delete("/deleteUser/:id", async (req, res) => {
   const { id } = req.params;
@@ -1033,6 +1081,52 @@ app.put("/updateStatus/:id", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
+app.put( "/upLoadPicture/:id",(req, res, next) => {
+    const type = req.query.form_type;
+    if (type === "FIX") {
+      uploadFIXImages.array("images", 10)(req, res, next);
+    } else {
+      uploadITImages.array("images", 10)(req, res, next);
+    }
+  },
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { username, completed_detail, form_type } = req.body;
+
+      const table = form_type === "FIX" ? "it_fixrequest" : "it_requests";
+
+      const imagePaths = (req.files || []).map((file) => {
+        const part = file.path.split("uploads").pop();
+        return "/uploads" + part.replace(/\\/g, "/");
+      });
+
+      const sql = `
+        UPDATE ${table}
+        SET 
+          status = 'COMPLETE',
+          completed_by = ?,
+          completed_at = NOW(),
+          completed_detail = ?,
+          completed_images = ?
+        WHERE id = ?
+      `;
+
+      await db.query(sql, [
+        username,
+        completed_detail,
+        JSON.stringify(imagePaths),
+        id,
+      ]);
+
+      res.json({ success: true, images: imagePaths });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+);
 
 app.post("/ITApproveForm", async (req, res) => {
   try {
