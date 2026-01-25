@@ -42,7 +42,6 @@ const ITPage = () => {
                     setFilteredCards(IT_CARDS);
                     return;
                 }
-
                 const res = await axios.get(
                     `http://localhost:4000/userPermissions?username=${username}`
                 );
@@ -75,7 +74,13 @@ const ITPage = () => {
             <NavbarIT />
 
             <div className="pt-28 md:pt-32 flex justify-center">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 pb-10">
+                <div
+                    className={
+                        filteredCards.length <= 2
+                            ? "flex justify-center gap-8 lg:gap-10 pb-10 flex-wrap"
+                            : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 pb-10"
+                    }
+                >
                     {filteredCards.map((card, idx) => (
                         <motion.div
                             key={idx}

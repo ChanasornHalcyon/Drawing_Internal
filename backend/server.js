@@ -1002,6 +1002,21 @@ app.get("/getCompleteForm", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+app.get("/getCompleteFixForm", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT *
+        FROM it_fixrequest
+        WHERE status = 'COMPLETE'
+        ORDER BY completed_at DESC;`,
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
 
 app.get("/getProblemForm", async (req, res) => {
   try {
