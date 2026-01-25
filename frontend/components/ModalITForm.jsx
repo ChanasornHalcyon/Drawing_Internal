@@ -46,14 +46,15 @@ const ModalITForm = ({ onClose }) => {
     ];
 
     useEffect(() => {
-        const uname = localStorage.getItem("username") || "";
         const department = localStorage.getItem("department") || "";
+        const fname = localStorage.getItem("fname") || "";
+        const lname = localStorage.getItem("lname") || "";
+
         const today = new Date().toISOString().split("T")[0];
 
-        console.log(department)
         setForm((prev) => ({
             ...prev,
-            requester: uname,
+            requester: `${fname} ${lname}`,
             department: department,
             request_date: today,
         }));
@@ -116,7 +117,7 @@ const ModalITForm = ({ onClose }) => {
                             <div>
                                 <label className="font-semibold text-black">แผนก / ฝ่าย</label>
                                 <input
-                                 value={form.department}
+                                    value={form.department}
                                     readOnly
                                     className="w-full mt-1 p-2 border rounded-lg bg-gray-100 text-gray-500"
                                 />

@@ -62,13 +62,15 @@ const ModalFixForm = ({ onClose }) => {
     };
 
     useEffect(() => {
-        const uname = localStorage.getItem("username") || "";
         const department = localStorage.getItem("department") || "";
+        const fname = localStorage.getItem("fname") || "";
+        const lname = localStorage.getItem("lname") || "";
+
         const today = new Date().toISOString().split("T")[0];
 
         setForm((prev) => ({
             ...prev,
-            requester: uname,
+            requester: `${fname} ${lname}`,
             department: department,
             request_date: today,
         }));
@@ -148,7 +150,7 @@ const ModalFixForm = ({ onClose }) => {
                                             resize-none
                                         "
 
-                                placeholder="อาการเบื้องต้น..."
+                                placeholder="..."
                             />
                         </div>
 
