@@ -182,7 +182,7 @@ const Problem_Form = () => {
                 </div>
             </div>
 
-            {/* ---------------- MODAL ---------------- */}
+       
             {showDetailModal && (
                 <ModalDetailProblem
                     item={selectedProblem}

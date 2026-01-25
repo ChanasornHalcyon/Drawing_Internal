@@ -43,11 +43,10 @@ if (result?.success) {
             >
                 <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
 
-
                     <div className="p-6 border-b flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <CheckCircle className="text-green-600" size={26} />
-                            <h2 className="text-xl font-semibold text-gray-800">
+                            <h2 className="text-xl font-semibold text-gray-800 ">
                                 ยืนยันการเสร็จงาน
                             </h2>
                         </div>

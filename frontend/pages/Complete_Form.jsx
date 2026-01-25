@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import NavbarIT from "../components/NavbarIT";
+import DetailModal from "../components/DetailModal";
 
 const Complete_Form = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showDetail, setShowDetail] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     const getData = async () => {
         try {
@@ -39,9 +42,8 @@ const Complete_Form = () => {
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
                                 <th className="px-4 py-3 text-start">รายละเอียด</th>
                                 <th className="px-4 py-3 text-start">เหตุผล</th>
-                                <th className="px-4 py-3 text-start">Spec</th>
                                 <th className="px-4 py-3 text-start">Complete By</th>
-
+                                <th className="px-4 py-3 ">Action</th>
                             </tr>
                         </thead>
 
@@ -93,11 +95,25 @@ const Complete_Form = () => {
                                         <td className="px-4 py-2">{item.purpose}</td>
                                         <td className="px-4 py-2">{item.detail}</td>
                                         <td className="px-4 py-2">{item.reason}</td>
-                                        <td className="px-4 py-2">{item.spec}</td>
-
-                                        <td className="px-4 py-2">
+                                        <td className="px-4 py-2 items-center">
                                             {item.completed_by || "-"}
                                         </td>
+                                        <td className="px-4 py-2 flex justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedItem(item);
+                                                    setShowDetail(true);
+                                                }}
+                                                 className="px-3 py-1 rounded-lg 
+                                                bg-blue-100 text-blue-600 
+                                                hover:bg-blue-600 hover:text-white 
+                                                transition border border-blue-200 cursor-pointer"
+                                            >
+                                                Detail
+                                            </button>
+                                        </td>
+
+
                                     </tr>
 
                                 ))
@@ -112,8 +128,11 @@ const Complete_Form = () => {
                     </table>
                 </div>
             </div>
-
+            {showDetail && (
+                <DetailModal item={selectedItem} onClose={() => setShowDetail(false)} />
+            )}
         </div>
+
     );
 };
 

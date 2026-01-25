@@ -65,13 +65,12 @@ const uploadITImages = multer({
   },
 });
 
-// ====== UPLOAD FOR FIX (uploads/fix) ======
 const fixDir = path.join(__dirname, "uploads/fix");
 if (!fs.existsSync(fixDir)) fs.mkdirSync(fixDir, { recursive: true });
 
 const storageFIX = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, fixDir); // เก็บทั้งหมดใน uploads/fix
+    cb(null, fixDir);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -99,6 +98,7 @@ const initMySQL = async () => {
     database: "halcyon_internal",
   });
 };
+
 initMySQL();
 const transporter = nodemailer.createTransport({
   host: "mail.halcyon.local",
@@ -1082,7 +1082,9 @@ app.put("/updateStatus/:id", async (req, res) => {
   }
 });
 
-app.put( "/upLoadPicture/:id",(req, res, next) => {
+app.put(
+  "/upLoadPicture/:id",
+  (req, res, next) => {
     const type = req.query.form_type;
     if (type === "FIX") {
       uploadFIXImages.array("images", 10)(req, res, next);
@@ -1090,6 +1092,7 @@ app.put( "/upLoadPicture/:id",(req, res, next) => {
       uploadITImages.array("images", 10)(req, res, next);
     }
   },
+
   async (req, res) => {
     try {
       const { id } = req.params;
