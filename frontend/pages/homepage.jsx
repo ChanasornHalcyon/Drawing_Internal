@@ -91,8 +91,8 @@ const Homepage = () => {
       <div className="py-40 md:py-32 flex justify-center">
         <div
           className={
-            cards.length === 1
-              ? "flex justify-center"
+            cards.length <= 2
+              ? "flex justify-center gap-10 flex-wrap"
               : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10 max-w-5xl mx-auto"
           }
         >
