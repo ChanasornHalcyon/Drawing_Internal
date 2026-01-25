@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import ModalAddUser from "../components/ModalAddUser";
 import ModalResetPassword from "../components/ModalResetPassword";
 import ModalDeleteUser from "../components/ModalDeleteUser";
 import { useRouter } from "next/router";
@@ -12,7 +11,6 @@ const Users_Management = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [role, setRole] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setshowEditModal] = useState(false);
@@ -107,44 +105,13 @@ const Users_Management = () => {
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-24">
-        <div className="flex items-center justify-between mb-14 ">
-          <div className="w-1/3" />
-          <div className="w-1/3 flex justify-center">
-            <Searchbar
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search username, email..."
-            />
-          </div>
-
-          <div className="w-1/3 flex justify-end">
-            <button
-              onClick={() => {
-                setForm({
-                  id: "",
-                  firstname: "",
-                  lastname: "",
-                  nickname: "",
-                  username: "",
-                  password: "",
-                  email: "",
-                  department: "",
-                  section: "",
-                  role: "User",
-                  level: "1",
-                });
-                setShowModal(true);
-              }}
-              className="flex items-center gap-2 px-5 py-2.5 bg-pink-500 
-      text-white text-sm font-semibold rounded-full shadow-md cursor-pointer 
-      hover:bg-pink-600 hover:shadow-lg transition duration-200"
-            >
-              Add User
-            </button>
-          </div>
-
+        <div className="flex items-center justify-center mb-14">
+          <Searchbar
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search username, email..."
+          />
         </div>
-
 
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
           <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -258,16 +225,6 @@ const Users_Management = () => {
         </div>
 
 
-        {showModal && (
-          <ModalAddUser
-            onClose={() => setShowModal(false)}
-            submitting={submitting}
-            setSubmitting={setSubmitting}
-            refreshData={getUser}
-            form={form}
-            setForm={setForm}
-          />
-        )}
 
         {showEditModal && (
           <ModalEditUser

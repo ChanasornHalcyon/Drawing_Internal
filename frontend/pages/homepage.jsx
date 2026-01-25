@@ -4,20 +4,31 @@ import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import SuccessPopup from "../components/SuccessPopup";
 import axios from "axios";
-
+import ModalAddUser from "../components/ModalAddUser";
 const CARD_MAP = {
   IT: { label: "IT", path: "ITPage" },
   Drawing: { label: "Drawing", path: "DrawingPage" },
   Users_Management: { label: "Users_Management", path: "Users_Management" },
   Users_Logs: { label: "Users_Logs", path: "Users_Logs" },
+  Add_User: { label: "AddUser", path: "AddUser" },
 };
 
 const Homepage = () => {
   const router = useRouter();
   const [cards, setCards] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [formAddUser, setFormAddUser] = useState({
+    role: "User",
+    level: "1",
+  });
+  const [submittingAddUser, setSubmittingAddUser] = useState(false)
 
   const clickCard = (path) => {
+    if (path === "AddUser") {
+      setShowAddUserModal(true);
+      return;
+    }
     router.push(`/${path}`);
   };
 
@@ -28,8 +39,10 @@ const Homepage = () => {
 
       if (role?.toLowerCase() === "admin") {
         setCards([
+          CARD_MAP["Add_User"],
           CARD_MAP["Users_Management"],
           CARD_MAP["Users_Logs"],
+
         ]);
         return;
       }
@@ -77,10 +90,11 @@ const Homepage = () => {
 
       <div className="py-40 md:py-32 flex justify-center">
         <div
-          className={`grid gap-10 ${cards.length === 1
-            ? "grid-cols-1 max-w-[350px]"
-            : "grid-cols-1 sm:grid-cols-2 md:grid-cols-2 max-w-2xl"
-            }`}
+          className={
+            cards.length === 1
+              ? "flex justify-center"
+              : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10 max-w-5xl mx-auto"
+          }
         >
           {cards.map((card) => (
             <motion.div
@@ -104,6 +118,17 @@ const Homepage = () => {
         message="เข้าสู่ระบบสำเร็จ"
         onClose={() => setShowPopup(false)}
       />
+      {showAddUserModal && (
+        <ModalAddUser
+          onClose={() => setShowAddUserModal(false)}
+          submitting={submittingAddUser}
+          setSubmitting={setSubmittingAddUser}
+          refreshData={fetchPermissions}
+          form={formAddUser}
+          setForm={setFormAddUser}
+        />
+      )}
+
     </div>
   );
 };

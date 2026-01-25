@@ -150,7 +150,11 @@ const PermissionPage = () => {
             enabled: false,
             "ฟอร์มร้องขอ": false,
             "ฟอร์มแจ้งซ่อม": false,
-            Approve: false,
+            "รายการที่รออนุมัติ": false,
+            "รายการที่รอดำเนินการ": false,
+            " ประวัติรายการที่สำเร็จ": false,
+            "ประวัติรายการที่ติดปัญหา": false,
+            "Report": false
         },
         Drawing: {
             enabled: false,
@@ -179,7 +183,11 @@ const PermissionPage = () => {
                 enabled: false,
                 "ฟอร์มร้องขอ": false,
                 "ฟอร์มแจ้งซ่อม": false,
-                Approve: false,
+                รายการที่รออนุมัติ: false,
+                "รายการที่รอดำเนินการ": false,
+                " ประวัติรายการที่สำเร็จ": false,
+                "ประวัติรายการที่ติดปัญหา": false,
+                "Report": false
             },
             Drawing: {
                 enabled: false,
@@ -234,7 +242,11 @@ const PermissionPage = () => {
 
                 <PermissionSection
                     title="IT"
-                    items={["ฟอร์มร้องขอ", "ฟอร์มแจ้งซ่อม", "Approve"]}
+                    items={["ฟอร์มร้องขอ", "ฟอร์มแจ้งซ่อม", "รายการที่รออนุมัติ",
+                        "รายการที่รอดำเนินการ",
+                        " ประวัติรายการที่สำเร็จ",
+                        "ประวัติรายการที่ติดปัญหา",
+                        "Report"]}
                     permissions={permissions}
                     setPermissions={setPermissions}
                 />
