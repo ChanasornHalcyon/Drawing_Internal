@@ -12,24 +12,24 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
         setImages(files);
     };
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("status", "COMPLETE");
-    formData.append("username", localStorage.getItem("username") || "");
-    formData.append("completed_detail", fixDetail);
-    images.forEach((img) => {
-        formData.append("images", img);
-    });
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        formData.append("status", "COMPLETE");
+        formData.append("username", localStorage.getItem("username") || "");
+        formData.append("completed_detail", fixDetail);
+        images.forEach((img) => {
+            formData.append("images", img);
+        });
 
-   const result = await onConfirm(formData);
+        const result = await onConfirm(formData);
 
-if (result?.success) {
-    alert("อัปโหลดเสร็จสมบูรณ์");
-    onClose();
-} else {
-    alert("เกิดข้อผิดพลาดในการอัปโหลด");
-}
-};
+        if (result?.success) {
+            alert("อัปโหลดเสร็จสมบูรณ์");
+            onClose();
+        } else {
+            alert("เกิดข้อผิดพลาดในการอัปโหลด");
+        }
+    };
 
 
 
@@ -85,18 +85,23 @@ if (result?.success) {
                         <div>
                             <label className="font-semibold">อัพโหลดรูปภาพ</label>
 
-                            <div className="mt-2 p-4 border border-dashed rounded-xl bg-gray-50">
-                                <div className="flex items-center gap-3">
+                            <div
+                                className="mt-2 p-4 border border-dashed rounded-xl bg-gray-50 cursor-pointer hover:bg-gray-100 transition"
+                                onClick={() => document.getElementById("upload-complete-images").click()}
+                            >
+                                <div className="flex items-center gap-3 pointer-events-none">
                                     <Upload className="text-gray-500" size={20} />
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleImageChange}
-                                        className="text-sm"
-                                    />
+                                    <span className="text-gray-600 text-sm">คลิกเพื่ออัพโหลดรูปภาพ</span>
                                 </div>
 
+                                <input
+                                    id="upload-complete-images"
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleImageChange}
+                                    className="hidden"
+                                />
 
                                 {images.length > 0 && (
                                     <div className="grid grid-cols-3 gap-2 mt-3">
@@ -112,6 +117,7 @@ if (result?.success) {
                                 )}
                             </div>
                         </div>
+
                     </div>
 
 

@@ -991,8 +991,9 @@ app.get("/getCompleteForm", async (req, res) => {
   try {
     const [rows] = await db.query(
       `SELECT *
-       FROM it_requests WHERE status ="COMPLETE"
-       ORDER BY request_date DESC`,
+        FROM it_requests
+        WHERE status = 'COMPLETE'
+        ORDER BY completed_at DESC;`,
     );
 
     res.json({ success: true, data: rows });
