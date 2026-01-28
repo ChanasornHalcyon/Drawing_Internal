@@ -5,7 +5,9 @@ import ModalResetPassword from "../components/ModalResetPassword";
 import ModalDeleteUser from "../components/ModalDeleteUser";
 import { useRouter } from "next/router";
 import ModalEditUser from "../components/ModalEditUser";
+import ModalImportExcel from "../components/ModalImportExcel";
 import Searchbar from "../components/Searchbar";
+import { FaFileExcel } from "react-icons/fa6";
 const Users_Management = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -14,6 +16,7 @@ const Users_Management = () => {
   const [showResetModal, setShowResetModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setshowEditModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [form, setForm] = useState({
@@ -105,13 +108,45 @@ const Users_Management = () => {
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-24">
-        <div className="flex items-center justify-center mb-14">
-          <Searchbar
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search username, email..."
-          />
+
+        <div className="flex items-center justify-between mb-10 mt-5 px-4">
+
+
+          <div className="w-1/3"></div>
+
+
+          <div className="w-1/3 flex justify-center">
+            <div className="w-full max-w-lg">
+              <Searchbar
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search username, email..."
+              />
+            </div>
+          </div>
+          <div className="w-1/3 flex justify-end">
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="
+      px-4 py-2 
+      rounded-lg 
+      bg-green-100 text-green-500 
+      hover:bg-green-600 hover:text-white
+      transition 
+      border cursor-pointer
+      flex items-center gap-2
+      group
+    "
+            >
+              <FaFileExcel className="text-green-600 group-hover:text-white transition" />
+              Import Excel
+            </button>
+          </div>
+
+
+
         </div>
+
 
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
           <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -254,6 +289,12 @@ const Users_Management = () => {
             setSubmitting={setSubmitting}
             refreshData={getUser}
             form={selectedUser}
+          />
+        )}
+        {showImportModal && (
+          <ModalImportExcel
+            onClose={() => setShowImportModal(false)}
+            refreshData={getUser}
           />
         )}
       </div>

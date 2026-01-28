@@ -4,7 +4,9 @@ const mysql = require("mysql2/promise");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const XLSX = require("xlsx");
 const nodemailer = require("nodemailer");
+
 require("dotenv").config();
 
 const app = express();
@@ -89,6 +91,21 @@ const uploadFIXImages = multer({
   },
 });
 
+const uploadExcel = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype === "application/vnd.ms-excel" ||
+      file.mimetype ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only Excel files are allowed!"));
+    }
+  },
+});
+
 let db;
 const initMySQL = async () => {
   db = await mysql.createConnection({
@@ -112,6 +129,7 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
 });
+
 app.post("/verifyUser", async (req, res) => {
   const { username, password } = req.body;
   const [rows] = await db.query(
@@ -1417,6 +1435,55 @@ app.post("/rejectITForm", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false });
+  }
+});
+
+app.post("/importExcel", uploadExcel.single("excel"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.json({ success: false, message: "No file uploaded" });
+    }
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    if (sheetData.length === 0) {
+      return res.json({ success: false, message: "Excel has no rows" });
+    }
+
+    for (const row of sheetData) {
+      await db.query(
+          `INSERT INTO user (username, firstname, lastname, nickname, email, role, department, section, level, password)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+              firstname = VALUES(firstname),
+              lastname = VALUES(lastname),
+              nickname = VALUES(nickname),
+              email = VALUES(email),
+              role = VALUES(role),
+              department = VALUES(department),
+              section = VALUES(section),
+              level = VALUES(level)
+            `,
+                [
+                  row.username || "",
+                  row.firstname || "",
+                  row.lastname || "",
+                  row.nickname || "",
+                  row.email || "",
+                  row.role || "",
+                  row.department || "",
+                  row.section || "",
+                  row.level || "",
+                  row.password || "1234",
+                ],
+      );
+    }
+
+    res.json({ success: true, message: "Import successfully" });
+  } catch (error) {
+    console.error("Import Excel Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
