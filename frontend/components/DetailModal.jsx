@@ -25,7 +25,7 @@ const DetailModal = ({ item, onClose }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25 }}
             >
-                <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+                <div className="bg-white w-full max-w-6xl rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
 
                     <div className="p-6 border-b flex justify-between items-center">
                         <h2 className="text-xl font-bold text-black">รายละเอียดงานเสร็จ</h2>
@@ -37,60 +37,65 @@ const DetailModal = ({ item, onClose }) => {
                         </button>
                     </div>
 
-                    <div className="p-6 space-y-4">
+                    <div className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                        <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-                            <Info label="ผู้ร้องขอ" value={item.requester} />
-                            <Info label="แผนก" value={item.department} />
-                            <Info label="วัตถุประสงค์" value={item.purpose} />
-                            <Info label="รายละเอียด" value={item.detail} />
-                            <Info label="เหตุผล" value={item.reason || "-"} />
-                            <Info label="ผู้แก้ไข" value={item.completed_by} />
-                            <Info
-                                label="วันที่เสร็จ"
-                                value={
-                                    item.completed_at
-                                        ? new Date(item.completed_at).toLocaleString("th-TH")
-                                        : "-"
-                                }
-                            />
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold text-black">สิ่งที่แก้ไข</h3>
-                            <p className="bg-gray-100 p-3 rounded-xl text-red-400">
-                                {item.completed_detail || "-"}
-                            </p>
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold mb-2 text-black">รูปภาพประกอบ</h3>
-
-                            {images.length > 0 ? (
-                                <div className="grid grid-cols-3 gap-2">
-                                    {images.map((img, index) => {
-                                        const fullUrl = `http://localhost:4000${img}`;
-                                        return (
-                                            <a
-                                                key={index}
-                                                href={fullUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                <img
-                                                    src={fullUrl}
-                                                    alt=""
-                                                    className="h-28 w-full object-cover rounded-xl border cursor-pointer hover:opacity-80"
-                                                />
-                                            </a>
-                                        );
-                                    })}
+                            <div className="space-y-4">
+                                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                                    <Info label="ผู้ร้องขอ" value={item.requester} />
+                                    <Info label="แผนก" value={item.department} />
+                                    <Info label="วัตถุประสงค์" value={item.purpose} />
+                                    <Info label="รายละเอียด" value={item.detail} />
+                                    <Info label="เหตุผล" value={item.reason || "-"} />
+                                    <Info label="ผู้แก้ไข" value={item.completed_by} />
+                                    <Info
+                                        label="วันที่เสร็จ"
+                                        value={
+                                            item.completed_at
+                                                ? new Date(item.completed_at).toLocaleString("th-TH")
+                                                : "-"
+                                        }
+                                    />
                                 </div>
-                            ) : (
-                                <p className="text-gray-500">ไม่มีรูปภาพ</p>
-                            )}
+
+                                <div>
+                                    <h3 className="font-semibold text-black">สิ่งที่แก้ไข</h3>
+                                    <p className="bg-gray-100 p-3 rounded-xl text-red-400">
+                                        {item.completed_detail || "-"}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                {/* <h3 className="font-semibold mb-2 text-black">รูปภาพประกอบ</h3> */}
+                                {images.length > 0 ? (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {images.map((img, index) => {
+                                            const fullUrl = `http://localhost:4000${img}`;
+                                            return (
+                                                <a
+                                                    key={index}
+                                                    href={fullUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <img
+                                                        src={fullUrl}
+                                                        alt=""
+                                                        className="w-full h-40 object-cover rounded-xl border cursor-pointer hover:opacity-80"
+                                                    />
+                                                </a>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-500">ไม่มีรูปภาพ</p>
+                                )}
+                            </div>
+
                         </div>
                     </div>
+
 
                     <div className="p-4 border-t flex justify-end bg-gray-50">
                         <button
