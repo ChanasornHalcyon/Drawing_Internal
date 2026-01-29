@@ -143,11 +143,7 @@ const Users_Management = () => {
             </button>
           </div>
 
-
-
         </div>
-
-
         <div className="overflow-x-auto sm:px-2 md:px-4 lg:px-0">
           <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
             <thead className="bg-gradient-to-br from-[#1C70D3] to-[#155BB5] text-white shadow">
