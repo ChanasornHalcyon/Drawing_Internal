@@ -84,11 +84,16 @@ const ModalImportExcel = ({ onClose, refreshData }) => {
 
                         <div
                             onClick={() => document.getElementById("excelInput").click()}
-                            className="flex gap-3 items-center px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-pointer hover:bg-gray-100 transition"
+                            className="flex gap-3 items-center px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 
+             text-gray-500 cursor-pointer hover:bg-gray-100 transition"
                         >
+                            <FaFileExcel className="text-green-600 text-xl" />
 
-                            {file ? file.name : "Choose File"}
+                            <span className="text-black">
+                                {file ? file.name : "Choose File"}
+                            </span>
                         </div>
+
                     </div>
 
 
@@ -111,7 +116,7 @@ const ModalImportExcel = ({ onClose, refreshData }) => {
                 </div>
             </motion.div>
 
-            {/* Backdrop */}
+
             <motion.div
                 className="fixed inset-0 bg-black bg-opacity-50 z-40"
                 animate={{ opacity: 0.5 }}

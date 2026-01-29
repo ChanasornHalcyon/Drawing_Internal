@@ -1453,7 +1453,8 @@ app.post("/importExcel", uploadExcel.single("excel"), async (req, res) => {
 
     for (const row of sheetData) {
       await db.query(
-          `INSERT INTO user (username, firstname, lastname, nickname, email, role, department, section, level, password)
+          
+        `INSERT INTO user (username, firstname, lastname, nickname, email, role, department, section, level, password)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
               firstname = VALUES(firstname),
