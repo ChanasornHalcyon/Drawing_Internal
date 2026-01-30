@@ -1,37 +1,92 @@
-const xlsx = require("xlsx");
+const XLSX = require("xlsx");
 
-exports.uploadExcelFile = async (req, res) => {
+exports.importExcel = async (req, res) => {
   try {
-    if (!req.file)
-      return res.json({ success: false, message: "No file uploaded" });
-
-    const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = xlsx.utils.sheet_to_json(sheet);
-
     const db = req.db;
+    if (!req.file) {
+      return res.json({ success: false, message: "No file uploaded" });
+    }
 
-    for (const r of rows) {
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    if (sheetData.length === 0) {
+      return res.json({ success: false, message: "Excel has no rows" });
+    }
+
+    for (const row of sheetData) {
       await db.query(
-        `INSERT INTO excel_data (col1, col2, col3) VALUES (?, ?, ?)`,
-        [r.col1, r.col2, r.col3],
+        `
+        INSERT INTO user (
+          username, firstname, lastname, nickname, email, role, 
+          department, section, level, password
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
+        ON DUPLICATE KEY UPDATE
+          firstname = VALUES(firstname),
+          lastname = VALUES(lastname),
+          nickname = VALUES(nickname),
+          email = VALUES(email),
+          role = VALUES(role),
+          department = VALUES(department),
+          section = VALUES(section),
+          level = VALUES(level)
+        `,
+        [
+          row.username || "",
+          row.firstname || "",
+          row.lastname || "",
+          row.nickname || "",
+          row.email || "",
+          row.role || "",
+          row.department || "",
+          row.section || "",
+          row.level || "",
+          row.password || "1234",
+        ],
       );
     }
 
-    res.json({ success: true, rowsUploaded: rows.length });
+    res.json({ success: true, message: "Import successfully" });
   } catch (err) {
-    console.error("uploadExcelFile ERROR:", err);
-    res.status(500).json({ success: false });
+    console.error("Import Excel Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-exports.getExcelData = async (_, res) => {
+exports.exportUsers = async (req, res) => {
   try {
-    const db = getDB();
-    const [rows] = await db.query(`SELECT * FROM excel_data ORDER BY id DESC`);
-    res.json({ success: true, data: rows });
+    const db = req.db;
+
+    const [rows] = await db.query("SELECT * FROM user");
+
+    const noPassword = rows.map((user) => {
+      const { password, ...rest } = user;
+      return rest;
+    });
+
+    const XLSX = require("xlsx");
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(noPassword);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+
+    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=users_export.xlsx",
+    );
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+
+    res.send(buffer);
   } catch (err) {
-    console.error("getExcelData ERROR:", err);
+    console.error("Export Excel Error:", err);
     res.status(500).json({ success: false });
   }
 };

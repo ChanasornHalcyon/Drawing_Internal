@@ -42,7 +42,7 @@ const Report = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const res = await axios.get("http://localhost:8000/ITDashboard", {
+            const res = await axios.get("http://localhost:4000/ITDashboard", {
                 params: { status, startDate, endDate },
             });
             setChartData(res.data.data || []);

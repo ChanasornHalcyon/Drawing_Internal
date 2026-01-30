@@ -11,7 +11,7 @@ const Searchbar = ({ value, onChange, placeholder = "Search..." }) => {
             shadow-[0_4px_14px_rgba(0,0,0,0.08)]
             focus-within:border-blue-400 
             focus-within:shadow-[0_6px_20px_rgba(28,112,211,0.18)]
-            transition duration-300 ease-in-out
+            transition duration-300 ease-in-out  
         ">
             <Search className="w-5 h-5 text-gray-500" />
             <input
@@ -22,7 +22,7 @@ const Searchbar = ({ value, onChange, placeholder = "Search..." }) => {
                 className="
                     ml-3 w-full bg-transparent 
                     outline-none text-gray-700
-                    placeholder-gray-400
+                    placeholder-gray-400 px-auto
                 "
             />
         </div>

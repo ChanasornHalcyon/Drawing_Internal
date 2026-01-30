@@ -88,6 +88,22 @@ const Users_Management = () => {
       console.error("Search error:", err);
     }
   };
+  const handleExportExcel = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/exportUsers", {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "users_export.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export Excel Error:", err);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,18 +127,43 @@ const Users_Management = () => {
     <div className="container mx-auto max-w-[1920px] min-h-screen bg-[#F8F8FF] relative">
       <Navbar />
       <div className="container mx-auto max-w-[1450px] pt-24">
-        <div className="
-                flex flex-col md:flex-row 
-                items-center 
-                justify-between 
-                gap-4 md:gap-0 
-                mb-10 mt-5 px-4
-                  ">
+        <div className="flex flex-col gap-4 mb-10 mt-5 px-4 w-full">
 
-          <div className="hidden md:block w-1/3"></div>
+          <div className=" w-full flex flex-wrap justify-center md:justify-end gap-3">
 
-          <div className="w-full md:w-1/3 flex justify-center">
-            <div className="w-full max-w-lg">
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="
+                        px-4 py-2 
+                        rounded-lg 
+                      bg-green-100 text-green-600
+                        hover:bg-green-600 hover:text-white
+                        transition border cursor-pointer
+                        flex items-center gap-2 group
+                      "
+            >
+              <FaFileExcel className="text-green-600 group-hover:text-white transition" />
+              Import Excel
+            </button>
+
+            <button
+              onClick={handleExportExcel}
+              className="
+                        px-4 py-2 
+                        rounded-lg 
+                        bg-blue-100 text-blue-600
+                        hover:bg-blue-600 hover:text-white
+                        transition border cursor-pointer
+                        flex items-center gap-2 group
+                      "
+            >
+              <FaFileExcel className="text-blue-600 group-hover:text-white transition" />
+              Export Excel
+            </button>
+          </div>
+
+          <div className="flex justify-center w-full">
+            <div className="w-100 ">
               <Searchbar
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -131,22 +172,6 @@ const Users_Management = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-1/3 flex justify-center md:justify-end">
-            <button
-              onClick={() => setShowImportModal(true)}
-              className="
-                px-4 py-2 
-                rounded-lg 
-                bg-green-100 text-green-500 
-                hover:bg-green-600 hover:text-white
-                transition border cursor-pointer
-                flex items-center gap-2 group
-      "
-            >
-              <FaFileExcel className="text-green-600 group-hover:text-white transition" />
-              Import Excel
-            </button>
-          </div>
         </div>
 
 
