@@ -62,6 +62,7 @@ exports.pushData = async (req, res) => {
   }
 };
 
+
 exports.checkDrawingNo = async (req, res) => {
   try {
     const db = req.db;
@@ -82,7 +83,6 @@ exports.checkDrawingNo = async (req, res) => {
 exports.getAllData = async (req, res) => {
   try {
     const db = req.db;
-
     const [rows] = await db.query(
       "SELECT * FROM drawing_records ORDER BY id DESC",
     );
@@ -295,7 +295,7 @@ exports.deleteDrawingHistory = async (req, res) => {
 
       return res.json({ success: true });
     }
-    
+
     const [rows] = await db.query("SELECT * FROM drawing_history WHERE id=?", [
       historyId,
     ]);

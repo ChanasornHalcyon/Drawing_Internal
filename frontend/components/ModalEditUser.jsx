@@ -114,7 +114,7 @@ const ModalEditUser = ({
                                 />
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <label className={labelClass}>Password</label>
                                 <input
                                     type="password"
@@ -124,7 +124,7 @@ const ModalEditUser = ({
                                     className={inputClassRequired}
                                     required
                                 />
-                            </div>
+                            </div> */}
 
                             <div>
                                 <label className={labelClass}>Email</label>
