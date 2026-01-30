@@ -9,7 +9,7 @@ exports.verifyUser = async (req, res) => {
       `SELECT id, username, role, department, firstname, lastname, password
        FROM user
        WHERE username = ?`,
-      [username]
+      [username],
     );
 
     if (rows.length === 0) {
@@ -24,7 +24,7 @@ exports.verifyUser = async (req, res) => {
       return res.json({ success: false });
     }
     delete user.password;
-    
+
     res.json({ success: true, user });
   } catch (err) {
     console.error("verifyUser error:", err);
@@ -50,7 +50,7 @@ exports.addUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query(
+    const [result] = await db.query(
       `
       INSERT INTO user
       (email, nickname, firstname, lastname, username, password, role, department, section, level)
@@ -70,7 +70,22 @@ exports.addUser = async (req, res) => {
       ],
     );
 
-    res.json({ success: true, message: "User added" });
+    const userId = result.insertId;
+
+    const defaultPermissions = [
+      [userId, "IT", "enabled", 1],
+      [userId, "IT", "ฟอร์มแจ้งซ่อม", 1],
+    ];
+
+    await db.query(
+      `
+      INSERT INTO user_permissions (user_id, module, permission, enabled)
+      VALUES ?
+      `,
+      [defaultPermissions],
+    );
+
+    res.json({ success: true, message: "User added with default permissions" });
   } catch (err) {
     console.error("Add user error:", err);
     res.status(500).json({ success: false });
@@ -134,13 +149,12 @@ exports.updatePassword = async (req, res) => {
     const { id, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query(
-      "UPDATE user SET password=? WHERE id=?",
-      [hashedPassword, id]
-    );
+    await db.query("UPDATE user SET password=? WHERE id=?", [
+      hashedPassword,
+      id,
+    ]);
 
     res.json({ success: true });
-
   } catch (err) {
     console.error("Update password error:", err);
     res.status(500).json({ success: false });
