@@ -24,7 +24,8 @@ ChartJS.register(
 );
 
 const Report = () => {
-    const [status, setStatus] = useState("PENDING");
+    // เปลี่ยน default เป็น COMPLETE
+    const [status, setStatus] = useState("COMPLETE");
     const [chartType, setChartType] = useState("bar");
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -46,7 +47,7 @@ const Report = () => {
             });
             setChartData(res.data.data || []);
         } catch (err) {
-            console.error(err);
+            console.error("Dashboard Fetch ERROR:", err);
         } finally {
             setLoading(false);
         }
@@ -58,14 +59,18 @@ const Report = () => {
         }
     }, [status, startDate, endDate]);
 
+    const labelText = status === "COMPLETE" ? "Complete" : "Problem";
+    const color = status === "COMPLETE" ? "#3b82f6" : "#FF3366";
+    const borderColor = status === "COMPLETE" ? "#2563eb" : "#FF3366";
+
     const data = {
         labels: chartData.map((d) => formatDate(d.date)),
         datasets: [
             {
-                label: status === "PENDING" ? "Pending" : "Complete",
+                label: labelText,
                 data: chartData.map((d) => d.total),
-                backgroundColor: status === "PENDING" ? "#FF3366" : "#3b82f6",
-                borderColor: status === "PENDING" ? "#FF3366" : "#2563eb",
+                backgroundColor: color,
+                borderColor: borderColor,
                 tension: 0.35,
                 fill: chartType === "bar",
                 borderRadius: 8,
@@ -73,44 +78,21 @@ const Report = () => {
             },
         ],
     };
+
     const options = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: {
-                position: "top",
-                display: false,
-                align: "center",
-                labels: {
-                    color: "#444",
-                    font: { size: 13, weight: "500" },
-                    padding: 10,
-                    boxWidth: 14,
-                    boxHeight: 14,
-                    usePointStyle: true,
-                },
-            },
+            legend: { display: false },
         },
-
         scales: {
             x: {
-                ticks: {
-                    color: "#555",
-                    font: { size: 12 },
-                    maxRotation: 45,
-                },
-                grid: {
-                    color: "#eee",
-                },
+                ticks: { color: "#555", font: { size: 12 } },
+                grid: { color: "#eee" },
             },
             y: {
-                ticks: {
-                    color: "#555",
-                    font: { size: 12 },
-                },
-                grid: {
-                    color: "#f3f3f3",
-                },
+                ticks: { color: "#555", font: { size: 12 } },
+                grid: { color: "#f3f3f3" },
                 beginAtZero: true,
             },
         },
@@ -123,31 +105,32 @@ const Report = () => {
             <div className="pt-24 flex justify-center px-4">
                 <div className="w-full max-w-4xl space-y-6">
 
+                    {/* ปุ่มเลือกสถานะ */}
                     <div className="flex justify-center gap-3">
-                        <button
-                            onClick={() => setStatus("PENDING")}
-                            className={`px-8 h-11 rounded-xl text-sm font-semibold transition-all cursor-pointer  ${status === "PENDING"
-
-                                ? "bg-[#FF3366] text-white shadow-md"
-                                : "bg-white text-[#FF3366] border border-[#FF3366]/40 hover:bg-[#FF3366]/5"
-                                }`}
-                        >
-                            Pending
-                        </button>
-
                         <button
                             onClick={() => setStatus("COMPLETE")}
                             className={`px-8 h-11 rounded-xl text-sm font-semibold transition-all cursor-pointer  
-        ${status === "COMPLETE"
+                                ${status === "COMPLETE"
                                     ? "bg-blue-500 text-white shadow-md"
                                     : "bg-white text-blue-600 border border-blue-300 hover:bg-blue-50"
                                 }`}
                         >
                             Complete
                         </button>
+
+                        <button
+                            onClick={() => setStatus("PROBLEM")}
+                            className={`px-8 h-11 rounded-xl text-sm font-semibold transition-all cursor-pointer  
+                                ${status === "PROBLEM"
+                                    ? "bg-[#FF3366] text-white shadow-md"
+                                    : "bg-white text-[#FF3366] border border-[#FF3366]/40 hover:bg-[#FF3366]/5"
+                                }`}
+                        >
+                            Problem
+                        </button>
                     </div>
 
-
+                    {/* Filter + Chart Type */}
                     <div className="bg-white rounded-xl shadow-sm px-4 py-3 flex flex-col md:flex-row gap-4 items-center justify-between">
                         <div className="flex gap-2 items-center text-sm">
                             <input
@@ -166,11 +149,10 @@ const Report = () => {
                         </div>
 
                         <div className="flex bg-gray-100 p-1 rounded-xl">
-
                             <button
                                 onClick={() => setChartType("bar")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer
-                                  ${chartType === "bar"
+                                    ${chartType === "bar"
                                         ? "bg-white text-blue-600 shadow"
                                         : "text-gray-500 hover:text-blue-600"
                                     }`}
@@ -181,7 +163,7 @@ const Report = () => {
                             <button
                                 onClick={() => setChartType("line")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer
-                                  ${chartType === "line"
+                                    ${chartType === "line"
                                         ? "bg-white text-blue-600 shadow"
                                         : "text-gray-500 hover:text-blue-600"
                                     }`}
@@ -189,20 +171,16 @@ const Report = () => {
                                 Line
                             </button>
                         </div>
-
                     </div>
 
+                    {/* กราฟ */}
                     <div className="bg-white p-4 rounded-xl shadow-sm">
                         <div className="flex justify-center items-center gap-2 mb-4">
                             <span
                                 className="inline-block w-3 h-3 rounded-full"
-                                style={{
-                                    backgroundColor: status === "PENDING" ? "#FF3366" : "#3b82f6",
-                                }}
+                                style={{ backgroundColor: color }}
                             ></span>
-                            <span className="text-gray-700 font-medium">
-                                {status === "PENDING" ? "Pending" : "Complete"}
-                            </span>
+                            <span className="text-gray-700 font-medium">{labelText}</span>
                         </div>
 
                         {!isDateSelected ? (

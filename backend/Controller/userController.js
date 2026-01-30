@@ -1,18 +1,31 @@
+const bcrypt = require("bcryptjs");
+
 exports.verifyUser = async (req, res) => {
   try {
     const db = req.db;
     const { username, password } = req.body;
 
     const [rows] = await db.query(
-      `SELECT id, username, role, department, firstname, lastname
+      `SELECT id, username, role, department, firstname, lastname, password
        FROM user
-       WHERE username = ? AND password = ?`,
-      [username, password],
+       WHERE username = ?`,
+      [username]
     );
 
-    rows.length
-      ? res.json({ success: true, user: rows[0] })
-      : res.json({ success: false });
+    if (rows.length === 0) {
+      return res.json({ success: false });
+    }
+
+    const user = rows[0];
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.json({ success: false });
+    }
+    delete user.password;
+    
+    res.json({ success: true, user });
   } catch (err) {
     console.error("verifyUser error:", err);
     res.status(500).json({ success: false });
@@ -35,6 +48,8 @@ exports.addUser = async (req, res) => {
       level,
     } = req.body;
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await db.query(
       `
       INSERT INTO user
@@ -47,7 +62,7 @@ exports.addUser = async (req, res) => {
         firstname,
         lastname,
         username,
-        password,
+        hashedPassword,
         role,
         department,
         section,
@@ -117,10 +132,15 @@ exports.updatePassword = async (req, res) => {
   try {
     const db = req.db;
     const { id, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query("UPDATE user SET password = ? WHERE id = ?", [password, id]);
+    await db.query(
+      "UPDATE user SET password=? WHERE id=?",
+      [hashedPassword, id]
+    );
 
     res.json({ success: true });
+
   } catch (err) {
     console.error("Update password error:", err);
     res.status(500).json({ success: false });

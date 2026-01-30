@@ -228,8 +228,6 @@ exports.updateStatus = async (req,res) => {
   }
 };
 
-// -----------------------
-
 exports.uploadPictures = async (req,res) => {
   try {
     const db = req.db;
@@ -361,35 +359,41 @@ exports.getProblemFixForms = async (req,res) => {
 
 // -----------------------
 
-exports.dashboard = async (req,res) => {
+exports.dashboard = async (req, res) => {
   try {
     const db = req.db;
     let { status, startDate, endDate } = req.query;
 
-    if (!["PENDING","COMPLETE"].includes(status)) status = "PENDING";
+    if (!["COMPLETE", "PROBLEM"].includes(status)) {
+      status = "COMPLETE";
+    }
 
-    const dateField = status === "COMPLETE" ? "completed_at" : "created_at";
+    const dateField = status === "COMPLETE" ? "completed_at" : "problem_at";
 
     let sql = `
       SELECT DATE(${dateField}) AS date, COUNT(*) AS total
       FROM it_requests
-      WHERE status=? AND ${dateField} IS NOT NULL
+      WHERE status = ? 
+        AND ${dateField} IS NOT NULL
     `;
+
     const params = [status];
 
+ 
     if (startDate && endDate) {
-      sql += " AND DATE(${dateField}) BETWEEN ? AND ?";
+      sql += ` AND DATE(${dateField}) BETWEEN ? AND ?`;
       params.push(startDate, endDate);
     }
 
-    sql += " GROUP BY DATE(${dateField}) ORDER BY DATE(${dateField})";
+    sql += ` GROUP BY DATE(${dateField}) ORDER BY DATE(${dateField})`;
 
     const [rows] = await db.query(sql, params);
 
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
 
   } catch (err) {
     console.error("dashboard ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
+
