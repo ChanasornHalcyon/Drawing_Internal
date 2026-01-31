@@ -11,6 +11,7 @@ const add_drawing = () => {
     "Drill",
     "DrillMockUp",
     "Reamer",
+    "ReamerMockUp",
     "EndMill",
     "FaceMill",
     "HollowTool",
@@ -20,8 +21,9 @@ const add_drawing = () => {
 
   const cardImages = {
     Drill: "/DRILL.png",
-    DrillMockUp:"/DRILL.png",
+    DrillMockUp: "/DRILL.png",
     Reamer: "/Reamer.png",
+    ReamerMockUp: "/Reamer.png",
     EndMill: "/EndMill.png",
     FaceMill: "/FaceMill.png",
     HollowTool: "/HollowTool.png",
@@ -39,7 +41,7 @@ const add_drawing = () => {
       <div className="pt-40 md:pt-32 pb-10 flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
           {card.map((item, index) => {
-            const enabled = ["Drill", "DrillMockUp"];
+            const enabled = ["", "DrillMockUp", "ReamerMockUp"];
             const isDisabled = !enabled.includes(item);
             return (
               <motion.div

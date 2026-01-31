@@ -17,15 +17,21 @@ const DrillMockUp = () => {
     CoolantHole: "",
     Flute: "",
     Coating: "",
-    A1: "",
-    A2: "",
-    A3: "",
-    D1: "",
-    D2: "",
-    D3: "",
-    Cl1: "",
-    CL2: "",
-    TL: "",
+    numberOfSteps: "",
+    chamferCutting: "",
+    materialType: "",
+    numberOfFlutes: "",
+    fluteLength: "",
+    stepLength1: "",
+    stepLength2: "",
+    stepLength3: "",
+    helixAngle: "",
+    totalLength: "",
+    shankDiameter: "",
+    coolantThru: "",
+    shankBodyType: "",
+    pcdCenterCutting: "",
+    sandwichOrCorner: "",
     type: "",
     file: null,
   });
@@ -133,7 +139,7 @@ const DrillMockUp = () => {
               Drill Drawing
             </h1>
             <div className="flex flex-col">
-              <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+              <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                 Select Drawing Type
               </label>
 
@@ -219,7 +225,7 @@ const DrillMockUp = () => {
 
             <div className="grid grid-cols-2 gap-5 mt-5">
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                   Drawing No.
                 </label>
 
@@ -232,12 +238,11 @@ const DrillMockUp = () => {
                     checkDrawingNo(e.target.value);
                   }}
                   required
-                  className={`w-full border border-l-4 border-l-red-500  rounded-lg px-3 py-2 shadow-sm transition text-black
-                  ${
-                    checkDrawigs
+                  className={`w-full border border-l-4 border-l-red-500  rounded-lg text-black px-3 py-2 shadow-sm transition text-black
+                  ${checkDrawigs
                       ? "border-red-500"
                       : "border-gray-300 focus:border-[#1C70D3]"
-                  }`}
+                    }`}
                 />
 
                 {checkDrawigs && (
@@ -247,7 +252,7 @@ const DrillMockUp = () => {
                 )}
               </div>
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                   Customer Name
                 </label>
                 <input
@@ -256,11 +261,11 @@ const DrillMockUp = () => {
                   value={form.customerName}
                   onChange={handleChange}
                   required
-                  className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg text-black px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                   Date
                 </label>
                 <input
@@ -269,7 +274,7 @@ const DrillMockUp = () => {
                   value={form.date}
                   onChange={handleChange}
                   required
-                  className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                  className="w-full border border-l-4 border-l-red-500  border-gray-300 rounded-lg text-black px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                 />
               </div>
 
@@ -277,10 +282,10 @@ const DrillMockUp = () => {
                 ["Rev", "rev"],
                 ["Customer Part  No.", "customerPart"],
                 ["Description", "description"],
-              
+
               ].map(([label, name]) => (
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                     {label}
                   </label>
                   <input
@@ -288,63 +293,217 @@ const DrillMockUp = () => {
                     name={name}
                     value={form[name]}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                    className="w-full border border-gray-300 rounded-lg text-black px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                   />
                 </div>
               ))}
+
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+
+              {/* Number of Steps */}
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
-                  Material
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Number of steps
                 </label>
-                <select
-                  name="materialMain"
-                  value={form.materialMain}
+                <input
+                  type="number"
+                  name="numberOfSteps"
+                  value={form.numberOfSteps}
                   onChange={handleChange}
-                  className="w-full border border-l-4 border-l-red-500   border-gray-300 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition "
-                  required
-                >
-                  <option value="">--- Select Material ---</option>
-                  <option value="CB">CB</option>
-                  <option value="STL+CB">STL+CB</option>
-                  <option value="CB+PCD">CB+PCD</option>
-                  <option value="STL+PCD">STL+PCD</option>
-                  <option value="STL+CB+PCD">STL+CB+PCD</option>
-                </select>
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                />
               </div>
+
+              {/* Chamfer Cutting */}
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
-                  Flute
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Chamfer cutting?
                 </label>
                 <select
-                  name="Flute"
-                  value={form.Flute}
+                  name="chamferCutting"
+                  value={form.chamferCutting}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 border-l-4 border-l-red-500 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
-                  required
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
                 >
-                  <option value="">--- Select Flute ---</option>
-                  <option value="STRAIGHT">STRAIGHT</option>
-                  <option value="HELIX">HELIX</option>
-                </select>
-              </div>
-              <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
-                  Coolant
-                </label>
-                <select
-                  name="CoolantHole"
-                  value={form.CoolantHole}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 border-l-4 border-l-red-500 rounded-lg px-4 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
-                  required
-                >
-                  <option value="">--- Select Coolant ---</option>
+                  <option value="">--- Select ---</option>
                   <option value="YES">YES</option>
                   <option value="NO">NO</option>
                 </select>
               </div>
+
+              {/* Carbide or PCD */}
               <div className="flex flex-col">
-                <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Carbide or PCD?
+                </label>
+                <select
+                  name="materialType"
+                  value={form.materialType}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                >
+                  <option value="">--- Select Material ---</option>
+                  <option value="Carbide">Carbide</option>
+                  <option value="PCD">PCD</option>
+                </select>
+              </div>
+
+              {/* Number of flutes */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Number of flutes
+                </label>
+                <input
+                  type="number"
+                  name="numberOfFlutes"
+                  value={form.numberOfFlutes}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                />
+              </div>
+
+              {/* Flute Length */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Flute length
+                </label>
+                <input
+                  type="number"
+                  name="fluteLength"
+                  value={form.fluteLength}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                />
+              </div>
+
+              {/* Step Lengths */}
+              {["stepLength1", "stepLength2", "stepLength3"].map((key, i) => (
+                <div className="flex flex-col" key={key}>
+                  <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                    Step length {i + 1}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    value={form[key]}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                  />
+                </div>
+              ))}
+
+              {/* Helix Angle */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Helix angle
+                </label>
+                <input
+                  type="number"
+                  name="helixAngle"
+                  value={form.helixAngle}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                />
+              </div>
+
+              {/* Total Length */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Total length
+                </label>
+                <input
+                  type="number"
+                  name="totalLength"
+                  value={form.totalLength}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                />
+              </div>
+
+              {/* Shank Diameter */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Shank diameter
+                </label>
+                <input
+                  type="number"
+                  name="shankDiameter"
+                  value={form.shankDiameter}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                />
+              </div>
+
+              {/* Coolant thru */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Coolant thru?
+                </label>
+                <select
+                  name="coolantThru"
+                  value={form.coolantThru}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                >
+                  <option value="">--- Select ---</option>
+                  <option value="YES">YES</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+
+              {/* Shank / Body */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Carbide or steel shank/body
+                </label>
+                <select
+                  name="shankBodyType"
+                  value={form.shankBodyType}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                >
+                  <option value="">--- Select ---</option>
+                  <option value="Carbide">Carbide</option>
+                  <option value="Steel">Steel</option>
+                </select>
+              </div>
+
+              {/* PCD center cutting */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  PCD center cutting?
+                </label>
+                <select
+                  name="pcdCenterCutting"
+                  value={form.pcdCenterCutting}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                >
+                  <option value="">--- Select ---</option>
+                  <option value="YES">YES</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+
+              {/* Sandwich / Corner Brazed */}
+              <div className="flex flex-col">
+                <label className="text-black mb-1 font-semibold text-[12px] md:text-lg">
+                  Sandwich or corner brazed
+                </label>
+                <select
+                  name="sandwichOrCorner"
+                  value={form.sandwichOrCorner}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg text-black px-3 py-2 shadow-sm focus:border-[#1C70D3]"
+                >
+                  <option value="">--- Select ---</option>
+                  <option value="Sandwich">Sandwich</option>
+                  <option value="Corner Brazed">Corner Brazed</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                   Coating
                 </label>
                 <select
@@ -367,7 +526,7 @@ const DrillMockUp = () => {
                 ...(role !== "Sale" ? [["Cost", "cost"]] : []),
               ].map(([label, name]) => (
                 <div key={name} className="flex flex-col">
-                  <label className="block text-gray-700 text-[12px] md:text-lg font-semibold mb-1">
+                  <label className="block text-black text-[12px] md:text-lg font-semibold mb-1">
                     {label}
                   </label>
                   <input
@@ -375,11 +534,12 @@ const DrillMockUp = () => {
                     name={name}
                     value={form[name]}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
+                    className="w-full border border-gray-300 rounded-lg text-black px-3 py-2 text-gray-800 shadow-sm focus:border-[#1C70D3] transition"
                   />
                 </div>
               ))}
             </div>
+
 
             <div className="mt-10 flex flex-col items-center">
               <div className="w-full max-w-md h-80 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
