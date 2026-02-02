@@ -63,19 +63,22 @@ const bcrypt = require("bcryptjs");
 // };
 
 /// ลบอันเก่าละแอดใหม่ทั้งหมด
+
 exports.importExcel = async (req, res) => {
   try {
     const db = req.db;
+
     if (!req.file) {
       return res.json({ success: false, message: "No file uploaded" });
     }
+
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
     for (const row of sheetData) {
       const username = row.username || "";
-
+      
       let hashedPassword;
       if (row.password) {
         hashedPassword = row.password;
@@ -84,24 +87,24 @@ exports.importExcel = async (req, res) => {
         hashedPassword = await bcrypt.hash(rawPassword, 10);
       }
 
-      await db.query(
+      const [result] = await db.query(
         `
-  INSERT INTO user (
-    username, firstname, lastname, nickname, email, role,
-    department, section, level, password
-  )
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  ON DUPLICATE KEY UPDATE
-    firstname = VALUES(firstname),
-    lastname = VALUES(lastname),
-    nickname = VALUES(nickname),
-    email = VALUES(email),
-    role = VALUES(role),
-    department = VALUES(department),
-    section = VALUES(section),
-    level = VALUES(level),
-    password = VALUES(password)
-  `,
+        INSERT INTO user (
+          username, firstname, lastname, nickname, email, role,
+          department, section, level, password
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          firstname = VALUES(firstname),
+          lastname = VALUES(lastname),
+          nickname = VALUES(nickname),
+          email = VALUES(email),
+          role = VALUES(role),
+          department = VALUES(department),
+          section = VALUES(section),
+          level = VALUES(level),
+          password = VALUES(password)
+        `,
         [
           username,
           row.firstname || "",
@@ -113,13 +116,33 @@ exports.importExcel = async (req, res) => {
           row.section || "",
           row.level || "",
           hashedPassword,
-        ],
+        ]
       );
+
+      // ถ้าเป็น user ใหม่ (insert)
+      const userId = result.insertId;
+
+      if (userId) {
+        // ใส่ default permissions เฉพาะ user ใหม่
+        const defaultPermissions = [
+          [userId, "IT", "enabled", 1],
+          [userId, "IT", "ฟอร์มแจ้งซ่อม", 1],
+        ];
+
+        await db.query(
+          `
+          INSERT INTO user_permissions (user_id, module, permission, enabled)
+          VALUES ?
+          `,
+          [defaultPermissions]
+        );
+      }
     }
     res.json({
       success: true,
-      message: "Import successfully",
+      message: "Import successfully — users updated & permissions preserved",
     });
+
   } catch (err) {
     console.error("Import Excel Error:", err);
     res.status(500).json({
