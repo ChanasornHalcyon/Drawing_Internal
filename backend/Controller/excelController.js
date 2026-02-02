@@ -66,33 +66,42 @@ const bcrypt = require("bcryptjs");
 exports.importExcel = async (req, res) => {
   try {
     const db = req.db;
-
     if (!req.file) {
       return res.json({ success: false, message: "No file uploaded" });
     }
-
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-    await db.query("TRUNCATE TABLE user");
-
     for (const row of sheetData) {
-      const username = row.username;
-      const rawPassword = row.password
-        ? String(row.password)
-        : String(username).slice(-4);
+      const username = row.username || "";
 
-      const hashedPassword = await bcrypt.hash(rawPassword, 10);
+      let hashedPassword;
+      if (row.password) {
+        hashedPassword = row.password;
+      } else {
+        const rawPassword = String(username).slice(-4);
+        hashedPassword = await bcrypt.hash(rawPassword, 10);
+      }
 
       await db.query(
         `
-        INSERT INTO user (
-          username, firstname, lastname, nickname, email, role,
-          department, section, level, password
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `,
+  INSERT INTO user (
+    username, firstname, lastname, nickname, email, role,
+    department, section, level, password
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ON DUPLICATE KEY UPDATE
+    firstname = VALUES(firstname),
+    lastname = VALUES(lastname),
+    nickname = VALUES(nickname),
+    email = VALUES(email),
+    role = VALUES(role),
+    department = VALUES(department),
+    section = VALUES(section),
+    level = VALUES(level),
+    password = VALUES(password)
+  `,
         [
           username,
           row.firstname || "",
@@ -107,10 +116,9 @@ exports.importExcel = async (req, res) => {
         ],
       );
     }
-
     res.json({
       success: true,
-      message: "Import successfully — replaced all data",
+      message: "Import successfully",
     });
   } catch (err) {
     console.error("Import Excel Error:", err);
