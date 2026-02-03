@@ -15,6 +15,7 @@ const Approve_Form = () => {
     const [showCompleteModal, setShowCompleteModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedFormType, setSelectedFormType] = useState(null);
+    const [currentUser, setCurrentUser] = useState("");
 
     const loadIT = async () => {
         try {
@@ -26,7 +27,6 @@ const Approve_Form = () => {
             setLoadingIT(false);
         }
     };
-
 
     const loadFix = async () => {
         try {
@@ -46,9 +46,11 @@ const Approve_Form = () => {
         }
     };
 
-
     const updateStatus = async (id, status) => {
-        const username = localStorage.getItem("username") || "";
+        const fname = localStorage.getItem("fname") || "";
+        const lname = localStorage.getItem("lname") || "";
+        const username = `${fname} ${lname}`.trim();
+
         await axios.put(`http://localhost:4000/updateStatus/${id}`, {
             status,
             username,
@@ -58,6 +60,7 @@ const Approve_Form = () => {
         loadIT();
         loadFix();
     };
+
 
     const markProblem = async (id, detail) => {
         try {
@@ -79,15 +82,25 @@ const Approve_Form = () => {
         }
     };
 
-    const completeWithImages = async (id, formData, formType) => {
+    const completeWithImages = async (id, formData) => {
         try {
-            const res = await axios.put(
+
+            await axios.put(
                 `http://localhost:4000/upLoadPicture/${id}`,
                 formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
+
+            const fname = localStorage.getItem("fname") || "";
+            const lname = localStorage.getItem("lname") || "";
+            const username = `${fname} ${lname}`.trim();
+
+            await axios.put(`http://localhost:4000/updateStatus/${id}`, {
+                status: "COMPLETE",
+                username,
+                form_type: selectedFormType,
+            });
+
 
             loadIT();
             loadFix();
@@ -99,9 +112,14 @@ const Approve_Form = () => {
         }
     };
 
+
     useEffect(() => {
         loadIT();
         loadFix();
+        const fname = localStorage.getItem("fname") || "";
+        const lname = localStorage.getItem("lname") || "";
+
+        setCurrentUser(`${fname} ${lname}`.trim());
     }, []);
 
     return (
@@ -125,6 +143,7 @@ const Approve_Form = () => {
                                 <th className="px-4 py-3 text-start">รายละเอียด</th>
                                 <th className="px-4 py-3 text-start">เหตุผล</th>
                                 <th className="px-4 py-3 text-start">Spec</th>
+                                <th className="px-4 py-3 text-start">ผู้รับผิดชอบ</th>
                                 <th className="px-4 py-3 text-start">Action</th>
                             </tr>
                         </thead>
@@ -149,8 +168,10 @@ const Approve_Form = () => {
                                         <td className="px-4 py-2">{item.detail}</td>
                                         <td className="px-4 py-2">{item.reason}</td>
                                         <td className="px-4 py-2">{item.spec}</td>
-
+                                        <td className="px-4 py-2"> {item.started_by ? item.started_by : "-"}</td>
                                         <td className="px-4 py-2 flex gap-2">
+
+                                            {/* เริ่มงาน */}
                                             {item.status === "APPROVED" && (
                                                 <button
                                                     onClick={() => {
@@ -158,25 +179,36 @@ const Approve_Form = () => {
                                                         setSelectedFormType("IT");
                                                         setShowModal(true);
                                                     }}
-                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg cursor-pointer text-nowrap"
+                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg cursor-pointer"
                                                 >
                                                     เริ่มงาน
                                                 </button>
                                             )}
 
+                                            {/* เสร็จงาน */}
                                             {item.status === "IN_PROGRESS" && (
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedItem(item);
-                                                        setSelectedFormType("IT");
-                                                        setShowCompleteModal(true);
-                                                    }}
-                                                    className="px-3 py-1 bg-green-500 text-white rounded-lg cursor-pointer text-nowrap"
-                                                >
-                                                    เสร็จงาน
-                                                </button>
+                                                item.started_by === currentUser ? (
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedItem(item);
+                                                            setSelectedFormType("IT");
+                                                            setShowCompleteModal(true);
+                                                        }}
+                                                        className="px-3 py-1 bg-green-500 text-white rounded-lg cursor-pointer"
+                                                    >
+                                                        เสร็จงาน
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        disabled
+                                                        className="px-3 py-1 bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed"
+                                                    >
+                                                        เสร็จงาน
+                                                    </button>
+                                                )
                                             )}
 
+                                            {/* ติดปัญหา */}
                                             {item.status !== "COMPLETE" && (
                                                 <button
                                                     onClick={() => {
@@ -184,11 +216,12 @@ const Approve_Form = () => {
                                                         setSelectedFormType("IT");
                                                         setShowProblemModal(true);
                                                     }}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg cursor-pointer text-nowrap"
+                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg cursor-pointer"
                                                 >
                                                     ติดปัญหา
                                                 </button>
                                             )}
+
                                         </td>
                                     </tr>
                                 ))
@@ -196,6 +229,8 @@ const Approve_Form = () => {
                         </tbody>
                     </table>
                 </div>
+
+
 
                 <div className="my-12 border-t border-gray-800 border-dashed"></div>
 
@@ -213,6 +248,7 @@ const Approve_Form = () => {
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
                                 <th className="px-4 py-3 text-start">รายละเอียด</th>
                                 <th className="px-4 py-3 text-start">อุปกรณ์</th>
+                                <th className="px-4 py-3 text-start">ผู้รับผิดชอบ</th>
                                 <th className="px-4 py-3 text-start">Action</th>
                             </tr>
                         </thead>
@@ -225,14 +261,15 @@ const Approve_Form = () => {
                             ) : (
                                 fixData.map((item) => (
                                     <tr key={item.id} className="odd:bg-white even:bg-gray-50 hover:bg-blue-50">
-                                        <td className="px-4 py-2 ">{new Date(item.created_at).toLocaleString("th-TH")}</td>
+                                        <td className="px-4 py-2">{new Date(item.created_at).toLocaleString("th-TH")}</td>
                                         <td className="px-4 py-2">{item.requester}</td>
                                         <td className="px-4 py-2">{item.department}</td>
                                         <td className="px-4 py-2">{item.purpose}</td>
                                         <td className="px-4 py-2">{item.detail}</td>
                                         <td className="px-4 py-2">{item.tools}</td>
-
+                                        <td className="px-4 py-2">  {item.started_by ? item.started_by : "-"}</td>
                                         <td className="px-4 py-2 flex gap-2">
+                                            {/* เริ่มงาน */}
                                             {item.status === "APPROVED" && (
                                                 <button
                                                     onClick={() => {
@@ -240,23 +277,32 @@ const Approve_Form = () => {
                                                         setSelectedFormType("FIX");
                                                         setShowModal(true);
                                                     }}
-                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg cursor-pointer text-nowrap"
+                                                    className="px-3 py-1 bg-blue-500 text-white rounded-lg cursor-pointer"
                                                 >
                                                     เริ่มงาน
                                                 </button>
                                             )}
 
                                             {item.status === "IN_PROGRESS" && (
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedItem(item);
-                                                        setSelectedFormType("FIX");
-                                                        setShowCompleteModal(true);
-                                                    }}
-                                                    className="px-3 py-1 bg-green-500 text-white rounded-lg  cursor-pointer text-nowrap"
-                                                >
-                                                    เสร็จงาน
-                                                </button>
+                                                item.started_by === currentUser ? (
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedItem(item);
+                                                            setSelectedFormType("FIX");
+                                                            setShowCompleteModal(true);
+                                                        }}
+                                                        className="px-3 py-1 bg-green-500 text-white rounded-lg cursor-pointer"
+                                                    >
+                                                        เสร็จงาน
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        disabled
+                                                        className="px-3 py-1 bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed"
+                                                    >
+                                                        เสร็จงาน
+                                                    </button>
+                                                )
                                             )}
 
                                             {item.status !== "COMPLETE" && (
@@ -266,22 +312,20 @@ const Approve_Form = () => {
                                                         setSelectedFormType("FIX");
                                                         setShowProblemModal(true);
                                                     }}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg  cursor-pointer text-nowrap"
+                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg cursor-pointer"
                                                 >
                                                     ติดปัญหา
                                                 </button>
                                             )}
-                                        </td>
 
+                                        </td>
                                     </tr>
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
-
             </div>
-
 
             {showModal && (
                 <ModalStartWork

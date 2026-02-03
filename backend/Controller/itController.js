@@ -4,15 +4,30 @@ exports.createITForm = async (req, res) => {
   try {
     const db = req.db;
     const {
-      purpose, detail, reason, spec,
-      requester, department, request_date, required_date
+      purpose,
+      detail,
+      reason,
+      spec,
+      requester,
+      department,
+      request_date,
+      required_date,
     } = req.body;
 
     await db.query(
       `INSERT INTO it_requests
        (purpose, detail, reason, spec, requester, department, request_date, required_date, status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
-      [purpose, detail, reason, spec, requester, department, request_date, required_date]
+      [
+        purpose,
+        detail,
+        reason,
+        spec,
+        requester,
+        department,
+        request_date,
+        required_date,
+      ],
     );
 
     const [approvers] = await db.query(`
@@ -21,7 +36,7 @@ exports.createITForm = async (req, res) => {
     `);
 
     const departmentMap = {};
-    approvers.forEach(u => {
+    approvers.forEach((u) => {
       if (!departmentMap[u.department]) departmentMap[u.department] = [];
       departmentMap[u.department].push(u.email);
     });
@@ -45,15 +60,14 @@ exports.createITForm = async (req, res) => {
              style="background:#22c55e;padding:10px 16px;color:#fff;border-radius:6px;text-decoration:none;">
              ไปที่หน้า Pending
           </a>
-        `
+        `,
       });
     }
 
     res.json({ success: true });
-
   } catch (err) {
     console.error("createITForm ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
@@ -63,8 +77,13 @@ exports.createFixForm = async (req, res) => {
   try {
     const db = req.db;
     const {
-      purpose, detail, tools,
-      requester, department, request_date, required_date
+      purpose,
+      detail,
+      tools,
+      requester,
+      department,
+      request_date,
+      required_date,
     } = req.body;
 
     const safeRequired = required_date?.trim() !== "" ? required_date : null;
@@ -73,36 +92,45 @@ exports.createFixForm = async (req, res) => {
       `INSERT INTO it_fixrequest
       (purpose, detail, tools, requester, department, request_date, required_date)
       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [purpose, detail, tools, requester, department, request_date, safeRequired]
+      [
+        purpose,
+        detail,
+        tools,
+        requester,
+        department,
+        request_date,
+        safeRequired,
+      ],
     );
 
     const [admins] = await db.query(`
-      SELECT email FROM user WHERE role='Admin' AND email IS NOT NULL
+      SELECT department, email FROM user
+      WHERE level >= 2 AND email IS NOT NULL
     `);
 
-    const pendingUrl = "http://localhost:3000/Pending_Form";
+    const pendingUrl = "http://localhost:3000/Approve_Form";
 
     await transporter.sendMail({
       from: `"IT System" <itservice@halcyon.local>`,
-      to: admins.map(a => a.email).join(","),
+      to: admins.map((a) => a.email).join(","),
       subject: `มีคำขอแจ้งซ่อมใหม่`,
       html: `
         <h3>คำขอแจ้งซ่อมใหม่</h3>
         <p><b>ผู้ร้องขอ:</b> ${requester}</p>
         <p><b>แผนก:</b> ${department}</p>
         <p><b>วัตถุประสงค์:</b> ${purpose}</p>
+         <p><b>วัตถุประสงค์:</b> ${detail}</p>
         <a href="${pendingUrl}"
            style="background:#22c55e;padding:10px 16px;color:white;border-radius:6px;text-decoration:none;">
-          ไปที่หน้า Pending
+          ไปที่หน้ารอดำเนินการ
         </a>
-      `
+      `,
     });
 
     res.json({ success: true });
-
   } catch (err) {
     console.error("FixForm ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
@@ -111,47 +139,50 @@ exports.createFixForm = async (req, res) => {
 exports.getITForms = async (req, res) => {
   try {
     const db = req.db;
-    const [rows] = await db.query(`SELECT * FROM it_requests ORDER BY created_at DESC`);
-    res.json({ success:true, data:rows });
+    const [rows] = await db.query(
+      `SELECT * FROM it_requests ORDER BY created_at DESC`,
+    );
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("GetITForm ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getFixForms = async (req,res) => {
+exports.getFixForms = async (req, res) => {
   try {
     const db = req.db;
-    const [rows] = await db.query(`SELECT * FROM it_fixrequest ORDER BY created_at DESC`);
-    res.json({ success:true, data:rows });
+    const [rows] = await db.query(
+      `SELECT * FROM it_fixrequest ORDER BY created_at DESC`,
+    );
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("getFixForms ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.approveIT = async (req,res) => {
+exports.approveIT = async (req, res) => {
   try {
     const db = req.db;
     const { id } = req.body;
 
     await db.query(`UPDATE it_requests SET status='APPROVED' WHERE id=?`, [id]);
 
-    res.json({ success:true });
-
+    res.json({ success: true });
   } catch (err) {
     console.error("approveIT ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getApproveITForms = async (req,res) => {
+exports.getApproveITForms = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
@@ -159,16 +190,16 @@ exports.getApproveITForms = async (req,res) => {
       WHERE status IN ("APPROVED","IN_PROGRESS")
       ORDER BY request_date DESC
     `);
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("approveITList ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getApproveFixForm = async (req,res) => {
+exports.getApproveFixForm = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
@@ -177,16 +208,16 @@ exports.getApproveFixForm = async (req,res) => {
       WHERE status IN ("APPROVED","IN_PROGRESS")
       ORDER BY request_date DESC
     `);
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("getApproveFixForm ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.updateStatus = async (req,res) => {
+exports.updateStatus = async (req, res) => {
   try {
     const db = req.db;
     const { id } = req.params;
@@ -200,35 +231,28 @@ exports.updateStatus = async (req,res) => {
     if (status === "IN_PROGRESS") {
       sql = `UPDATE ${table} SET status=?, started_by=?, started_at=NOW() WHERE id=?`;
       params = [status, username, id];
-    }
-
-    else if (status === "COMPLETE") {
+    } else if (status === "COMPLETE") {
       sql = `UPDATE ${table} SET status=?, completed_by=?, completed_at=NOW() WHERE id=?`;
       params = [status, username, id];
-    }
-
-    else if (status === "PROBLEM") {
+    } else if (status === "PROBLEM") {
       sql = `UPDATE ${table}
              SET status=?, problem_detail=?, problem_by=?, problem_at=NOW()
              WHERE id=?`;
       params = [status, problem_detail, username, id];
-    }
-
-    else {
+    } else {
       sql = `UPDATE ${table} SET status=? WHERE id=?`;
       params = [status, id];
     }
 
     await db.query(sql, params);
-    res.json({ success:true });
-
+    res.json({ success: true });
   } catch (err) {
     console.error("updateStatus ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
-exports.uploadPictures = async (req,res) => {
+exports.uploadPictures = async (req, res) => {
   try {
     const db = req.db;
     const { id } = req.params;
@@ -236,7 +260,7 @@ exports.uploadPictures = async (req,res) => {
 
     const table = form_type === "FIX" ? "it_fixrequest" : "it_requests";
 
-    const imagePaths = (req.files || []).map(file => {
+    const imagePaths = (req.files || []).map((file) => {
       const relative = file.path.split("uploads").pop();
       return "/uploads" + relative.replace(/\\/g, "/");
     });
@@ -249,20 +273,19 @@ exports.uploadPictures = async (req,res) => {
            completed_detail=?,
            completed_images=?
        WHERE id=?`,
-      [username, completed_detail, JSON.stringify(imagePaths), id]
+      [username, completed_detail, JSON.stringify(imagePaths), id],
     );
 
-    res.json({ success:true, images:imagePaths });
-
+    res.json({ success: true, images: imagePaths });
   } catch (err) {
     console.error("uploadPictures ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.rejectITForm = async (req,res) => {
+exports.rejectITForm = async (req, res) => {
   try {
     const db = req.db;
     const { id, reason, username } = req.body;
@@ -274,23 +297,22 @@ exports.rejectITForm = async (req,res) => {
            problem_by=?,
            problem_at=NOW()
        WHERE id=?`,
-      [reason, username, id]
+      [reason, username, id],
     );
 
     if (!result.affectedRows)
-      return res.json({ success:false, message:"Form not found" });
+      return res.json({ success: false, message: "Form not found" });
 
-    res.json({ success:true });
-
+    res.json({ success: true });
   } catch (err) {
     console.error("rejectITForm ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getCompleteITForms = async (req,res) => {
+exports.getCompleteITForms = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
@@ -298,16 +320,16 @@ exports.getCompleteITForms = async (req,res) => {
       WHERE status='COMPLETE'
       ORDER BY completed_at DESC
     `);
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("getComplete ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getCompleteFixForms = async (req,res) => {
+exports.getCompleteFixForms = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
@@ -315,16 +337,16 @@ exports.getCompleteFixForms = async (req,res) => {
       WHERE status='COMPLETE'
       ORDER BY completed_at DESC
     `);
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("getCompleteFix ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getProblemForms = async (req,res) => {
+exports.getProblemForms = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
@@ -333,16 +355,16 @@ exports.getProblemForms = async (req,res) => {
       WHERE status IN ("PROBLEM","REJECTED")
       ORDER BY created_at DESC
     `);
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("getProblemForms ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
 // -----------------------
 
-exports.getProblemFixForms = async (req,res) => {
+exports.getProblemFixForms = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
@@ -350,10 +372,10 @@ exports.getProblemFixForms = async (req,res) => {
       WHERE status='PROBLEM'
       ORDER BY created_at DESC
     `);
-    res.json({ success:true, data:rows });
+    res.json({ success: true, data: rows });
   } catch (err) {
     console.error("getProblemFixForms ERROR:", err);
-    res.status(500).json({ success:false });
+    res.status(500).json({ success: false });
   }
 };
 
@@ -379,7 +401,6 @@ exports.dashboard = async (req, res) => {
 
     const params = [status];
 
- 
     if (startDate && endDate) {
       sql += ` AND DATE(${dateField}) BETWEEN ? AND ?`;
       params.push(startDate, endDate);
@@ -390,10 +411,8 @@ exports.dashboard = async (req, res) => {
     const [rows] = await db.query(sql, params);
 
     res.json({ success: true, data: rows });
-
   } catch (err) {
     console.error("dashboard ERROR:", err);
     res.status(500).json({ success: false });
   }
 };
-
