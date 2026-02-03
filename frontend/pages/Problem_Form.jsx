@@ -182,7 +182,7 @@ const Problem_Form = () => {
                 </div>
             </div>
 
-       
+
             {showDetailModal && (
                 <ModalDetailProblem
                     item={selectedProblem}

@@ -53,7 +53,6 @@ const Complete_Form = () => {
 
             <div className="container mx-auto max-w-[1450px] pt-32 pb-20">
 
-
                 <h1 className="text-2xl font-bold mb-5 text-black text-center">
                     รายการร้องขอที่สำเร็จ
                 </h1>
@@ -63,14 +62,14 @@ const Complete_Form = () => {
                         <thead className="bg-black text-white">
                             <tr>
                                 <th className="px-4 py-3 text-start">วันที่ร้องขอ</th>
-                                <th className="px-4 py-3 text-start">วันที่ต้องการ</th>
-                                <th className="px-4 py-3 text-start">วันที่เสร็จ</th>
+                                {/* <th className="px-4 py-3 text-start">วันที่ต้องการ</th> */}
+                                {/* <th className="px-4 py-3 text-start">วันที่เสร็จ</th> */}
                                 <th className="px-4 py-3 text-start">ผู้ร้องขอ</th>
                                 <th className="px-4 py-3 text-start">แผนก</th>
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
                                 <th className="px-4 py-3 text-start">รายละเอียด</th>
                                 <th className="px-4 py-3 text-start">เหตุผล</th>
-                                <th className="px-4 py-3 text-start">Complete By</th>
+                                <th className="px-4 py-3 text-start">ผู้รับผิดชอบ</th>
                                 <th className="px-4 py-3 text-center">Action</th>
                             </tr>
                         </thead>
@@ -97,16 +96,16 @@ const Complete_Form = () => {
                                         <td className="px-4 py-2">
                                             {new Date(item.created_at).toLocaleString("th-TH")}
                                         </td>
-                                        <td className="px-4 py-2">
+                                        {/* <td className="px-4 py-2">
                                             {item.required_date
                                                 ? new Date(item.required_date).toLocaleDateString("th-TH")
                                                 : "-"}
-                                        </td>
-                                        <td className="px-4 py-2">
+                                        </td> */}
+                                        {/* <td className="px-4 py-2">
                                             {item.completed_at
                                                 ? new Date(item.completed_at).toLocaleString("th-TH")
                                                 : "-"}
-                                        </td>
+                                        </td> */}
 
                                         <td className="px-4 py-2">{item.requester}</td>
                                         <td className="px-4 py-2">{item.department}</td>
@@ -146,7 +145,7 @@ const Complete_Form = () => {
                                 <th className="px-4 py-3 text-start">แผนก</th>
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
                                 <th className="px-4 py-3 text-start">รายละเอียด</th>
-                                <th className="px-4 py-3 text-start">วันที่เสร็จ</th>
+                                <th className="px-4 py-3 text-start">ผู้รับผิดชอบ</th>
                                 <th className="px-4 py-3 text-center">Action</th>
                             </tr>
                         </thead>
@@ -177,11 +176,7 @@ const Complete_Form = () => {
                                         <td className="px-4 py-2">{item.department}</td>
                                         <td className="px-4 py-2">{item.purpose}</td>
                                         <td className="px-4 py-2">{item.detail}</td>
-                                        <td className="px-4 py-2">
-                                            {item.completed_at
-                                                ? new Date(item.completed_at).toLocaleString("th-TH")
-                                                : "-"}
-                                        </td>
+                                        <td className="px-4 py-2">{item.completed_by || "-"}   {/* แสดงชื่อ–นามสกุล */}</td>
 
                                         <td className="px-4 py-2 flex justify-center">
                                             <button

@@ -188,7 +188,7 @@ exports.getApproveITForms = async (req, res) => {
     const [rows] = await db.query(`
       SELECT * FROM it_requests
       WHERE status IN ("APPROVED","IN_PROGRESS")
-      ORDER BY request_date DESC
+      ORDER BY created_at DESC
     `);
     res.json({ success: true, data: rows });
   } catch (err) {
@@ -206,7 +206,7 @@ exports.getApproveFixForm = async (req, res) => {
       SELECT *, 'FIX' AS form_type
       FROM it_fixrequest
       WHERE status IN ("APPROVED","IN_PROGRESS")
-      ORDER BY request_date DESC
+      ORDER BY created_at DESC
     `);
     res.json({ success: true, data: rows });
   } catch (err) {

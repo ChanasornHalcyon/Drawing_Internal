@@ -61,7 +61,6 @@ const Approve_Form = () => {
         loadFix();
     };
 
-
     const markProblem = async (id, detail) => {
         try {
             const username = localStorage.getItem("username") || "";
