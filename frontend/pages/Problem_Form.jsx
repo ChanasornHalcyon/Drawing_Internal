@@ -65,7 +65,7 @@ const Problem_Form = () => {
             <div className="container mx-auto max-w-[1450px] pt-32 pb-20">
 
                 {/* ---------------- IT SECTION ---------------- */}
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 mb-8 px-4">
                     <h1 className="text-2xl font-bold text-black text-center">
                         รายการร้องขอที่ติดปัญหา
                     </h1>
@@ -124,7 +124,7 @@ const Problem_Form = () => {
                 <div className="my-12 border-t border-gray-800 border-dashed"></div>
 
                 {/* ---------------- FIX SECTION ---------------- */}
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 mb-8 px-4">
                     <h1 className="text-2xl font-bold text-black text-center">
                         รายการแจ้งซ่อมที่ติดปัญหา
                     </h1>

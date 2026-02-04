@@ -72,15 +72,19 @@ const Complete_Form = () => {
 
             <div className="container mx-auto max-w-[1450px] pt-32 pb-20">
 
-                <div className="flex flex-col items-center gap-4 mb-8">
+                <div className="flex flex-col items-center gap-4 mb-8 px-4">
                     <h1 className="text-2xl font-bold text-black text-center">
                         รายการร้องขอที่สำเร็จ
                     </h1>
 
-                    <div className="w-full max-w-xl">
-                        <SearchFormIT searchValue={searchIT} setSearchValue={setSearchIT} />
+                    <div className="w-full md:max-w-xl">
+                        <SearchFormIT
+                            searchValue={searchIT}
+                            setSearchValue={setSearchIT}
+                        />
                     </div>
                 </div>
+
 
                 <div className="overflow-x-auto max-h-[500px]  overflow-y-auto">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -143,12 +147,12 @@ const Complete_Form = () => {
 
 
                 <div className="my-12 border-t border-gray-800 border-dashed"></div>
-                <div className="flex flex-col items-center gap-4 mb-8">
+                <div className="flex flex-col items-center gap-4 mb-8 px-4">
                     <h1 className="text-2xl font-bold text-black text-center">
                         รายการแจ้งซ่อมที่สำเร็จ
                     </h1>
 
-                    <div className="w-full max-w-xl">
+                    <div className="w-full md:max-w-xl">
                         <SearchFormFixIT searchValue={searchFix} setSearchValue={setSearchFix} />
                     </div>
                 </div>
