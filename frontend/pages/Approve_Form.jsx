@@ -63,7 +63,10 @@ const Approve_Form = () => {
 
     const markProblem = async (id, detail) => {
         try {
-            const username = localStorage.getItem("username") || "";
+            const fname = localStorage.getItem("fname") || "";
+            const lname = localStorage.getItem("lname") || "";
+            const username = `${fname} ${lname}`.trim();
+
             await axios.put(`http://localhost:4000/updateStatus/${id}`, {
                 status: "PROBLEM",
                 problem_detail: detail,
@@ -80,6 +83,7 @@ const Approve_Form = () => {
             return { success: false };
         }
     };
+
 
     const completeWithImages = async (id, formData) => {
         try {

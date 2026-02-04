@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import NavbarIT from "../components/NavbarIT";
 import DetailModal from "../components/DetailModal";
-
+import SearchFormIT from "../components/SearchFormIT";
+import SearchFormFixIT from "../components/SearchFormFixIT";
 const Complete_Form = () => {
     const [itComplete, setItComplete] = useState([]);
     const [fixComplete, setFixComplete] = useState([]);
@@ -10,41 +11,59 @@ const Complete_Form = () => {
     const [loadingFix, setLoadingFix] = useState(true);
     const [showDetail, setShowDetail] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [searchIT, setSearchIT] = useState("");
+    const [searchFix, setSearchFix] = useState("");
 
-    const loadITComplete = async () => {
+    const getAllComplete = async () => {
+        setLoadingIT(true);
+        setLoadingFix(true);
+
         try {
-            const res = await axios.get("http://localhost:4000/getCompleteForm");
-            if (res.data.success) {
-                setItComplete(res.data.data);
+            const [itRes, fixRes] = await Promise.all([
+                axios.get("http://localhost:4000/getCompleteForm"),
+                axios.get("http://localhost:4000/getCompleteFixForm"),
+            ]);
+
+            if (itRes.data.success) {
+                setItComplete(itRes.data.data);
             }
+
+            if (fixRes.data.success) {
+                setFixComplete(fixRes.data.data);
+            }
+
         } catch (err) {
             console.error(err);
         } finally {
             setLoadingIT(false);
-        }
-    };
-
-    const loadFixComplete = async () => {
-        try {
-            const res = await axios.get("http://localhost:4000/getCompleteFixForm");
-            if (res.data.success) {
-                setFixComplete(res.data.data);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
             setLoadingFix(false);
         }
     };
 
-    const openDetail = (item) => {
-        setSelectedItem(item);
-        setShowDetail(true);
-    };
+    const filteredITComplete = itComplete.filter((item) => {
+        const q = searchIT.toLowerCase();
+        return (
+            item.requester?.toLowerCase().includes(q) ||
+            item.department?.toLowerCase().includes(q) ||
+            item.purpose?.toLowerCase().includes(q) ||
+            item.detail?.toLowerCase().includes(q) ||
+            item.completed_by?.toLowerCase().includes(q)
+        );
+    });
+
+    const filteredFixComplete = fixComplete.filter((item) => {
+        const q = searchFix.toLowerCase();
+        return (
+            item.requester?.toLowerCase().includes(q) ||
+            item.department?.toLowerCase().includes(q) ||
+            item.purpose?.toLowerCase().includes(q) ||
+            item.detail?.toLowerCase().includes(q) ||
+            item.completed_by?.toLowerCase().includes(q)
+        );
+    });
 
     useEffect(() => {
-        loadITComplete();
-        loadFixComplete();
+        getAllComplete();
     }, []);
 
     return (
@@ -53,9 +72,15 @@ const Complete_Form = () => {
 
             <div className="container mx-auto max-w-[1450px] pt-32 pb-20">
 
-                <h1 className="text-2xl font-bold mb-5 text-black text-center">
-                    รายการร้องขอที่สำเร็จ
-                </h1>
+                <div className="flex flex-col items-center gap-4 mb-8">
+                    <h1 className="text-2xl font-bold text-black text-center">
+                        รายการร้องขอที่สำเร็จ
+                    </h1>
+
+                    <div className="w-full max-w-xl">
+                        <SearchFormIT searchValue={searchIT} setSearchValue={setSearchIT} />
+                    </div>
+                </div>
 
                 <div className="overflow-x-auto mb-16">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -81,14 +106,14 @@ const Complete_Form = () => {
                                         กำลังโหลดข้อมูล...
                                     </td>
                                 </tr>
-                            ) : itComplete.length === 0 ? (
+                            ) : filteredITComplete.length === 0 ? (
                                 <tr>
                                     <td colSpan="10" className="text-center py-6 text-gray-500">
                                         ไม่มีข้อมูล
                                     </td>
                                 </tr>
                             ) : (
-                                itComplete.map((item) => (
+                                filteredITComplete.map((item) => (
                                     <tr
                                         key={item.id}
                                         className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
@@ -116,11 +141,15 @@ const Complete_Form = () => {
 
                                         <td className="px-4 py-2 flex justify-center">
                                             <button
-                                                onClick={() => openDetail(item)}
+                                                onClick={() => {
+                                                    setSelectedItem(item);
+                                                    setShowDetail(true);
+                                                }}
                                                 className="px-3 py-1 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition border cursor-pointer"
                                             >
                                                 Detail
                                             </button>
+
                                         </td>
                                     </tr>
                                 ))
@@ -131,10 +160,15 @@ const Complete_Form = () => {
 
 
                 <div className="my-12 border-t border-gray-800 border-dashed"></div>
+                <div className="flex flex-col items-center gap-4 mb-8">
+                    <h1 className="text-2xl font-bold text-black text-center">
+                        รายการแจ้งซ่อมที่สำเร็จ
+                    </h1>
 
-                <h1 className="text-2xl font-bold mb-5 text-black text-center">
-                    รายการแจ้งซ่อมที่สำเร็จ
-                </h1>
+                    <div className="w-full max-w-xl">
+                        <SearchFormFixIT searchValue={searchFix} setSearchValue={setSearchFix} />
+                    </div>
+                </div>
 
                 <div className="overflow-x-auto">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -157,14 +191,14 @@ const Complete_Form = () => {
                                         กำลังโหลดข้อมูล...
                                     </td>
                                 </tr>
-                            ) : fixComplete.length === 0 ? (
+                            ) : filteredFixComplete.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="text-center py-6 text-gray-500">
                                         ไม่มีข้อมูล
                                     </td>
                                 </tr>
                             ) : (
-                                fixComplete.map((item) => (
+                                filteredFixComplete.map((item) => (
                                     <tr
                                         key={item.id}
                                         className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
@@ -180,11 +214,15 @@ const Complete_Form = () => {
 
                                         <td className="px-4 py-2 flex justify-center">
                                             <button
-                                                onClick={() => openDetail(item)}
+                                                onClick={() => {
+                                                    setSelectedItem(item);
+                                                    setShowDetail(true);
+                                                }}
                                                 className="px-3 py-1 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition border cursor-pointer"
                                             >
                                                 Detail
                                             </button>
+
                                         </td>
                                     </tr>
                                 ))

@@ -2,10 +2,10 @@ import React from "react";
 
 const SearchFormIT = ({ searchValue, setSearchValue }) => {
   return (
-   <div className="flex justify-center mb-6">
+    <div className="flex justify-center mb-6">
       <input
         type="text"
-        placeholder="ค้นหาข้อมูล เช่น ผู้ร้องขอ / แผนก / รายละเอียด"
+        placeholder="ค้นหา (ชื่อผู้ร้องขอ / แผนก / รายละเอียด / ผู้รับผิดชอบ)"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         className=" flex items-center w-full max-w-md 

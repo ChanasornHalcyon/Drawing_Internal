@@ -349,22 +349,13 @@ exports.getCompleteFixForms = async (req, res) => {
 exports.getProblemForms = async (req, res) => {
   try {
     const db = req.db;
-    const search = req.query.q ? `%${req.query.q}%` : "%%";
     const [rows] = await db.query(
       `
       SELECT *
       FROM it_requests
       WHERE status = 'PROBLEM'
-      AND (
-        requester LIKE ?
-        OR department LIKE ?
-        OR purpose LIKE ?
-        OR detail LIKE ?
-        OR problem_by LIKE ?
-      )
       ORDER BY problem_at DESC
       `,
-      [search, search, search, search, search]
     );
 
     res.json({ success: true, data: rows });
@@ -379,23 +370,13 @@ exports.getProblemForms = async (req, res) => {
 exports.getProblemFixForms = async (req, res) => {
   try {
     const db = req.db;
-    const search = req.query.q ? `%${req.query.q}%` : "%%";
-
     const [rows] = await db.query(
       `
       SELECT *
       FROM it_fixrequest
       WHERE status = 'PROBLEM'
-      AND (
-        requester LIKE ?
-        OR department LIKE ?
-        OR purpose LIKE ?
-        OR detail LIKE ?
-        OR problem_by LIKE ?
-      )
       ORDER BY problem_at DESC
       `,
-      [search, search, search, search, search]
     );
 
     res.json({ success: true, data: rows });
