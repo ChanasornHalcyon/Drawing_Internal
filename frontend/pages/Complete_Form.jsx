@@ -82,13 +82,11 @@ const Complete_Form = () => {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto mb-16">
+                <div className="overflow-x-auto max-h-[500px]  overflow-y-auto">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                         <thead className="bg-black text-white">
                             <tr>
                                 <th className="px-4 py-3 text-start">วันที่ร้องขอ</th>
-                                {/* <th className="px-4 py-3 text-start">วันที่ต้องการ</th> */}
-                                {/* <th className="px-4 py-3 text-start">วันที่เสร็จ</th> */}
                                 <th className="px-4 py-3 text-start">ผู้ร้องขอ</th>
                                 <th className="px-4 py-3 text-start">แผนก</th>
                                 <th className="px-4 py-3 text-start">วัตถุประสงค์</th>
@@ -114,24 +112,10 @@ const Complete_Form = () => {
                                 </tr>
                             ) : (
                                 filteredITComplete.map((item) => (
-                                    <tr
-                                        key={item.id}
-                                        className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition"
-                                    >
+                                    <tr key={item.id} className="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition">
                                         <td className="px-4 py-2">
                                             {new Date(item.created_at).toLocaleString("th-TH")}
                                         </td>
-                                        {/* <td className="px-4 py-2">
-                                            {item.required_date
-                                                ? new Date(item.required_date).toLocaleDateString("th-TH")
-                                                : "-"}
-                                        </td> */}
-                                        {/* <td className="px-4 py-2">
-                                            {item.completed_at
-                                                ? new Date(item.completed_at).toLocaleString("th-TH")
-                                                : "-"}
-                                        </td> */}
-
                                         <td className="px-4 py-2">{item.requester}</td>
                                         <td className="px-4 py-2">{item.department}</td>
                                         <td className="px-4 py-2">{item.purpose}</td>
@@ -149,7 +133,6 @@ const Complete_Form = () => {
                                             >
                                                 Detail
                                             </button>
-
                                         </td>
                                     </tr>
                                 ))
@@ -170,7 +153,7 @@ const Complete_Form = () => {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto max-h-[500px]  overflow-y-auto">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                         <thead className="bg-black text-white">
                             <tr>
@@ -210,7 +193,7 @@ const Complete_Form = () => {
                                         <td className="px-4 py-2">{item.department}</td>
                                         <td className="px-4 py-2">{item.purpose}</td>
                                         <td className="px-4 py-2">{item.detail}</td>
-                                        <td className="px-4 py-2">{item.completed_by || "-"}   {/* แสดงชื่อ–นามสกุล */}</td>
+                                        <td className="px-4 py-2">{item.completed_by || "-"}</td>
 
                                         <td className="px-4 py-2 flex justify-center">
                                             <button
@@ -222,7 +205,6 @@ const Complete_Form = () => {
                                             >
                                                 Detail
                                             </button>
-
                                         </td>
                                     </tr>
                                 ))

@@ -76,7 +76,7 @@ const Problem_Form = () => {
                 </div>
 
                 {/* IT TABLE */}
-                <div className="overflow-x-auto mb-16 mt-6">
+                <div className="overflow-x-auto max-h-[500px]  overflow-y-auto">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                         <thead className="bg-black text-white">
                             <tr>
@@ -135,7 +135,7 @@ const Problem_Form = () => {
                 </div>
 
                 {/* FIX TABLE */}
-                <div className="overflow-x-auto mt-6">
+                <div className="overflow-x-auto max-h-[500px]  overflow-y-auto">
                     <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                         <thead className="bg-black text-white">
                             <tr>
