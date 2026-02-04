@@ -349,15 +349,27 @@ exports.getCompleteFixForms = async (req, res) => {
 exports.getProblemForms = async (req, res) => {
   try {
     const db = req.db;
-    const [rows] = await db.query(`
+    const search = req.query.q ? `%${req.query.q}%` : "%%";
+    const [rows] = await db.query(
+      `
       SELECT *
       FROM it_requests
-      WHERE status IN ("PROBLEM","REJECTED")
-      ORDER BY created_at DESC
-    `);
+      WHERE status = 'PROBLEM'
+      AND (
+        requester LIKE ?
+        OR department LIKE ?
+        OR purpose LIKE ?
+        OR detail LIKE ?
+        OR problem_by LIKE ?
+      )
+      ORDER BY problem_at DESC
+      `,
+      [search, search, search, search, search]
+    );
+
     res.json({ success: true, data: rows });
   } catch (err) {
-    console.error("getProblemForms ERROR:", err);
+    console.error("getProblemForm ERROR:", err);
     res.status(500).json({ success: false });
   }
 };
@@ -367,14 +379,28 @@ exports.getProblemForms = async (req, res) => {
 exports.getProblemFixForms = async (req, res) => {
   try {
     const db = req.db;
-    const [rows] = await db.query(`
-      SELECT * FROM it_fixrequest
-      WHERE status='PROBLEM'
-      ORDER BY created_at DESC
-    `);
+    const search = req.query.q ? `%${req.query.q}%` : "%%";
+
+    const [rows] = await db.query(
+      `
+      SELECT *
+      FROM it_fixrequest
+      WHERE status = 'PROBLEM'
+      AND (
+        requester LIKE ?
+        OR department LIKE ?
+        OR purpose LIKE ?
+        OR detail LIKE ?
+        OR problem_by LIKE ?
+      )
+      ORDER BY problem_at DESC
+      `,
+      [search, search, search, search, search]
+    );
+
     res.json({ success: true, data: rows });
   } catch (err) {
-    console.error("getProblemFixForms ERROR:", err);
+    console.error("getProblemFixForm ERROR:", err);
     res.status(500).json({ success: false });
   }
 };
@@ -416,3 +442,4 @@ exports.dashboard = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
+
