@@ -78,7 +78,7 @@ exports.importExcel = async (req, res) => {
 
     for (const row of sheetData) {
       const username = row.username || "";
-      
+
       let hashedPassword;
       if (row.password) {
         hashedPassword = row.password;
@@ -95,15 +95,15 @@ exports.importExcel = async (req, res) => {
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
-          firstname = VALUES(firstname),
-          lastname = VALUES(lastname),
-          nickname = VALUES(nickname),
-          email = VALUES(email),
-          role = VALUES(role),
-          department = VALUES(department),
-          section = VALUES(section),
-          level = VALUES(level),
-          password = VALUES(password)
+          firstname   = VALUES(firstname),
+          lastname    = VALUES(lastname),
+          nickname    = VALUES(nickname),
+          email       = VALUES(email),
+          role        = VALUES(role),
+          department  = VALUES(department),
+          section     = VALUES(section),
+          level       = VALUES(level),
+          password    = VALUES(password)
         `,
         [
           username,
@@ -119,28 +119,31 @@ exports.importExcel = async (req, res) => {
         ]
       );
 
-      // ถ้าเป็น user ใหม่ (insert)
-      const userId = result.insertId;
-
-      if (userId) {
-        // ใส่ default permissions เฉพาะ user ใหม่
-        const defaultPermissions = [
-          [userId, "IT", "enabled", 1],
-          [userId, "IT", "ฟอร์มแจ้งซ่อม", 1],
-        ];
-
-        await db.query(
-          `
-          INSERT INTO user_permissions (user_id, module, permission, enabled)
-          VALUES ?
-          `,
-          [defaultPermissions]
+      let userId = result.insertId;
+      if (!userId) {
+        const [u] = await db.query(
+          `SELECT id FROM user WHERE username = ? LIMIT 1`,
+          [username]
         );
+        if (u.length > 0) userId = u[0].id;
       }
+
+      if (!userId) continue;
+
+      await db.query(
+        `
+        INSERT IGNORE INTO user_permissions (user_id, module, permission, enabled)
+        VALUES
+          (?, 'IT', 'enabled', 1),
+          (?, 'IT', 'ฟอร์มแจ้งซ่อม', 1)
+        `,
+        [userId, userId]
+      );
     }
+
     res.json({
       success: true,
-      message: "Import successfully — users updated & permissions preserved",
+      message: "Import complete — user fully updated and permissions ensured."
     });
 
   } catch (err) {
@@ -151,6 +154,7 @@ exports.importExcel = async (req, res) => {
     });
   }
 };
+
 
 exports.exportUsers = async (req, res) => {
   try {
@@ -173,7 +177,7 @@ exports.exportUsers = async (req, res) => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(selectedFields);
 
-    XLSX.utils.book_append_sheet(wb, ws, "Users");
+    XLSX.utils.book_append_sheet(wb, ws, "user");
 
     const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
 
