@@ -22,6 +22,7 @@ const ModalImportExcel = ({ onClose, refreshData }) => {
 
         try {
             setLoading(true);
+
             const res = await axios.post(
                 "http://localhost:4000/importExcel",
                 formData,
@@ -29,9 +30,15 @@ const ModalImportExcel = ({ onClose, refreshData }) => {
             );
 
             if (res.data.success) {
-                alert("Import Excel Complete ");
-                refreshData?.();
+
                 onClose();
+
+                setTimeout(() => {
+                    refreshData?.();
+                }, 300);
+
+                alert("Import Excel Complete");
+
             } else {
                 alert(res.data.message || "นำเข้าไม่สำเร็จ");
             }
