@@ -113,18 +113,63 @@ exports.createFixForm = async (req, res) => {
     await transporter.sendMail({
       from: `"IT System" <itservice@halcyon.local>`,
       to: admins.map((a) => a.email).join(","),
-      subject: `มีคำขอแจ้งซ่อมใหม่`,
+      subject: `📌 คำขอแจ้งซ่อมใหม่จาก ${requester}`,
+
       html: `
-        <h3>คำขอแจ้งซ่อมใหม่</h3>
-        <p><b>ผู้ร้องขอ:</b> ${requester}</p>
-        <p><b>แผนก:</b> ${department}</p>
-        <p><b>วัตถุประสงค์:</b> ${purpose}</p>
-         <p><b>วัตถุประสงค์:</b> ${detail}</p>
+  <div style="font-family: 'Segoe UI', Tahoma, sans-serif; background:#f7f7f7; padding:22px;">
+    
+    <div style="
+      max-width:620px; 
+      margin:0 auto; 
+      background:white; 
+      border-radius:14px; 
+      padding:30px; 
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      border:1px solid #e5e7eb;
+    ">
+
+      <h2 style="color:#16a34a; margin-top:0; text-align:center; font-size:28px;">
+         คำขอแจ้งซ่อมใหม่
+      </h2>
+
+      <p style="font-size:18px; color:#374151; line-height:1.8;">
+        มีคำขอแจ้งซ่อมใหม่เข้ามาในระบบ โปรดตรวจสอบรายละเอียดด้านล่าง:
+      </p>
+
+      <div style="
+        margin-top:22px; 
+        padding:18px; 
+        background:#f0fdf4; 
+        border-radius:12px; 
+        border-left:6px solid #22c55e;
+      ">
+        <p style="margin:10px 0; font-size:17px;"><b> ผู้ร้องขอ:</b> ${requester}</p>
+        <p style="margin:10px 0; font-size:17px;"><b> แผนก:</b> ${department}</p>
+        <p style="margin:10px 0; font-size:17px;"><b> วัตถุประสงค์:</b> ${purpose}</p>
+        <p style="margin:10px 0; font-size:17px;"><b>รายละเอียด:</b> ${detail}</p>
+      </div>
+
+      <div style="text-align:center; margin-top:35px;">
         <a href="${pendingUrl}"
-           style="background:#22c55e;padding:10px 16px;color:white;border-radius:6px;text-decoration:none;">
-          ไปที่หน้ารอดำเนินการ
+          style="
+            background:#22c55e;
+            padding:16px 26px;
+            border-radius:10px;
+            color:white;
+            font-size:18px;
+            text-decoration:none;
+            display:inline-block;
+            font-weight:600;
+            box-shadow:0 2px 6px rgba(0,0,0,0.12);
+          ">
+           ไปที่หน้ารอดำเนินการ
         </a>
-      `,
+      </div>
+
+
+    </div>
+  </div>
+  `,
     });
 
     res.json({ success: true });
@@ -423,4 +468,3 @@ exports.dashboard = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
-
