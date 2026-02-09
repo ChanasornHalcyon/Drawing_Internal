@@ -15,9 +15,9 @@ export default function AutoLogout({ children }) {
             localStorage.removeItem("username");
             localStorage.removeItem("role");
             localStorage.removeItem("department");
+            localStorage.removeItem("lastClosedTime");
             sessionStorage.removeItem("loginSuccess");
         };
-
         const handleLogout = () => {
             clearStorage();
             router.push("/");

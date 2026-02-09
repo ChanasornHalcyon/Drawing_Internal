@@ -37,15 +37,16 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    const fname = localStorage.getItem("fname");
-    const lname = localStorage.getItem("lname");
-
-    if (userId && (fname || lname)) {
-      router.replace("/homepage");
-    } else {
-      setReady(true);
-    }
+    setTimeout(() => {
+      const userId = localStorage.getItem("userId");
+      const fname = localStorage.getItem("fname");
+      const lname = localStorage.getItem("lname");
+      if (userId && (fname || lname)) {
+        router.replace("/homepage");
+      } else {
+        setReady(true);
+      }
+    }, 50);
   }, []);
 
 
