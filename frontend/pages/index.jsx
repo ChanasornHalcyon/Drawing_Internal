@@ -70,18 +70,12 @@ const Index = () => {
             <img
               src="ht-logo.png"
               alt="logo"
-              className="w-20 h-20 opacity-90 drop-shadow-md"
+              className="w-20 h-auto opacity-90 drop-shadow-md"
             />
           </div>
 
-
-          <h1 className="text-center text-xl font-semibold text-gray-800 mb-2">
-            Halcyon System
-          </h1>
-
           <form className="flex flex-col gap-5" onSubmit={login}>
-
-            <div className="flex flex-col gap-1 mt-3">
+            <div className="flex flex-col gap-1 mt-6">
               <label className="text-sm font-medium text-gray-700">
                 Username
               </label>
