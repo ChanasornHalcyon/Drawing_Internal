@@ -84,7 +84,6 @@ const Approve_Form = () => {
         }
     };
 
-
     const completeWithImages = async (id, formData) => {
         try {
             await axios.put(
@@ -106,16 +105,13 @@ const Approve_Form = () => {
 
             await loadIT();
             await loadFix();
-
+            alert("อัปโหลดเสร็จสมบูรณ์");
             return { success: true };
         } catch (err) {
             console.error(err);
             return { success: false };
         }
     };
-
-
-
     useEffect(() => {
         loadIT();
         loadFix();
@@ -352,9 +348,10 @@ const Approve_Form = () => {
             {showCompleteModal && (
                 <ModalCompleteForm
                     item={selectedItem}
+                    formType={selectedFormType}
                     onClose={() => setShowCompleteModal(false)}
                     onConfirm={(formData) =>
-                        completeWithImages(selectedItem.id, formData, selectedFormType)
+                        completeWithImages(selectedItem.id, formData)
                     }
                 />
             )}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Upload } from "lucide-react";
 import axios from "axios";
-const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
+const ModalCompleteForm = ({ item, onClose, onConfirm, formType }) => {
     if (!item) return null;
     const [fixDetail, setFixDetail] = useState("");
     const [images, setImages] = useState([]);
@@ -12,20 +12,19 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
         setImages(files);
     };
 
-const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("username", localStorage.getItem("username") || "");
-    formData.append("completed_detail", fixDetail);
-    formData.append("form_type", "FIX");
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        formData.append("username", localStorage.getItem("username") || "");
+        formData.append("completed_detail", fixDetail);
+        formData.append("form_type", formType);
+        images.forEach((img) => {
+            formData.append("images", img);
+        });
 
-    images.forEach((img) => {
-        formData.append("images", img);
-    });
+        onConfirm(formData);
 
-    onConfirm(formData);  
-
-    onClose();
-};
+        onClose();
+    };
 
 
     return (
