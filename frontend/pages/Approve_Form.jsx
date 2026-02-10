@@ -87,7 +87,6 @@ const Approve_Form = () => {
 
     const completeWithImages = async (id, formData) => {
         try {
-
             await axios.put(
                 `http://localhost:4000/upLoadPicture/${id}`,
                 formData,
@@ -105,8 +104,8 @@ const Approve_Form = () => {
             });
 
 
-            loadIT();
-            loadFix();
+            await loadIT();
+            await loadFix();
 
             return { success: true };
         } catch (err) {
@@ -114,6 +113,7 @@ const Approve_Form = () => {
             return { success: false };
         }
     };
+
 
 
     useEffect(() => {

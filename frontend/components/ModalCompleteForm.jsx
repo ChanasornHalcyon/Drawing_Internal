@@ -12,31 +12,21 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
         setImages(files);
     };
 
-   const handleSubmit = async () => {
+const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("username", localStorage.getItem("username") || "");
     formData.append("completed_detail", fixDetail);
-    formData.append("form_type", "FIX");       
+    formData.append("form_type", "FIX");
 
     images.forEach((img) => {
-        formData.append("images", img);    
+        formData.append("images", img);
     });
 
-    const result = await axios.put(
-        `http://localhost:4000/upLoadPicture/${item.id}?form_type=FIX`,
-        formData,
-        {
-            headers: { "Content-Type": "multipart/form-data" },
-        }
-    );
+    onConfirm(formData);  
 
-    if (result?.data?.success) {
-        alert("อัปโหลดเสร็จสมบูรณ์");
-        onClose();
-    } else {
-        alert("เกิดข้อผิดพลาดในการอัปโหลด");
-    }
+    onClose();
 };
+
 
     return (
         <>
