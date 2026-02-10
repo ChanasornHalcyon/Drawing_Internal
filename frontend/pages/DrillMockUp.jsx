@@ -70,7 +70,7 @@ const DrillMockUp = () => {
         localStorage.getItem("username") || "Unknown"
       );
 
-      const res = await axios.post("http://localhost:4000/pushData", formData, {
+      const res = await axios.post("http://localhost:9000/pushData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -109,7 +109,7 @@ const DrillMockUp = () => {
         setCheckDrawings(false);
         return;
       }
-      const res = await axios.get("http://localhost:4000/checkDrawingNo", {
+      const res = await axios.get("http://localhost:9000/checkDrawingNo", {
         params: { drawingNo: value },
       });
       setCheckDrawings(res.data.exists);

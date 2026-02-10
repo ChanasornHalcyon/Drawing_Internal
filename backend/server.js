@@ -43,9 +43,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/", require("./routes/user.routes"));
-app.use("/", require("./routes/it.routes"));
 app.use("/", require("./routes/drawing.routes"));
-app.use("/", require("./routes/excel.routes"));
+
 
 app.get("/", (req, res) => {
   res.send("Halcyon Internal API running...");
@@ -53,7 +52,7 @@ app.get("/", (req, res) => {
 
 (async () => {
   await initMySQL();
-  const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 9000;
   app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
   });

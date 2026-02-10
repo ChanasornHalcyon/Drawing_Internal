@@ -24,7 +24,7 @@ const ModalImportExcel = ({ onClose, refreshData }) => {
             setLoading(true);
 
             const res = await axios.post(
-                "http://localhost:4000/importExcel",
+                "http://localhost:9000/importExcel",
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );

@@ -14,7 +14,7 @@ const Data = () => {
   const [role, setRole] = useState("");
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/getAllData");
+      const res = await axios.get("http://localhost:9000/getAllData");
       console.log(res);
       setData(res.data.data);
     } catch (err) {
@@ -30,7 +30,7 @@ const Data = () => {
   const handleSubmitEdit = async (form, id) => {
     try {
       setSubmitting(true);
-      await axios.put(`http://localhost:4000/updateDrawing/${id}`, form);
+      await axios.put(`http://localhost:9000/updateDrawing/${id}`, form);
       setShowModal(false);
 
       const filters = localStorage.getItem("searchFilters");
@@ -49,7 +49,7 @@ const Data = () => {
 
   const getFilter = async (filters) => {
     const res = await axios.post(
-      "http://localhost:4000/searchDrawing",
+      "http://localhost:9000/searchDrawing",
       filters
     );
     setData(res.data.data || []);
@@ -179,7 +179,7 @@ const Data = () => {
                     <td className="px-4 py-2 text-center">
                       {item.file_url ? (
                         <a
-                          href={`http://localhost:4000${item.file_url}`}
+                          href={`http://localhost:9000${item.file_url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center hover:scale-110 transition-transform"

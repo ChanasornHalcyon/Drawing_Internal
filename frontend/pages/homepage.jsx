@@ -6,7 +6,6 @@ import SuccessPopup from "../components/SuccessPopup";
 import axios from "axios";
 import ModalAddUser from "../components/ModalAddUser";
 const CARD_MAP = {
-  IT: { label: "IT", path: "ITPage" },
   Drawing: { label: "Drawing", path: "DrawingPage" },
   Users_Management: { label: "Users_Management", path: "Users_Management" },
   Users_Logs: { label: "Users_Logs", path: "Users_Logs" },
@@ -48,7 +47,7 @@ const Homepage = () => {
       }
 
       const res = await axios.get(
-        `http://localhost:4000/userPermissions?username=${username}`
+        `http://localhost:9000/userPermissions?username=${username}`
       );
 
       const permissionCards = res.data

@@ -16,7 +16,7 @@ const Test = () => {
     const handleSubmit = async () => {
         try {
             const res = await axios.post(
-                "http://localhost:4000/sendMailTest",
+                "http://localhost:9000/sendMailTest",
                 form
             );
             console.log(res.data);

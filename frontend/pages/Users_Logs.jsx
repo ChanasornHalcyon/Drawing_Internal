@@ -8,7 +8,7 @@ const Users_Logs = () => {
 
   const getDataLogs = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/getDrawingLogs");
+      const res = await axios.get("http://localhost:9000/getDrawingLogs");
       if (res.data.success) setLogs(res.data.data);
     } catch (err) {
       console.error("Fetch logs error:", err);
@@ -144,7 +144,7 @@ const Users_Logs = () => {
                       <td className="px-4 py-2 text-center">
                         {detail.file_url ? (
                           <a
-                            href={`http://localhost:4000${detail.file_url}`}
+                            href={`http://localhost:9000${detail.file_url}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center hover:scale-110 transition-transform"
