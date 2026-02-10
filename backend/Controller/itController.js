@@ -312,21 +312,24 @@ exports.uploadPictures = async (req, res) => {
 
     await db.query(
       `UPDATE ${table}
-       SET status='COMPLETE',
+       SET 
+           status='COMPLETE',
            completed_by=?,
            completed_at=NOW(),
            completed_detail=?,
            completed_images=?
        WHERE id=?`,
-      [username, completed_detail, JSON.stringify(imagePaths), id],
+      [username, completed_detail, JSON.stringify(imagePaths), id]
     );
 
     res.json({ success: true, images: imagePaths });
+
   } catch (err) {
     console.error("uploadPictures ERROR:", err);
     res.status(500).json({ success: false });
   }
 };
+
 
 // -----------------------
 

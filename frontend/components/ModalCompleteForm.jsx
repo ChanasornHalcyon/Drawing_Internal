@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Upload } from "lucide-react";
-
+import axios from "axios";
 const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
     if (!item) return null;
     const [fixDetail, setFixDetail] = useState("");
@@ -12,26 +12,31 @@ const ModalCompleteForm = ({ item, onClose, onConfirm }) => {
         setImages(files);
     };
 
-    const handleSubmit = async () => {
-        const formData = new FormData();
-        formData.append("status", "COMPLETE");
-        formData.append("username", localStorage.getItem("username") || "");
-        formData.append("completed_detail", fixDetail);
-        images.forEach((img) => {
-            formData.append("images", img);
-        });
+   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("username", localStorage.getItem("username") || "");
+    formData.append("completed_detail", fixDetail);
+    formData.append("form_type", "FIX");       
 
-        const result = await onConfirm(formData);
+    images.forEach((img) => {
+        formData.append("images", img);    
+    });
 
-        if (result?.success) {
-            alert("อัปโหลดเสร็จสมบูรณ์");
-            onClose();
-        } else {
-            alert("เกิดข้อผิดพลาดในการอัปโหลด");
+    const result = await axios.put(
+        `http://localhost:4000/upLoadPicture/${item.id}?form_type=FIX`,
+        formData,
+        {
+            headers: { "Content-Type": "multipart/form-data" },
         }
-    };
+    );
 
-
+    if (result?.data?.success) {
+        alert("อัปโหลดเสร็จสมบูรณ์");
+        onClose();
+    } else {
+        alert("เกิดข้อผิดพลาดในการอัปโหลด");
+    }
+};
 
     return (
         <>

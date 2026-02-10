@@ -33,8 +33,7 @@ router.get("/getApproveFixForm", getApproveFixForm);
 
 router.put("/updateStatus/:id", updateStatus);
 
-router.put(
-  "/upLoadPicture/:id",
+router.put("/upLoadPicture/:id",
   (req, res, next) => {
     const type = req.query.form_type;
     if (type === "FIX") {
