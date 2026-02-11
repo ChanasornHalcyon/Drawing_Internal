@@ -31,7 +31,7 @@ const ModalResetPassword = ({
     setSubmitting(true);
 
     try {
-      const res = await axios.put("http://localhost:9000/updatePassword", {
+      const res = await axios.put("/api/updatePassword", {
         id: form.id,
         password: form.password,
       });

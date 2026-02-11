@@ -31,7 +31,7 @@ const Users_Management = () => {
 
   const getUser = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/getUser");
+      const res = await axios.get("/api/getUser");
       setData(res.data.users);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -81,7 +81,7 @@ const Users_Management = () => {
   const handleSearch = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:9000/searchUser?keyword=${search}`
+        `/api/searchUser?keyword=${search}`
       );
       setData(res.data.users);
     } catch (err) {
@@ -90,7 +90,7 @@ const Users_Management = () => {
   };
   const handleExportExcel = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/exportUsers", {
+      const res = await axios.get("/api/exportUsers", {
         responseType: "blob",
       });
 

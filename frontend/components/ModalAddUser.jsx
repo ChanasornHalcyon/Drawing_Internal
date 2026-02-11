@@ -19,7 +19,7 @@ const ModalAddUser = ({
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await axios.post("http://localhost:9000/adduser", form);
+      const res = await axios.post("/api/adduser", form);
       if (res.data.success) {
         alert("User added successfully");
         refreshData?.();

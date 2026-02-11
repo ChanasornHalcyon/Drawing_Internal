@@ -18,8 +18,8 @@ const Problem_Form = () => {
     const loadData = async () => {
         try {
             const [itRes, fixRes] = await Promise.all([
-                axios.get("http://localhost:9000/getProblemForm"),
-                axios.get("http://localhost:9000/getProblemFixForm"),
+                axios.get("/api/getProblemForm"),
+                axios.get("/api/getProblemFixForm"),
             ]);
 
             if (itRes.data.success) setItProblems(itRes.data.data);

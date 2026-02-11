@@ -165,7 +165,7 @@ const PermissionPage = () => {
     });
 
     const handleSave = async () => {
-        await axios.post("http://localhost:9000/savePerMissions", {
+        await axios.post("/api/savePerMissions", {
             username,
             permissions,
         });
@@ -175,7 +175,7 @@ const PermissionPage = () => {
     const loadPermissions = async () => {
 
         const res = await axios.get(
-            `http://localhost:9000/userPermissions?username=${username}`
+            `/api/userPermissions?username=${username}`
         );
 
         const base = {

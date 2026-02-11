@@ -19,7 +19,7 @@ const History = () => {
 
     if (id) {
       axios
-        .get(`http://localhost:9000/getDrawingHistory/${id}`)
+        .get(`/api/getDrawingHistory/${id}`)
         .then((res) => {
           const list = [...res.data.data].sort(
             (a, b) => new Date(b.modified_at) - new Date(a.modified_at)
@@ -47,7 +47,7 @@ const History = () => {
       const username = localStorage.getItem("username") || "unknown";
 
       await axios.delete(
-        `http://localhost:9000/deleteDrawingHistory/${deleteId}`,
+        `/api/deleteDrawingHistory/${deleteId}`,
         {
           params: {
             drawingId,
@@ -146,7 +146,7 @@ const History = () => {
                       <td className="px-4 py-2 text-center">
                         {d.file_url ? (
                           <a
-                            href={`http://localhost:9000${d.file_url}`}
+                            href={`/api${d.file_url}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center hover:scale-110 transition-transform"

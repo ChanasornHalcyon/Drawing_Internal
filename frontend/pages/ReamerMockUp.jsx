@@ -120,7 +120,7 @@ const ReamerMockUp = () => {
 
             formData.append("username", localStorage.getItem("username") || "Unknown");
 
-            const res = await axios.post("http://localhost:9000/pushData", formData, {
+            const res = await axios.post("/api/pushData", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
@@ -157,7 +157,7 @@ const ReamerMockUp = () => {
                 setCheckDrawings(false);
                 return;
             }
-            const res = await axios.get("http://localhost:9000/checkDrawingNo", {
+            const res = await axios.get("/api/checkDrawingNo", {
                 params: { drawingNo: value },
             });
             setCheckDrawings(res.data.exists);

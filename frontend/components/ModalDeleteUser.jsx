@@ -16,7 +16,7 @@ const ModalDeleteUser = ({
 
     try {
       const res = await axios.delete(
-        `http://localhost:9000/deleteUser/${form.id}`
+        `/api/deleteUser/${form.id}`
       );
       if (res.data.success) {
         refreshData?.();

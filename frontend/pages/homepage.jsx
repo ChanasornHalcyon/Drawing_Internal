@@ -47,7 +47,7 @@ const Homepage = () => {
       }
 
       const res = await axios.get(
-        `http://localhost:9000/userPermissions?username=${username}`
+        `/api/userPermissions?username=${username}`
       );
 
       const permissionCards = res.data

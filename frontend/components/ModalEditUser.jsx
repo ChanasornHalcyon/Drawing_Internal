@@ -19,7 +19,7 @@ const ModalEditUser = ({
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await axios.post("http://localhost:9000/editUser", form);
+            const res = await axios.post("/api/editUser", form);
             if (res.data.success) {
                 alert("Edit USer Successfully");
                 refreshData?.();

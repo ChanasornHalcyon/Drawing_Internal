@@ -78,7 +78,7 @@ const Search_Drill = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:9000/searchDrawing",
+        "/api/searchDrawing",
         payload
       );
       if (res.data.success) {
