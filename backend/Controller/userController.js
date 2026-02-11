@@ -6,8 +6,8 @@ exports.verifyUser = async (req, res) => {
     const { username, password } = req.body;
 
     const [rows] = await db.query(
-      `SELECT id, username, role, department, firstname, lastname, password
-       FROM user
+      `SELECT id, username, role,company, department, firstname, lastname, password
+       FROM users
        WHERE username = ?`,
       [username],
     );
@@ -44,7 +44,7 @@ exports.addUser = async (req, res) => {
       password,
       role,
       department,
-      section,
+      company,
       level,
     } = req.body;
 
@@ -52,8 +52,8 @@ exports.addUser = async (req, res) => {
 
     const [result] = await db.query(
       `
-      INSERT INTO user
-      (email, nickname, firstname, lastname, username, password, role, department, section, level)
+      INSERT INTO users
+      (email, nickname, firstname, lastname, username, password, role, department, company, level)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
@@ -65,7 +65,7 @@ exports.addUser = async (req, res) => {
         hashedPassword,
         role,
         department,
-        section,
+        company,
         level,
       ],
     );
@@ -105,14 +105,14 @@ exports.editUser = async (req, res) => {
       password,
       role,
       department,
-      section,
+      company,
       level,
     } = req.body;
 
     let sql = `
-      UPDATE user
+      UPDATE users
       SET email=?, nickname=?, firstname=?, lastname=?, username=?,
-          role=?, department=?, section=?, level=?
+          role=?, department=?, company=?, level=?
     `;
     const params = [
       email,
@@ -122,7 +122,7 @@ exports.editUser = async (req, res) => {
       username,
       role,
       department,
-      section,
+      company,
       level,
     ];
 
@@ -149,7 +149,7 @@ exports.updatePassword = async (req, res) => {
     const { id, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query("UPDATE user SET password=? WHERE id=?", [
+    await db.query("UPDATE users SET password=? WHERE id=?", [
       hashedPassword,
       id,
     ]);
@@ -165,8 +165,8 @@ exports.getUser = async (req, res) => {
   try {
     const db = req.db;
     const [rows] = await db.query(`
-      SELECT id, email, username, role, nickname, firstname, lastname, department, section, level
-      FROM user
+      SELECT id, email, username, role, nickname, firstname, lastname, department, company, level
+      FROM users
     `);
     res.json({ success: true, users: rows });
   } catch (err) {
@@ -183,8 +183,8 @@ exports.searchUser = async (req, res) => {
 
     const [rows] = await db.query(
       `
-      SELECT id, username, email, firstname, lastname, nickname, role, department, section, level
-      FROM user
+      SELECT id, username, email, firstname, lastname, nickname, role, department, company, level
+      FROM users
       WHERE username LIKE ? OR email LIKE ? OR firstname LIKE ? OR lastname LIKE ? OR nickname LIKE ?
       ORDER BY id DESC
       `,
@@ -203,7 +203,7 @@ exports.deleteUser = async (req, res) => {
     const db = req.db;
     const { id } = req.params;
 
-    await db.query("DELETE FROM user WHERE id = ?", [id]);
+    await db.query("DELETE FROM users WHERE id = ?", [id]);
 
     res.json({ success: true });
   } catch (err) {
@@ -218,7 +218,7 @@ exports.userPermissions = async (req, res) => {
     const { username } = req.query;
 
     const [[user]] = await db.query(
-      "SELECT id FROM user WHERE username = ? LIMIT 1",
+      "SELECT id FROM users WHERE username = ? LIMIT 1",
       [username],
     );
 
@@ -246,7 +246,7 @@ exports.savePermissions = async (req, res) => {
     const { username, permissions } = req.body;
 
     const [[user]] = await db.query(
-      "SELECT id FROM user WHERE username=? LIMIT 1",
+      "SELECT id FROM users WHERE username=? LIMIT 1",
       [username],
     );
 
