@@ -16,12 +16,10 @@ let db;
 async function initMySQL() {
   try {
     db = await mysql.createPool({
-      host: "localhost",
-      user: "root",
+      host: "127.0.0.1",
+      user: "halcyon_internalz",
       password: "khemnak1530",
-      database: "halcyon_internal",
-      waitForConnections: true,
-      connectionLimit: 10,
+      database: "halcyon_internalz",
     });
 
     console.log("MySQL Pool Connected ✔");
