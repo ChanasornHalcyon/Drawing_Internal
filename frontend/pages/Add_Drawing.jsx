@@ -20,8 +20,8 @@ const add_drawing = () => {
   ];
 
   const cardImages = {
-    Drill: "/DRILL.png",
-    DrillMockUp: "/DRILL.png",
+    Drill: "/Drill.png",
+    DrillMockUp: "/Drill.png",
     Reamer: "/Reamer.png",
     ReamerMockUp: "/Reamer.png",
     EndMill: "/EndMill.png",
